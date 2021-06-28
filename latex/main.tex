@@ -1,0 +1,29 @@
+\documentclass[a4paper, 11pt]{article}
+
+\input{preamble.tex}
+\input{environments_en.tex}
+\input{units.tex}
+
+\usepackage{lipsum}
+
+\begin{document}
+	
+%\input{title}
+%\shipout\null
+%\cleardoublepage	\tableofcontents
+
+\clearpage	\input{sections/introduction/introduction.tex}
+\clearpage	\input{sections/numerical_study/numerical_study.tex}
+
+\[
+	\pdv{\rho}{t} + \div(\rho \vb{v}) = 0
+\]
+
+\[
+	\pdv{\left( \rho \vb{v} \right)}{t} + \div(\rho \vb{v} \otimes \vb{v}) = 
+	-\grad{p} + \mu \laplacian{\vb{v}} + \rho \vb{F}
+\]
+
+
+\end{document}
+
