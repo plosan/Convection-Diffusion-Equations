@@ -1,4 +1,14 @@
 \BOOKMARK [1][-]{section.1}{Introduction}{}% 1
-\BOOKMARK [1][-]{section.2}{Numerical study}{}% 2
-\BOOKMARK [2][-]{subsection.2.1}{Spatial discretization}{section.2}% 3
-\BOOKMARK [2][-]{subsection.2.2}{Time discretization}{section.2}% 4
+\BOOKMARK [1][-]{section.2}{The convection\205diffusion equations}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Reynolds transport theorem}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Continuity equation}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Momentum equation}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.4}{Energy equation}{section.2}% 6
+\BOOKMARK [2][-]{subsection.2.5}{Species equation}{section.2}% 7
+\BOOKMARK [2][-]{subsection.2.6}{Convection\205diffusion equations}{section.2}% 8
+\BOOKMARK [1][-]{section.3}{Numerical study}{}% 9
+\BOOKMARK [2][-]{subsection.3.1}{Assumptions}{section.3}% 10
+\BOOKMARK [2][-]{subsection.3.2}{Spatial discretization}{section.3}% 11
+\BOOKMARK [2][-]{subsection.3.3}{Time discretization}{section.3}% 12
+\BOOKMARK [2][-]{subsection.3.4}{Discretization of the continuity equation}{section.3}% 13
+\BOOKMARK [2][-]{subsection.3.5}{Discretization of the general convection diffusion equation}{section.3}% 14

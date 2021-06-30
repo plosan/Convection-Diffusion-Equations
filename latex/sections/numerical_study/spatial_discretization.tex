@@ -1,0 +1,35 @@
+
+\subsection{Spatial discretization}
+
+The type of problems we are studying occur in a bounded domain $\Omega \subset \real^m$ with $1 \leq m \leq 3$ depending on the case. In order to solve the problem numerically, the domain is discretized into nonoverlapping control volumes and a control node is placed at the center of each one \cite{patankar2018numerical}. There exist two manners to discretize the domain, namely, the cell--centered and the node--centered discretizations. The former places discretization nodes over the domain and generates a control volume centered on each node. The latter first generates the control volumes and then places a node at the center of each one.
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\draw[black, thick] (0,0) rectangle (5,1);
+			% Nodes
+			\filldraw[black, thick] (0,0.5) circle (2pt);
+			\filldraw[black, thick] (1,0.5) circle (2pt);
+			\filldraw[black, thick] (2,0.5) circle (2pt);
+			\filldraw[black, thick] (3,0.5) circle (2pt);
+			\filldraw[black, thick] (4,0.5) circle (2pt);
+			\filldraw[black, thick] (5,0.5) circle (2pt);
+			% Control volumes
+			\draw[greencv, thick, opacity=0.8] (0,0) rectangle (0.5,1);
+		\end{tikzpicture}
+		\caption{A subfigure}
+		\label{fig:sub1}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\draw[black, thick] (0,0) rectangle (5,1);
+		\end{tikzpicture}
+		\caption{A subfigure}
+		\label{fig:sub2}
+	\end{subfigure}
+	\caption{A figure with two subfigures}
+	\label{fig:face_node_centered_discretization_comparison}
+\end{figure}

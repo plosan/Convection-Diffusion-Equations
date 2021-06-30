@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 21.1) (preloaded format=pdflatex 2021.2.11)  27 JUN 2021 11:54
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 21.1) (preloaded format=pdflatex 2021.2.11)  30 JUN 2021 23:58
 entering extended mode
 **./main.tex
 (main.tex
@@ -1355,8 +1355,9 @@ LaTeX Info: Redefining \nameref on input line 9.
 /pdftex/config/pdftex.map}
 
 
-] (sections/numerical_study/numerical_study.tex
-(sections/numerical_study/01_spatial_discretization.tex
+]
+(sections/convection_diffusion_equations/00_convection_diffusion_equations.tex
+(sections/convection_diffusion_equations/reynolds_transport_theorem.tex
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 4
 .
 
@@ -1403,45 +1404,72 @@ LaTeX Font Info:    Trying to load font information for U+rsfs on input line 4.
 (C:\Users\Pedro\AppData\Local\Programs\MiKTeX\tex/latex/jknappen\ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 ))
-(sections/numerical_study/02_time_discretization.tex)) [2
+(sections/convection_diffusion_equations/continuity_equation.tex)
+(sections/convection_diffusion_equations/momentum_equation.tex)
+(sections/convection_diffusion_equations/energy_equation.tex)
+(sections/convection_diffusion_equations/species_equation.tex)
+(sections/convection_diffusion_equations/convection_diffusion_equations.tex))
+[2
 
-]
+] (sections/numerical_study/00_numerical_study.tex
+(sections/numerical_study/assumptions.tex)
+(sections/numerical_study/spatial_discretization.tex
+
+LaTeX Warning: Citation 'patankar2018numerical' on page 3 undefined on input li
+ne 4.
+
+) (sections/numerical_study/time_discretization.tex)
+(sections/numerical_study/continuity_equation_discretization.tex [3
+
+])
+(sections/numerical_study/general_convection_diffusion_equation_discretization.
+tex)) [4]
 (C:\PLS\Universidad\CTTC\convection_diffusion_equations\latex\auxdir\main.aux)
+
+LaTeX Warning: There were undefined references.
+
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 890D1404187208B4985CE41E1D3F07A6;236.
+(rerunfilecheck)             Checksum: 7EB9C6B90FFCDE8200389C9B513C546A;991.
+
+Package biblatex Warning: Please (re)run Biber on the file:
+(biblatex)                main
+(biblatex)                and rerun LaTeX afterwards.
+
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 31861 strings out of 479618
- 614967 string characters out of 2865026
- 1418608 words of memory out of 3000000
- 48411 multiletter control sequences out of 15000+200000
- 443035 words of font info for 62 fonts, out of 3000000 for 9000
+ 31986 strings out of 479618
+ 619372 string characters out of 2865026
+ 1430337 words of memory out of 3000000
+ 48470 multiletter control sequences out of 15000+200000
+ 457995 words of font info for 67 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 92i,11n,92p,934b,1679s stack positions out of 5000i,500n,10000p,200000b,50000s
-pdfTeX warning (dest): name{cite.0@patankar2018numerical} has been referenced
- but does not exist, replaced by a fixed one
-
-{C:/Users/Pedro/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}{C:/
-Users/Pedro/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathsy.enc}{C:/
-Users/Pedro/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathit.enc}{C:/
-Users/Pedro/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}<C:/User
-s/Pedro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbsy10.pfb><C:/Use
-rs/Pedro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/Use
-rs/Pedro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Use
-rs/Pedro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi10.pfb><C:/Use
-rs/Pedro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi8.pfb><C:/User
-s/Pedro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users
-/Pedro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C:/Users/P
-edro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy10.pfb><C:/Users/P
-edro/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.p
-fb>
+ 92i,12n,92p,846b,1683s stack positions out of 5000i,500n,10000p,200000b,50000s
+{C:/Users/Pedro/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}{C
+:/Users/Pedro/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathit.enc}{C
+:/Users/Pedro/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathsy.enc}{C
+:/Users/Pedro/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}{C:/Us
+ers/Pedro/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathex.enc}<C:/Us
+ers/Pedro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbsy10.pfb><C:/U
+sers/Pedro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/U
+sers/Pedro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/U
+sers/Pedro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmex10.pfb><C:/U
+sers/Pedro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi10.pfb><C:/U
+sers/Pedro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi6.pfb><C:/Us
+ers/Pedro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi8.pfb><C:/Use
+rs/Pedro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/User
+s/Pedro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr6.pfb><C:/Users/
+Pedro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C:/Users/Pe
+dro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy10.pfb><C:/Users/Pe
+dro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy8.pfb><C:/Users/Ped
+ro/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb
+>
 Output written on C:\PLS\Universidad\CTTC\convection_diffusion_equations\latex\
-PDF\main.pdf (2 pages, 121479 bytes).
+PDF\main.pdf (4 pages, 191134 bytes).
 PDF statistics:
- 81 PDF objects out of 1000 (max. 8388607)
- 8 named destinations out of 1000 (max. 500000)
- 45 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 181 PDF objects out of 1000 (max. 8388607)
+ 39 named destinations out of 1000 (max. 500000)
+ 125 words of extra memory for PDF output out of 10000 (max. 10000000)
 

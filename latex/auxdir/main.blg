@@ -1,15 +1,11 @@
 [0] Config.pm:311> INFO - This is Biber 2.16
 [0] Config.pm:314> INFO - Logfile is 'auxdir/main.blg'
-[130] biber-MSWIN64:340> INFO - === 
-[169] Biber.pm:415> INFO - Reading 'auxdir/main.bcf'
-[296] Biber.pm:952> INFO - Found 1 citekeys in bib section 0
-[313] Biber.pm:4340> INFO - Processing section 0
-[327] Biber.pm:4531> INFO - Looking for bibtex format file 'references.bib' for section 0
-[375] bibtex.pm:1689> INFO - LaTeX decoding ...
-[381] bibtex.pm:1494> INFO - Found BibTeX data source 'references.bib'
-[437] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[437] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[437] Biber.pm:4168> INFO - Sorting list 'none/global//global/global' of type 'entry' with template 'none' and locale 'en-US'
-[438] Biber.pm:4174> INFO - No sort tailoring available for locale 'en-US'
-[439] bbl.pm:654> INFO - Writing 'auxdir/main.bbl' with encoding 'UTF-8'
-[439] bbl.pm:757> INFO - Output to auxdir/main.bbl
+[122] biber-MSWIN64:340> INFO - === 
+[160] Biber.pm:415> INFO - Reading 'auxdir/main.bcf'
+[281] Biber.pm:952> INFO - Found 1 citekeys in bib section 0
+[297] Biber.pm:4340> INFO - Processing section 0
+[311] Biber.pm:4531> INFO - Looking for bibtex format file 'references.bib' for section 0
+[355] bibtex.pm:1689> INFO - LaTeX decoding ...
+[362] bibtex.pm:1494> INFO - Found BibTeX data source 'references.bib'
+[408] Utils.pm:411> ERROR - BibTeX subsystem: C:\Users\Pedro\AppData\Local\Temp\biber_tmp_P2x7\33e59b5ca9ec342068223d604c3f8d55_3728.utf8, line 21, syntax error: found "volume", expected end of entry ("}" or ")") (skipping to next "@")
+[408] Biber.pm:132> INFO - ERRORS: 1
