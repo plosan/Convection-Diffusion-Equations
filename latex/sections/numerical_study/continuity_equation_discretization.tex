@@ -1,57 +1,57 @@
 
 \subsection{Discretization of the continuity equation}
 
-As we have seen before, the continuity equation in differential form is
+As seen before, the continuity equation in differential form is
 \begin{equation}
 	\pdv{\rho}{t} + \div(\rho \vb{v}) = 0 \quad (\vb{x},t) \in \Omega \times I
 \end{equation}
-Since the above relation is true on $\Omega \times I$, fixing one time $t \in I$ and integrating over a control volume $\mathcal{V} \subset \Omega$ yields
+Since the above relation is true on $\Omega \times I$, fixing one time $t \in I$ and integrating over a control volume $\cv{P} \subset \Omega$ yields
 \begin{equation} \label{eq:discretization_continuity_equation_1}
-	\int_{\mathcal{V}} \pdv{\rho}{t} \dd{\vb{x}} + \int_{\mathcal{V}} \div(\rho \vb{v}) \dd{\vb{x}} = 0
+	\int_{\cv{P}} \pdv{\rho}{t} \dd{\vb{x}} + \int_{\cv{P}} \div(\rho \vb{v}) \dd{\vb{x}} = 0
 \end{equation}
-Let $\mathcal{S} = \partial \mathcal{V}$ be the control surface, \ie the boundary of the control volume. Then applying the divergence theorem on the second term of equation \eqref{eq:discretization_continuity_equation_1} gives
+Let $\cs{P} = \partial \cv{P}$ be the control surface, \ie the boundary of the control volume. Then applying the divergence theorem on the second term of equation \eqref{eq:discretization_continuity_equation_1}
 \begin{equation} \label{eq:discretization_continuity_equation_2}
-	\int_{\mathcal{V}} \pdv{\rho}{t} \dd{\vb{x}} + 
-	\int_{\mathcal{S}} \rho \vb{v} \vdot \vb{n} \dd{S} = 0
+	\int_{\cv{P}} \pdv{\rho}{t} \dd{\vb{x}} + 
+	\int_{\cs{P}} \rho \vb{v} \vdot \vb{n} \dd{S} = 0
 \end{equation}
-With the aim of simplifying the first term of \eqref{eq:discretization_continuity_equation_2}, we define the average density of the control volume as
+With the aim of simplifying the first term of \eqref{eq:discretization_continuity_equation_2}, the average density of the control volume is defined as
 \begin{equation}
-	\overline{\rho} = \frac{1}{V} \int_{\mathcal{V}} \rho \dd{\vb{x}}
+	\overline{\rho}_P = \frac{1}{V_P} \int_{\cv{P}} \rho \dd{\vb{x}}
 \end{equation}
 Introducing this relation in equation \eqref{eq:discretization_continuity_equation_2} gives
 \begin{equation} \label{eq:discretization_continuity_equation_3}
-	\frac{\dd \overline{\rho}}{\dd{t}} V + 
-	\int_{\mathcal{S}} \rho \vb{v} \vdot \vb{n} \dd{S} = 0
+	\frac{\dd \overline{\rho}_P}{\dd{t}} V_P + 
+	\int_{\cs{P}} \rho \vb{v} \vdot \vb{n} \dd{S} = 0
 \end{equation}
-The mass flow term can be further simplified if we are using a cartesian mesh. In case of a 2D--mesh, the control surface can be partitioned into four different faces, namely, the east, west, north and south faces. In this context the control surface is $\mathcal{S} = \mathcal{S}_e \cup \mathcal{S}_w \cup \mathcal{S}_n \cup \mathcal{S}_s$ and we may express the mass flow term as
+The mass flow term can be further simplified if a cartesian mesh is being used. In case of a 2D--mesh, the control surface can be partitioned into four different faces, namely, the east, west, north and south faces. In this context the control surface is $\cs{P} = \cs{Pe} \cup \cs{Pw} \cup \cs{Pn} \cup \cs{Ps}$ and the mass flow term may be expressed as
 \begin{equation}
-	\int_{\mathcal{S}} \rho \vb{v} \vdot \vb{n} \dd{S} = 
-	\sum_{i} \int_{\mathcal{S}_i} \rho \vb{v} \vdot \vb{n} \dd{S} = 
+	\int_{\cs{P}} \rho \vb{v} \vdot \vb{n} \dd{S} = 
+	\sum_{i} \int_{\cs{Pi}} \rho \vb{v} \vdot \vb{n} \dd{S} = 
 	\dot{m}_e + \dot{m}_w + \dot{m}_n + \dot{m}_s
 \end{equation}
-If we use a 3D--mesh, we must consider the contributions of top and bottom faces. The control surface is the union $\mathcal{S} = \mathcal{S}_e \cup \mathcal{S}_w \cup \mathcal{S}_n \cup \mathcal{S}_s \cup \mathcal{S}_t \cup \mathcal{S}_b$, and therefore the mass flow incorporates two new terms
+If on the other hand a 3D--mesh is being used, the contributions of top and bottom faces must be considered. The control surface is the union $\cs{P} = \cs{Pe} \cup \cs{Pw} \cup \cs{Pn} \cup \cs{Ps} \cup \cs{Pt} \cup \cs{Pb}$, and therefore the mass flow incorporates two new terms
 \begin{equation}
-	\int_{\mathcal{S}} \rho \vb{v} \vdot \vb{n} \dd{S} = 
-	\sum_{i} \int_{\mathcal{S}_i} \rho \vb{v} \vdot \vb{n} \dd{S} = 
+	\int_{\cs{P}} \rho \vb{v} \vdot \vb{n} \dd{S} = 
+	\sum_{i} \int_{\cs{Pi}} \rho \vb{v} \vdot \vb{n} \dd{S} = 
 	\dot{m}_e + \dot{m}_w + \dot{m}_n + \dot{m}_s + \dot{m}_n + \dot{m}_b
 \end{equation}
-In both cases equation \eqref{eq:discretization_continuity_equation_3} is rewritten in the following way
+This allows writing equation \eqref{eq:discretization_continuity_equation_3} in the following way
 \begin{equation} \label{eq:discretization_continuity_equation_4}
-	\frac{\dd \overline{\rho}}{\dd{t}} V + \sum_i \dot{m}_i = 0
+	\frac{\dd \overline{\rho}_P}{\dd{t}} V_P + \sum_i \dot{m}_i = 0
 \end{equation}
-The average density of the control volume is roughly the density at the discretization node, that is, $\overline{\rho} \approx \rho$. Integrating \eqref{eq:discretization_continuity_equation_4} over the time interval $[t^n, t^{n+1}]$ gives
+The average density of the control volume is roughly the density at the discretization node, that is, $\overline{\rho}_P \approx \rho_P$. Integrating \eqref{eq:discretization_continuity_equation_4} over the time interval $[t^n, t^{n+1}]$ gives
 \begin{equation} \label{eq:discretization_continuity_equation_5}
-	V \int_{t^n}^{t^{n+1}} \frac{\dd \overline{\rho}}{\dd{t}} \dd{t} + 
+	V_P \int_{t^n}^{t^{n+1}} \frac{\dd \overline{\rho}_P}{\dd{t}} \dd{t} + 
 	\int_{t^n}^{t^{n+1}} \sum_i \dot{m}_i \dd{t} = 0
 \end{equation}
-The first term of \eqref{eq:discretization_continuity_equation_5} has a straightforward simplification applying a corollary of the fundamental theorem of calculus. Regarding the second term, we use numerical integration which, in general, gives a non--exact result,
+The first term of \eqref{eq:discretization_continuity_equation_5} has a straightforward simplification applying a corollary of the fundamental theorem of calculus. Regarding the second term, numerical integration is applied,
 \begin{equation} \label{eq:discretization_continuity_equation_6}
-	V (\rho^{n+1} - \rho^n) + 
+	(\rho_P^{n+1} - \rho_P^n) V_P + 
 	\left( \beta \sum_i \dot{m}_i^{n+1} + (1 - \beta) \sum_i \dot{m}_i^{n} \right) (t^{n+1} - t^n) = 0
 \end{equation}
-where $\beta \in \{ 0, \frac{1}{2}, 1 \}$ depends on the chosen integration scheme. For the sake of simplicity, we shall drop the superindex $n+1$ and the time instant $n$ will be denoted by the superindex $0$. Assuming a uniform time step $\Delta t$, the resulting discretized continuity equation is
+where $\beta \in \{ 0, \frac{1}{2}, 1 \}$ depends on the chosen integration scheme. For the sake of simplicity, superindex $n+1$ shall be dropped and the time instant $n$ will be denoted by the superindex $0$. Assuming a uniform time step $\Delta t$, the resulting discretized continuity equation is
 \begin{equation}
-	\frac{\rho - \rho^0}{\Delta t} V + \beta \sum_i \dot{m}_i + (1 - \beta) \sum_i \dot{m}_i^0 = 0
+	\frac{\rho_P - \rho_P^0}{\Delta t} V_P + \beta \sum_i \dot{m}_i + (1 - \beta) \sum_i \dot{m}_i^0 = 0
 \end{equation}
 
 

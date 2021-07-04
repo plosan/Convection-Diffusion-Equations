@@ -1,7 +1,16 @@
 
 \subsection{Spatial discretization}
 
-The type of problems we are studying occur in a bounded domain $\Omega \subset \real^m$ with $1 \leq m \leq 3$ depending on the case. In order to solve the problem numerically, the domain is discretized into nonoverlapping control volumes and a control node is placed at the center of each one \cite{patankar2018numerical}. There exist two manners to discretize the domain, namely, the cell--centered and the node--centered discretizations. The former places discretization nodes over the domain and generates a control volume centered on each node. The latter first generates the control volumes and then places a node at the center of each one.
+The type of problems addressed in this project occur in a bounded domain $\Omega \subset \real^m$ with $1 \leq m \leq 3$ depending on the case. In order to solve the problem numerically, a control--volume formulation is followed. This methodology discretizes the domain into nonoverlapping control volumes along with a grid of points named discretization nodes. The resulting discretized domain is named mesh or numerical grid \cite{patankar2008numerical}.
+
+There exist several types of grids according to the shape of control volumes and the ammount of subdivisions the domain has been partitioned into \cite{ferziger2002computational}:
+\begin{itemize}
+	\item Structured (regular) grid: 
+	\item Block--structured grid:
+	\item Unstructured grid:
+\end{itemize}
+
+Hereinafter, a structured regular grid approach will be followed. This formulation allows for two manners to discretize the domain, namely, cell--centered and node--centered discretizations. The former places discretization nodes over the domain and generates a control--volume centered on each node. The latter first generates the control--volumes and then places a node at the center of each one.
 
 \begin{figure}[h]
 	\centering
