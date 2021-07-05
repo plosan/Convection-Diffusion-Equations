@@ -342,4 +342,179 @@ A logical improvement of CDS is using a parabola to interpolate between nodal po
 	\end{minipage}
 \end{figure}
 
+\noindent
+Let $(x_0, \phi_0)$, $(x_1, \phi_1)$, $(x_2, \phi_2)$ be the points which the polynomial $p(x)$ must interpolate, that is, $p(x_0) = \phi_0$, $p(x_1) = \phi_1$ and $p(x_2) = \phi_2$, satisfying $x_0 < x_1 < x_2$. If $(\vb{v} \vdot \vb{n})_e > 0$ then $x_0 = x_W$, $x_1 = x_P$ and $x_2 = x_E$, whereas $x_0 = x_P$, $x_1 = x_E$ and $x_2 = x_{EE}$ in case of $(\vb{v} \vdot \vb{n})_e < 0$. Let $p(x)$ be the following polynomial
+\begin{equation}
+	p(x) = a_0 + a_1 (x - x_0) + a_2 (x - x_0) (x - x_1), \quad a_0, a_1, a_2 \in \real
+\end{equation}
+Since the interpolating polynomial exists and is unique \colorbox{red}{referencia}, by imposing the interpolating condition, $p(x)$ will be the desired polynomial. The interpolating condition is,
+\begin{equation}
+	\left.
+	\begin{aligned}
+		p(x_0) &= a_0 = \phi_0 \\
+		p(x_1) &= a_0 + a_1 (x_1 - x_0) = \phi_1 \\
+		p(x_2) &= a_0 + a_1 (x_2 - x_0) + a_2 (x_2 - x_0) (x_2 - x_1) = \phi_2
+	\end{aligned}	
+	\right\}
+\end{equation}
+which yields the following linear system:
+\begin{equation}
+	\begin{pmatrix}
+		1 & 0 & 0 \\
+		1 & x_1 - x_0 & 0 \\
+		1 & x_2 - x_0 & (x_2 - x_1)(x_2 - x_0)
+	\end{pmatrix}
+	\begin{pmatrix}
+		a_0 \\ a_1 \\ a_2
+	\end{pmatrix} = 
+	\begin{pmatrix}
+		\phi_0 \\ \phi_1 \\ \phi_2
+	\end{pmatrix}
+\end{equation}
+The determinant of the system matrix is non-zero because the abscissae are distinct, therefore the system has a unique solution given by
+\begin{equation}
+	\left.
+	\begin{aligned}
+		a_0 &= \phi_0 \\
+		a_1 &= \frac{\phi_1 - \phi_0}{x_1 - x_0} \\
+		a_2 &= \frac{\phi_2 - \phi_0}{(x_2 - x_1)(x_2 - x_0)} - \frac{\phi_1 - \phi_0}{(x_2 - x_1)(x_1 - x_0)}
+	\end{aligned}	
+	\right\}
+\end{equation}
 
+\subsubsection{Second--order Upwind Linear Extrapolation (SUDS)}
+
+\begin{figure}[h]
+	\centering
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\begin{tikzpicture}
+			% Points
+			\def\zerox{0.5}
+			\def\zeroy{1.5}
+			\def\onex{3}
+			\def\oney{2}
+			\def\twox{5.5}
+			\def\twoy{3}
+			\def\coefa{1.5}
+			\def\coefb{0.2}
+			\def\coefc{0.04}
+			% Ground
+			\draw[thick] (0,0) -- ++(6,0);
+			% Point W
+			\filldraw[black] (\zerox,0) circle (2pt);
+			\draw[dashed] (\zerox,0) -- ++(0,\zeroy);
+			\node[black, yshift=-0.5cm] at (\zerox,0) {$W$};
+			\node[black, yshift=-1cm] at (\zerox,0) {$(U)$};
+			\filldraw[blue!70!white] (\zerox,\zeroy) circle (2pt);
+			\node[blue, yshift=0.5cm] at (\zerox,\zeroy) {$\phi_W$};
+			% Point P
+			\filldraw[black] (\onex,0) circle (2pt);
+			\draw[dashed] (\onex,0) -- ++(0,\oney);
+			\node[black, yshift=-0.5cm] at (\onex,0) {$P$};
+			\node[black, yshift=-1cm] at (\onex,0) {$(C)$};
+			\filldraw[blue!70!white] (\onex,\oney) circle (2pt);
+			\node[blue, yshift=0.5cm] at (\onex,\oney) {$\phi_P$};
+			% Point e
+			\filldraw[black] ({\onex+1},0) circle (2pt);
+			\draw[dashed] ({\onex+1},0) -- ++(0,{1.5+0.5*3.5/2.5});
+			\node[black, yshift=-0.5cm] at ({\onex+1},0) {$e$};
+			\filldraw[blue!70!white] ({\onex+1},{1.5+0.5*3.5/2.5}) circle (2pt);
+			\node[blue, yshift=0.5cm] at ({\onex+1},{1.5+0.5*3.5/2.5}) {$\phi_e$};
+			% Point E
+			\filldraw[black] (\twox,0) circle (2pt);
+			\draw[dashed] (\twox,0) -- ++(0,\twoy);
+			\node[black, yshift=-0.5cm] at (\twox,0) {$E$};
+			\node[black, yshift=-1cm] at (\twox,0) {$(D)$};
+			\filldraw[blue!70!white] (\twox,\twoy) circle (2pt);
+			\node[blue, yshift=0.5cm] at (\twox,\twoy) {$\phi_E$}; 
+			% Blue line
+			\draw[scale=1, domain=0:4.5, smooth, variable=\x, blue!70!white, thick] plot ({\x}, {1.5+0.2*(\x-0.5)});
+			% Mass flow
+			\draw[->, red, thick] (3.25,0.75) -- ++(1.5,0) node[above]{$\dot{m}_e > 0$};
+		\end{tikzpicture}
+		\captionsetup{width=0.9\textwidth}
+		\caption{SUDS when $(\vb{v} \vdot \vb{n})_e > 0$.}
+		\label{fig:suds_1}
+	\end{minipage}%
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\begin{tikzpicture}
+			% Points
+			\def\zerox{0.5}
+			\def\zeroy{1.5}
+			\def\onex{3}
+			\def\oney{2.5}
+			\def\twox{5.5}
+			\def\twoy{3}
+			\def\coefa{1.5}
+			\def\coefb{0.4}
+			\def\coefc{-0.04}
+			% Ground
+			\draw[thick] (0,0) -- ++(6,0);
+			% Point P
+			\filldraw[black] (\zerox,0) circle (2pt);
+			\draw[dashed] (\zerox,0) -- ++(0,\zeroy);
+			\node[black, yshift=-0.5cm] at (\zerox,0) {$P$};
+			\node[black, yshift=-1cm] at (\zerox,0) {$(D)$};
+			\filldraw[blue!70!white] (\zerox,\zeroy) circle (2pt);
+			\node[blue, yshift=0.5cm] at (\zerox,\zeroy) {$\phi_P$};
+			% Point e
+			\filldraw[black] ({\zerox+1},0) circle (2pt);
+			\draw[dashed] ({\zerox+1},0) -- ++(0,{2.5-0.2*1.5});
+			\node[black, yshift=-0.5cm] at ({\zerox+1},0) {$e$};
+			\filldraw[blue!70!white] ({\zerox+1},{2.5-0.2*1.5}) circle (2pt);
+			\node[blue, yshift=0.5cm] at ({\zerox+1},{2.5-0.2*1.5}) {$\phi_e$};
+			% Point e
+			\filldraw[black] (\onex,0) circle (2pt);
+			\draw[dashed] (\onex,0) -- ++(0,\oney);
+			\node[black, yshift=-0.5cm] at (\onex,0) {$E$};
+			\node[black, yshift=-1cm] at (\onex,0) {$(C)$};
+			\filldraw[blue!70!white] (\onex,\oney) circle (2pt);
+			\node[blue, yshift=0.5cm] at (\onex,\oney) {$\phi_E$}; 
+			% Point ee
+			\filldraw[black] (\twox,0) circle (2pt);
+			\draw[dashed] (\twox,0) -- ++(0,\twoy);
+			\node[black, yshift=-0.5cm] at (\twox,0) {$EE$};
+			\node[black, yshift=-1cm] at (\twox,0) {$(U)$};
+			\filldraw[blue!70!white] (\twox,\twoy) circle (2pt);
+			\node[blue, yshift=0.5cm] at (\twox,\twoy) {$\phi_{EE}$}; 
+			% Blue line
+			\draw[scale=1, domain=1:6, smooth, variable=\x, blue!70!white, thick] plot ({\x}, {2.5+0.2*(\x-3)});
+			% Mass flow
+			\draw[->, red, thick] (0.75,0.75) -- ++(1.5,0) node[above]{$\dot{m}_e < 0$};
+		\end{tikzpicture}
+		\captionsetup{width=0.9\textwidth}
+		\caption{SUDS when $(\vb{v} \vdot \vb{n})_e < 0$.}
+		\label{fig:suds_2}
+	\end{minipage}
+\end{figure}
+
+\subsubsection{Exponential--Difference Scheme (EDS)}
+
+The exponential difference scheme assumes a distribution for $\phi$ based on the steady 2--dimensional generalized convection--diffusion equation with no source term, that is to say,
+\begin{equation}
+	\frac{\dd}{\dd{x}} (\rho u \phi) = \frac{\dd}{\dd{x}} \left( \Gamma \frac{\dd{\phi}}{\dd{x}} \right)
+\end{equation}
+where $u$ is the component of $\vb{v}$ in the $x$ direction. So as to ease the study, $\rho u$ and $\Gamma$ are assumed to be constant. Thereby the initial value problem obtained is
+\begin{equation} \label{eq:eds_ivp}
+	\left\{
+	\begin{aligned}
+		&\frac{\dd^2 \phi}{\phi{x^2}} - \frac{\rho u}{\Gamma} \frac{\dd{\phi}}{\dd{x}} = 0 & &\text{in } (x_P, x_E) \\
+		&\phi(x_P) = \phi_P \\
+		&\phi(x_E) = \phi_E \\
+	\end{aligned}
+	\right.
+\end{equation}
+Problem \eqref{eq:eds_ivp} has existence and uniqueness of solution since it involves a linear ODE
+
+\begin{equation}
+	\phi(x) = 
+	\phi_P - 
+	\frac{\phi_E - \phi_P}{e^{\frac{\rho u}{\Gamma} d_{PE}} - 1} + 
+	\frac{\phi_E - \phi_P}{e^{\frac{\rho u}{\Gamma} d_{PE}} - 1} e^{\frac{\rho u}{\Gamma} (x - x_P)}
+\end{equation}
+
+\subsubsection{Normalization of variables}
+
+\subsubsection{Summary of schemes}
