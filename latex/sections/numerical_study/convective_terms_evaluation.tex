@@ -74,7 +74,7 @@ This can be expressed in a more compact form as follows
 	\dot{m}_e ( \phi_e^\text{UDS} - \phi_P ) = 
 	\frac{\dot{m}_e - \abs{\dot{m}_e}}{2} ( \phi_E - \phi_P )
 \end{equation}
-since the approximation to compute $\dot{m}_e$ is related to $(\vb{v} \vdot \vb{n})_e$. The scheme is shown in figures \ref{fig:uds_upstream_node_P} and \ref{fig:uds_upstream_node_E}
+since the approximation to compute $\dot{m}_e$ is related to $(\vb{v} \vdot \vb{n})_e$ through the relation $\dot{m}_e = (\vb{v} \vdot \vb{n})_e S_{Pe}$. The scheme is shown in figures \ref{fig:uds_upstream_node_P} and \ref{fig:uds_upstream_node_E}.
 
 \begin{figure}[h]
 	\centering
@@ -155,22 +155,22 @@ since the approximation to compute $\dot{m}_e$ is related to $(\vb{v} \vdot \vb{
 \end{figure}
 
 
-UDS is a stable scheme, however it suffers from numerical diffusion. Indeed, assuming the upstream node is $P$ and expanding $\phi$ about the points $x_P$ in its Taylor expansion up to $2^\text{nd}$ degree,
+UDS is a stable scheme, however it suffers from numerical diffusion. Indeed, assuming the upstream node is $P$ and expanding $\phi$ about the point $x_P$ in its Taylor expansion up to $2^\text{nd}$ degree,
 \begin{equation} \label{eq:UDS_taylor_polynomial_P}
 	\phi_e = 
-	\phi_P + \left(\pdv{\phi}{x}\right)_P d_{Pe} + \frac{1}{2} \left(\pdv[2]{\phi}{x}\right)_P d_{Pe}^2 + o(d_{Pe}^2)
+	\phi_P + \left(\pdv{\phi}{x}\right)_P d_{Pe} + 
+	\left(\pdv[2]{\phi}{x}\right)_{\xi_1} \frac{d_{Pe}^2}{2}
 \end{equation}
-it is apparent that UDS retains the first term on the left--hand side of \eqref{eq:UDS_taylor_polynomial_P}. As a consequence, the highest order term of the error is $(\partial_x \phi)_P d_{Pe}$, which is proportional to the distance between $P$ and the face $\cs{Pe}$. This term resembles to a diffusion flux given by Fourier's or Fick's laws of diffusion. The same result is obtained when $E$ is the upstream node,
+it is apparent that UDS retains the first term on the left--hand side of \eqref{eq:UDS_taylor_polynomial_P}. As a consequence, the highest order term of the error is $(\partial_x \phi)_P d_{Pe}$, which is proportional to the distance between $P$ and the face $\cs{Pe}$. This term resembles to a diffusion flux given, for instance, by Fourier's or Fick's laws of diffusion. The same result is obtained when $E$ is the upstream node,
 \begin{equation}
 	\phi_e = 
-	\phi_E - \left(\pdv{\phi}{x}\right)_E d_{Ee} + \frac{1}{2} \left(\pdv[2]{\phi}{x}\right)_E d_{Ee}^2 + o(d_{Ee}^2)
+	\phi_E - \left(\pdv{\phi}{x}\right)_E d_{Ee} + \left(\pdv[2]{\phi}{x}\right)_{\xi_2} \frac{d_{Ee}^2}{2}
 \end{equation}
 whence it can be deduced that the error is bounded by $\max\{ \abs{(\partial_x \phi)_E d_{Pe}}, \abs{(\partial_x \phi)_E d_{Ee}}\}$. The numerical diffusion issue is magnified in multidimensional problems, where peaks of rapid variation can be obtained, hence very fine grids are required. 
 
 \subsubsection{Central--Difference Scheme (CDS)}
 
-CDS assumes a linear distribution for $\phi$ as illustrated in figure \ref{fig:central_difference_scheme}
-
+CDS assumes a linear distribution for $\phi$ as illustrated in figure \ref{fig:central_difference_scheme},
 \begin{figure}[h]
 	\centering
 	\begin{tikzpicture}
@@ -201,34 +201,40 @@ CDS assumes a linear distribution for $\phi$ as illustrated in figure \ref{fig:c
 	\label{fig:central_difference_scheme}
 \end{figure}
 
-
-
 \noindent
-therefore $\phi_e$ can be obtained interpolating between $\phi_P$ and $\phi_E$,
+Thereby $\phi_e$ can be obtained interpolating between $\phi_P$ and $\phi_E$,
 \begin{equation}
 	\phi_e - \phi_P = f_e \left( \phi_E - \phi_P \right), \quad f_e = \frac{d_{Pe}}{d_{PE}}
 \end{equation}
-This yields a $2^{\text{nd}}$ order approximation for $\phi_e$. Indeed, using the Taylor expansion about the point $x_e$ up to $2^\text{nd}$ degree,
-\begin{equation}
+This yields a $2^{\text{nd}}$ order approximation for $\phi_e$ if $d_{Pe} = d_{Ee}$. Indeed, applying Taylor's theorem about the point $x_e$ and using Lagrange's remainder,
+\begin{equation} \label{eq:cds_taylor_expansion}
 	\phi_P = 
-	\phi_e - \left(\pdv{\phi}{x}\right)_e d_{Pe} + \frac{1}{2} \left(\pdv[2]{\phi}{x}\right) d_{Pe}^2 + o(d_{Pe}^2)
+	\phi_e 
+	- \left(\pdv{\phi}{x}\right)_e d_{Pe} 
+	+ \frac{1}{2} \left(\pdv[2]{\phi}{x}\right)_e d_{Pe}^2 
+	+ \frac{1}{6} \left(\pdv[3]{\phi}{x}\right)_{\xi_1} d_{Pe}^3
 \end{equation}
-and replacing the derivative $(\partial_x \phi)_e$ by its $2^\text{nd}$ order approximation
-\begin{equation}
-	\left(\pdv{\phi}{x}\right)_e \approx 
-	\frac{\phi_E - \phi_P}{x_E - _P} =  
-	\frac{\phi_E - \phi_P}{d_{PE}}
+where $\xi_1$ is some point lying in the convex combination of $(x_P, y_P)$ and $(x_E, y_E) = (x_E, y_P)$, that is, a point contained in the set $\{ (\lambda x_E + (1 - \lambda) x_P, y_P) \mid \lambda \in (0,1) \}$. On the other hand, the $2^\text{nd}$ order approximation of the derivative $(\partial_x \phi)_e$ is given by
+\begin{equation} \label{eq:cds_derivative_approximation}
+	\left(\pdv{\phi}{x}\right)_e = 
+	\frac{\phi_E - \phi_P}{d_{PE}} - \left(\pdv[3]{\phi}{x}\right)_{\xi_2} \frac{d_{PE}^2}{3!} = 	
+	\frac{\phi_E - \phi_P}{d_{PE}} - \left(\pdv[3]{\phi}{x}\right)_{\xi_2} \frac{(d_{Pe} + d_{Ee})^2}{3!}
 \end{equation}
-the following is obtained:
-\begin{equation}
-	\phi_e - \phi_P \approx 
-	\frac{d_{Pe}}{d_{PE}} (\phi_E - \phi_P) - \frac{1}{2} \left(\pdv[2]{\phi}{x}\right) d_{Pe}^2 + o(d_{Pe}^2)
+where, again, $\xi_2$ is some point obtained as the convex combination of $(x_P, y_P)$ and $(x_E, y_E)$. Introducing \eqref{eq:cds_derivative_approximation} in \eqref{eq:cds_taylor_expansion} and imposing $d_{Pe} = d_{Ee}$, 
+\begin{equation} \label{eq:cds_error_terms}
+	\phi_e - \phi_P = 
+	\frac{d_{Pe}}{d_{PE}} (\phi_E - \phi_P) - 
+	\left( \pdv[2]{\phi}{x} \right)_e \frac{d_{Pe}^2}{2} -
+	\left\{ 
+	\left( \pdv[3]{\phi}{x} \right)_{\xi_1} + 4 \left( \pdv[3]{\phi}{x} \right)_{\xi_2}
+	\right\} 
+	\frac{d_{Pe}^3}{6}
 \end{equation}
-The highest order term of the error is $\frac{1}{2} (\partial_x^2 \phi)_e d_{Pe}^2$, proving that CDS gives a $2^\text{nd}$ order approximation of $\phi_e$. This scheme is prone to stability problems producing oscillatory problems since the approximation is of order higher than $1$.
+As CDS retains the first term on the left--hand side of \eqref{eq:cds_error_terms}, the highest order term of the error is $\frac{1}{2} (\partial_x^2 \phi)_e d_{Pe}^2$, proving that CDS provides a $2^\text{nd}$ order approximation of $\phi_e$ when $d_{Pe} = d_{Ee}$. Nonetheless, this scheme is prone to stability problems producing oscillatory problems since the approximation is of order higher than $1$.
 
 \subsubsection{Quadratic Upwind Interpolation for Convective Kinematics (QUICK)}
 
-A logical improvement of CDS is using a parabola to interpolate between nodal points rather than a straight line. To construct a parabola three points are needed. As aforementioned, upstream conditions have a greater influence on flow properties than downstream conditions for incompressible flows and low Mach number gases. QUICK scheme takes this fact into account. Located at the face position, $D$ refers to the downstream node, $C$ is the first upstream node and $U$ is the most upstream node.
+A logical improvement of CDS is using a parabola to interpolate between nodal points rather than a straight line. To construct a parabola three points are needed. As aforementioned, upstream conditions have a greater influence on flow properties than downstream conditions for incompressible flows and low Mach number gases. QUICK scheme takes profit of this fact. In order to ease the study, some notation is introduced. Located at the face position, $D$ refers to the downstream node, $C$ is the first upstream node and $U$ is the most upstream node.
 
 \begin{figure}[h]
 	\centering
@@ -251,12 +257,14 @@ A logical improvement of CDS is using a parabola to interpolate between nodal po
 			\filldraw[black] (\zerox,0) circle (2pt);
 			\draw[dashed] (\zerox,0) -- ++(0,\zeroy);
 			\node[black, yshift=-0.5cm] at (\zerox,0) {$W$};
+			\node[black, yshift=-1cm] at (\zerox,0) {$(U)$};
 			\filldraw[blue!70!white] (\zerox,\zeroy) circle (2pt);
 			\node[blue, yshift=0.5cm] at (\zerox,\zeroy) {$\phi_W$};
 			% Point P
 			\filldraw[black] (\onex,0) circle (2pt);
 			\draw[dashed] (\onex,0) -- ++(0,\oney);
 			\node[black, yshift=-0.5cm] at (\onex,0) {$P$};
+			\node[black, yshift=-1cm] at (\onex,0) {$(C)$};
 			\filldraw[blue!70!white] (\onex,\oney) circle (2pt);
 			\node[blue, yshift=0.5cm] at (\onex,\oney) {$\phi_P$};
 			% Point e
@@ -269,6 +277,7 @@ A logical improvement of CDS is using a parabola to interpolate between nodal po
 			\filldraw[black] (\twox,0) circle (2pt);
 			\draw[dashed] (\twox,0) -- ++(0,\twoy);
 			\node[black, yshift=-0.5cm] at (\twox,0) {$E$};
+			\node[black, yshift=-1cm] at (\twox,0) {$(D)$};
 			\filldraw[blue!70!white] (\twox,\twoy) circle (2pt);
 			\node[blue, yshift=0.5cm] at (\twox,\twoy) {$\phi_E$}; 
 			% Blue line
@@ -277,7 +286,7 @@ A logical improvement of CDS is using a parabola to interpolate between nodal po
 			\draw[->, red, thick] (3.25,0.75) -- ++(1.5,0) node[above]{$\dot{m}_e > 0$};
 		\end{tikzpicture}
 		\captionsetup{width=0.9\textwidth}
-		\caption{UDS when $(\vb{v} \vdot \vb{n})_e > 0$.}
+		\caption{QUICK when $(\vb{v} \vdot \vb{n})_e > 0$.}
 		\label{fig:quick_1}
 	\end{minipage}%
 	\begin{minipage}{.5\textwidth}
@@ -299,6 +308,7 @@ A logical improvement of CDS is using a parabola to interpolate between nodal po
 			\filldraw[black] (\zerox,0) circle (2pt);
 			\draw[dashed] (\zerox,0) -- ++(0,\zeroy);
 			\node[black, yshift=-0.5cm] at (\zerox,0) {$P$};
+			\node[black, yshift=-1cm] at (\zerox,0) {$(D)$};
 			\filldraw[blue!70!white] (\zerox,\zeroy) circle (2pt);
 			\node[blue, yshift=0.5cm] at (\zerox,\zeroy) {$\phi_P$};
 			% Point e
@@ -311,12 +321,14 @@ A logical improvement of CDS is using a parabola to interpolate between nodal po
 			\filldraw[black] (\onex,0) circle (2pt);
 			\draw[dashed] (\onex,0) -- ++(0,\oney);
 			\node[black, yshift=-0.5cm] at (\onex,0) {$E$};
+			\node[black, yshift=-1cm] at (\onex,0) {$(C)$};
 			\filldraw[blue!70!white] (\onex,\oney) circle (2pt);
 			\node[blue, yshift=0.5cm] at (\onex,\oney) {$\phi_E$}; 
 			% Point ee
 			\filldraw[black] (\twox,0) circle (2pt);
 			\draw[dashed] (\twox,0) -- ++(0,\twoy);
 			\node[black, yshift=-0.5cm] at (\twox,0) {$EE$};
+			\node[black, yshift=-1cm] at (\twox,0) {$(U)$};
 			\filldraw[blue!70!white] (\twox,\twoy) circle (2pt);
 			\node[blue, yshift=0.5cm] at (\twox,\twoy) {$\phi_{EE}$}; 
 			% Blue line
@@ -325,7 +337,7 @@ A logical improvement of CDS is using a parabola to interpolate between nodal po
 			\draw[->, red, thick] (0.75,0.75) -- ++(1.5,0) node[above]{$\dot{m}_e < 0$};
 		\end{tikzpicture}
 		\captionsetup{width=0.9\textwidth}
-		\caption{UDS when $(\vb{v} \vdot \vb{n})_e < 0$.}
+		\caption{QUICK when $(\vb{v} \vdot \vb{n})_e < 0$.}
 		\label{fig:quick_2}
 	\end{minipage}
 \end{figure}

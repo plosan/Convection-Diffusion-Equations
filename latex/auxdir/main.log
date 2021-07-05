@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 21.1) (preloaded format=pdflatex 2021.2.11)  4 JUL 2021 23:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 21.1) (preloaded format=pdflatex 2021.2.11)  5 JUL 2021 10:30
 entering extended mode
 **./main.tex
 (main.tex
@@ -1430,10 +1430,10 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 32077 strings out of 479618
- 616958 string characters out of 2865026
- 1442006 words of memory out of 3000000
- 48524 multiletter control sequences out of 15000+200000
+ 32080 strings out of 479618
+ 617036 string characters out of 2865026
+ 1443199 words of memory out of 3000000
+ 48527 multiletter control sequences out of 15000+200000
  462623 words of font info for 69 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  92i,13n,92p,1031b,1766s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1458,9 +1458,9 @@ ro/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C:/Users/Pedro
 /AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy8.pfb><C:/Users/Pedro/
 AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
 Output written on C:\PLS\Universidad\CTTC\convection_diffusion_equations\latex\
-PDF\main.pdf (11 pages, 263140 bytes).
+PDF\main.pdf (11 pages, 267777 bytes).
 PDF statistics:
- 299 PDF objects out of 1000 (max. 8388607)
+ 302 PDF objects out of 1000 (max. 8388607)
  80 named destinations out of 1000 (max. 500000)
  157 words of extra memory for PDF output out of 10000 (max. 10000000)
 
