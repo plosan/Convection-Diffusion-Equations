@@ -506,14 +506,31 @@ where $u$ is the component of $\vb{v}$ in the $x$ direction. So as to ease the s
 	\end{aligned}
 	\right.
 \end{equation}
-Problem \eqref{eq:eds_ivp} has existence and uniqueness of solution since it involves a linear ODE
-
-\begin{equation}
+Since \eqref{eq:eds_ivp} is a second order linear ODE with two boundary conditions, its solutions exists, is unique, and is given by
+\begin{equation} \label{eq:eds_ivp_solution_1}
 	\phi(x) = 
 	\phi_P - 
 	\frac{\phi_E - \phi_P}{e^{\frac{\rho u}{\Gamma} d_{PE}} - 1} + 
 	\frac{\phi_E - \phi_P}{e^{\frac{\rho u}{\Gamma} d_{PE}} - 1} e^{\frac{\rho u}{\Gamma} (x - x_P)}
 \end{equation}
+Péclet's number for heat transfer is defined as the following ratio,
+\begin{equation}
+	\mathrm{Pe} = 
+	\frac{\text{convection transport}}{\text{heat transport}} = 
+	\frac{\rho u L}{\lambda / c_p}
+\end{equation}
+where $L$ is a characteristic length of the problem. Since $\lambda / c_p$ is the diffusion coefficient in equation \eqref{eq:cde_energy_equation}, it can be substituted by the diffusion coefficient $\Gamma$ of the generalized convection--diffusion equation, providing a new definition for Péclet's number 
+\begin{equation}
+	\mathrm{Pe} = 
+	\frac{\rho u L}{\Gamma}
+\end{equation}
+Taking $d_{PE}$ as characteristic length and evaluating \eqref{eq:eds_ivp_solution_1} at $x = x_e$, the approximation of $\phi_e$ given by EDS in terms of Péclet's number is written as
+\begin{equation}
+	\frac{\phi_e - \phi_P}{\phi_E - \phi_P} =
+	\frac{e^{\mathrm{Pe} \frac{d_{Pe}}{d_{PE}}} - 1}{e^{\mathrm{Pe}} - 1} 
+\end{equation}
+
+
 
 \subsubsection{Normalization of variables}
 
