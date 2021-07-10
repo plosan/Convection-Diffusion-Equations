@@ -9,7 +9,7 @@ Since the above relation is true on $\Omega \times I$, fixing one time $t \in I$
 \begin{equation} \label{eq:discretization_continuity_equation_1}
 	\int_{\cv{P}} \pdv{\rho}{t} \dd{\vb{x}} + \int_{\cv{P}} \div(\rho \vb{v}) \dd{\vb{x}} = 0
 \end{equation}
-Let $\cs{P} = \partial \cv{P}$ be the control surface, \ie the boundary of the control volume. Then applying the divergence theorem on the second term of equation \eqref{eq:discretization_continuity_equation_1}
+Let $\cs{P} = \partial \cv{P}$ be the control surface, \ie the boundary of the control volume. Then applying the divergence theorem on the second term of equation \eqref{eq:discretization_continuity_equation_1},
 \begin{equation} \label{eq:discretization_continuity_equation_2}
 	\int_{\cv{P}} \pdv{\rho}{t} \dd{\vb{x}} + 
 	\int_{\cs{P}} \rho \vb{v} \vdot \vb{n} \dd{S} = 0
@@ -18,7 +18,7 @@ With the aim of simplifying the first term of \eqref{eq:discretization_continuit
 \begin{equation}
 	\overline{\rho}_P = \frac{1}{V_P} \int_{\cv{P}} \rho \dd{\vb{x}}
 \end{equation}
-Introducing this relation in equation \eqref{eq:discretization_continuity_equation_2} gives
+Introducing this relation in equation \eqref{eq:discretization_continuity_equation_2},
 \begin{equation} \label{eq:discretization_continuity_equation_3}
 	\frac{\dd \overline{\rho}_P}{\dd{t}} V_P + 
 	\int_{\cs{P}} \rho \vb{v} \vdot \vb{n} \dd{S} = 0
@@ -29,13 +29,13 @@ The mass flow term can be further simplified if a cartesian mesh is being used. 
 	\sum_{i} \int_{\cs{Pi}} \rho \vb{v} \vdot \vb{n} \dd{S} = 
 	\dot{m}_e + \dot{m}_w + \dot{m}_n + \dot{m}_s
 \end{equation}
-If on the other hand a 3D--mesh is being used, the contributions of top and bottom faces must be considered. The control surface is the union $\cs{P} = \cs{Pe} \cup \cs{Pw} \cup \cs{Pn} \cup \cs{Ps} \cup \cs{Pt} \cup \cs{Pb}$, and therefore the mass flow incorporates two new terms
+If a 3D--mesh is being used, the contributions of top and bottom faces must be considered. The control surface is the union $\cs{P} = \cs{Pe} \cup \cs{Pw} \cup \cs{Pn} \cup \cs{Ps} \cup \cs{Pt} \cup \cs{Pb}$, and therefore the mass flow incorporates two new terms
 \begin{equation}
 	\int_{\cs{P}} \rho \vb{v} \vdot \vb{n} \dd{S} = 
 	\sum_{i} \int_{\cs{Pi}} \rho \vb{v} \vdot \vb{n} \dd{S} = 
-	\dot{m}_e + \dot{m}_w + \dot{m}_n + \dot{m}_s + \dot{m}_n + \dot{m}_b
+	\dot{m}_e + \dot{m}_w + \dot{m}_n + \dot{m}_s + \dot{m}_t + \dot{m}_b
 \end{equation}
-This allows writing equation \eqref{eq:discretization_continuity_equation_3} in the following way
+This allows writing equation \eqref{eq:discretization_continuity_equation_3} in the following way:
 \begin{equation} \label{eq:discretization_continuity_equation_4}
 	\frac{\dd \overline{\rho}_P}{\dd{t}} V_P + \sum_i \dot{m}_i = 0
 \end{equation}
