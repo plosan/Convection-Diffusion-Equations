@@ -10,10 +10,10 @@ and by the mass conservation principle
 	\frac{\dd m(t)}{\dd{t}} = 
 	\frac{\dd}{\dd{t}} \int_{\cv{}(t)} \rho(\vb{x}, t) \dd{x} = 0
 \end{equation}
-Now applying Reynolds transport theorem to \eqref{eq:cde_continuity_2},
+Now applying Reynolds transport theorem to \eqref{eq:cde_continuity_2} setting $\vb{b} = \vb{u}$,
 \begin{equation}
-	\int_{\cv{}(t)} \frac{\partial \rho}{\partial t} \dd{\vb{x}} + 
-	\int_{\cv{}(t)} \rho \vb{u} \vdot \vb{n} \dd{S} = 0
+	\int_\cvt \frac{\partial \rho}{\partial t} \dd{\vb{x}} + 
+	\int_\svt \rho \vb{u} \vdot \vb{n} \dd{S} = 0
 \end{equation}
 
 \begin{equation}
