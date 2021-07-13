@@ -1,7 +1,20 @@
 
 \subsection{Continuity equation}
 
-Let 
+For the purposes of this project, where no nuclear nor relativistic effects are considered, mass is a magnitude preserved over time. Let $\cv{} \subset \real^m$ be a bounded control volume, which may depend on time, and let $\rho = \rho(\vb{x}, t)$ be the mass density defined over $\cv{}$ for each time $t \in I$. The mass enclosed by $\cv{}$ at time $t$ is
+\begin{equation} \label{eq:cde_continuity_1}
+	m(t) = \int_{\cv{}(t)} \rho(\vb{x}, t) \dd{\vb{x}} = \int_{\cv{}(t)} \rho \dd{\vb{x}}
+\end{equation}
+and by the mass conservation principle
+\begin{equation} \label{eq:cde_continuity_2}
+	\frac{\dd m(t)}{\dd{t}} = 
+	\frac{\dd}{\dd{t}} \int_{\cv{}(t)} \rho(\vb{x}, t) \dd{x} = 0
+\end{equation}
+Now applying Reynolds transport theorem to \eqref{eq:cde_continuity_2},
+\begin{equation}
+	\int_{\cv{}(t)} \frac{\partial \rho}{\partial t} \dd{\vb{x}} + 
+	\int_{\cv{}(t)} \rho \vb{u} \vdot \vb{n} \dd{S} = 0
+\end{equation}
 
 \begin{equation}
 	\pdv{\rho}{t} + \div(\rho \vb{v}) = 0

@@ -1,7 +1,7 @@
 
 \subsection{Reynolds transport theorem}
 
-The result needed to derive the conservation laws of the subsequent subsections, namely, mass, momentum, energy and species conservation, is Reynolds transport theorem. This theorem is a generalization to higher dimensions of Leibniz integral rule:
+The main result needed to derive the conservation laws of the subsequent subsections, namely, mass, momentum, energy and species conservation, is Reynolds transport theorem. This theorem is a generalization to higher dimensions of Leibniz integral rule:
 
 \begin{theorem}[Leibniz integral rule]
 	Let  $U$ and $I = [t_1, t_2]$ be closed intervals of $\real$ and let $a, b \colon I \rightarrow U$ be continuous functions with continuous derivative. Let $f \colon U \times I \rightarrow \real$, $(x,t) \mapsto f(x,t)$ be a continuous function such that $\pdv{f}{t}$ is also continuous. Then for all $t \in I$,
@@ -12,11 +12,11 @@ The result needed to derive the conservation laws of the subsequent subsections,
 \end{theorem}
 
 \noindent
-Reynolds transport theorem allows computing the left--hand side of \eqref{eq:leibniz_rule} but when $f$ is integrated over a bounded smooth control volume $V(t) \subset \real^m$ depending on time.
+Reynolds transport theorem allows computing the left--hand side of \eqref{eq:leibniz_rule} but when $f$ is integrated over a bounded smooth control volume $\cv{}(t) \subset \real^m$ which depends upon time. 
 
 \begin{theorem}[Reynolds transport theorem]
-	Let $U \subset \real^m$ be a compact set and let $\cv{}(t)$ be a control volume depending on time such that it is smooth and $\cv{}(t) \subset U$ for all $t \in I = [0, T]$ with $T > 0$. Let $\cs{}(t) = \partial \cv{}(t)$ be the boundary of $\cv{}(t)$. Let $F \in \mathcal{C}^1(U \times I, \real)$ be a scalar field. Then for all $t \in I$,
-	\begin{equation}
+	Let $U \subset \real^m$ be a compact set and let $\cv{}(t)$ be a control volume depending on time such that it is smooth and $\cv{}(t) \subset U$ for all $t \in I = [0, T]$ with $T > 0$. Let $\cs{}(t) = \partial \cv{}(t)$ be the boundary of $\cv{}(t)$ and let $F \in \mathcal{C}^1(U \times I, \real)$ be a scalar field. Then for all $t \in I$,
+	\begin{equation} \label{eq:reynolds_transport_theorem}
 		\frac{\dd}{\dd{t}} \int_{\cv{}(t)} F(\vb{x}, t) \dd{\vb{x}} = 
 		\int_{\cv{}(t)} \frac{\partial F}{\partial t} (\vb{x}, t) \dd{\vb{x}} + 
 		\int_{\cs{}(t)} F(\vb{x}, t) \vb{b} \vdot \vb{n} \dd{S}
@@ -24,12 +24,12 @@ Reynolds transport theorem allows computing the left--hand side of \eqref{eq:lei
 	where $\vb{b} \colon \cs{}(t) \rightarrow \real^m$ is the local velocity of the control surface.
 \end{theorem}
 \begin{proof}
-	The moving control volume $\cv{}(t)$ can be seen as the image of an initial region by a family of smooth maps $\xi \colon U \times I \subset \real^m \times \real \rightarrow \real^m$, that is to say, $\cv{}(t) = \xi(\cv{}(0),t)$ for all $t \in I$. By fixing one time $t$, $\xi(\cdot, t) \colon \vb{}(0) \rightarrow \vb{}(t)$ is a diffeomorphism. Since $F$ is continuous, the Change of Variables Theorem can be applied taking $\vb{x} = \xi(\vb{x}_0,t)$,
+	The moving control volume $\cv{}(t)$ can be seen as the image of an initial region by a family of smooth maps $\xi \colon U \times I \subset \real^m \times \real \rightarrow \real^m$, that is to say, $\cv{}(t) = \xi(\cv{}(0),t)$ for all $t \in I$. Moreover, by fixing one time $t$, the mapping $\xi(\cdot, t) \colon \vb{}(0) \rightarrow \vb{}(t)$ can be assumed to be a diffeomorphism. Since $F$ is continuous, the Change of Variables Theorem can be applied taking $\vb{x} = \xi(\vb{x}_0,t)$,
 	\begin{equation*}
 		\int_{\cv{}(t)} F(\vb{x},t) \dd{\vb{x}} = 
 		\int_{\cv{}(0)} F(\xi(\vb{x}_0,t), t) \abs{\det(\frac{\partial \xi}{\partial \vb{x}_0} (\vb{x}_0, t))} \dd{\vb{x}_0}
 	\end{equation*}
-	The determinant of the jacobian matrix $\det(\frac{\partial \xi}{\partial \vb{x}_0} (\vb{x}_0, t))$ can be assumed to be positive for small enough $T$. Differentiating both sides of the equality with respect to $t$ yields \colorbox{red}{differentiation under the integral sign}
+	where the determinant of the jacobian matrix $\det(\frac{\partial \xi}{\partial \vb{x}_0} (\vb{x}_0, t))$ can be assumed to be positive for small enough $T$, hence the absolute value is dropped. Differentiating both sides of the equality with respect to $t$ yields \colorbox{red}{differentiation under the integral sign}
 	\begin{multline*}
 		\frac{\dd}{\dd{t}} \int_{\cv{}(t)} F(\vb{x}, t) \dd{\vb{x}} = 
 		\int_{\cv{}(0)} \pdv{t} 
@@ -57,7 +57,7 @@ Reynolds transport theorem allows computing the left--hand side of \eqref{eq:lei
 		F(\xi(\vb{x}_0,t), t) \, \pdv{t} \left\{ \det(\frac{\partial \xi}{\partial \vb{x}_0} (\vb{x}_0, t)) \right\} = 
 		F(\xi(\vb{x}_0,t), t) \det(\frac{\partial \xi}{\partial \vb{x}_0} (\vb{x}_0, t)) \, \div{\xi_t(\vb{x}_0,t)}
 	\end{equation*}
-	Then the integral is written as
+	Thereby the integral is written as
 	\begin{multline*}
 		\frac{\dd}{\dd{t}} \int_{\cv{}(t)} F(\vb{x}, t) \dd{\vb{x}} = 
 		\int_{\cv{}(0)} 
@@ -68,13 +68,13 @@ Reynolds transport theorem allows computing the left--hand side of \eqref{eq:lei
 		\int_{\cv{}(0)} 
 		\left\{	\frac{\partial F}{\partial t} + \div(F \xi_t) \right\} \det(\frac{\partial \xi}{\partial \vb{x}_0}) \dd{\vb{x}_0}
 	\end{multline*}
-	Now reverting the previous change of variables, that is, $\vb{x}_0 = \xi^{-1}(\vb{x}, t)$, and letting the local velocity field be $\vb{b}(\vb{x},t) = \xi_t(\xi^{-1}(\vb{x},t),t)$,
+	So as to obtain an integral over $\cv{}(t)$, the previous change of variables is reverted, that is, $\vb{x}_0 = \xi^{-1}(\vb{x}, t)$. In order not to complicate notation, let $\vb{b}(\vb{x},t) = \xi_t(\xi^{-1}(\vb{x},t),t)$, then
 	\begin{equation*}
 		\frac{\dd}{\dd{t}} \int_{\cv{}(t)} F(\vb{x}, t) \dd{\vb{x}} = 
 		\int_{\cv{}(t)} 
 		\left\{ \frac{\partial F}{\partial t}  + \div(F \vb{b}) \right\} (\vb{x}, t) \dd{\vb{x}}
 	\end{equation*}
-	To finish, using divergence theorem
+	For a fixed $\vb{x}_0 \in \cv{}(0)$, $\xi(\vb{x}_0, \cdot)$ is a function of time giving how $\vb{x}_0$ moves, hence $\xi_t(\vb{x}_0, t)$ is the instantaneous velocity of $\vb{x}_0$. To end, an application of divergence theorem yields the final formula
 	\begin{equation*}
 		\frac{\dd}{\dd{t}} \int_{\cv{}(t)} F(\vb{x}, t) \dd{\vb{x}} = 
 		\int_{\cv{}(t)} \frac{\partial F}{\partial t} (\vb{x}, t) \dd{\vb{x}} +
@@ -82,15 +82,8 @@ Reynolds transport theorem allows computing the left--hand side of \eqref{eq:lei
 	\end{equation*}
 \end{proof}
 
-Intuitively, Reynolds tranport theorem quantifies how a quantity over a control volume varies when the control volume itself depends on time due to transport phenomena, diffusion, etc. 
+In an intuitive manner, Reynolds tranport theorem quantifies how a quantity over a control volume varies when the control volume itself depends on time due to transport phenomena, diffusion, etc. 
 
-\begin{col}
-	Under the hypotheses of Reynolds transport theorem and further assuming that the control volume does not depend on time,
-	\begin{equation}
-		\frac{\dd}{\dd{t}} \int_{\cv{}(t)} F(\vb{x}, t) \dd{\vb{x}} = 
-		\int_{\cv{}(t)} \frac{\partial F}{\partial t} (\vb{x}, t) \dd{\vb{x}}
-	\end{equation}	
-\end{col}
 
 
 
