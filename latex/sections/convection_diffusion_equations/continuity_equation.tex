@@ -1,21 +1,47 @@
 
 \subsection{Continuity equation}
 
-For the purposes of this project, where no nuclear nor relativistic effects are considered, mass is a magnitude preserved over time. Let $\cv{} \subset \real^m$ be a bounded control volume, which may depend on time, and let $\rho = \rho(\vb{x}, t)$ be the mass density defined over $\cv{}$ for each time $t \in I$. The mass enclosed by $\cv{}$ at time $t$ is
-\begin{equation} \label{eq:cde_continuity_1}
-	m(t) = \int_{\cv{}(t)} \rho(\vb{x}, t) \dd{\vb{x}} = \int_{\cv{}(t)} \rho \dd{\vb{x}}
+For the purposes of this project, where no nuclear nor relativistic effects are considered, mass is a magnitude preserved over time. Let $\cv{} \subset \real^m$ be a bounded control volume, which may depend on time, and let $\rho = \rho(\vb{x}, t)$ be the mass density defined over $\cv{}$ for each time $t \in I$. It can be assumed, without loss of generality, that $\cvt$ is open for each $t \in I$. The mass enclosed by $\cv{}$ at time $t$ is
+\begin{equation}
+	m(t) = \int_\cvt \rho(\vb{x}, t) \dd{\vb{x}} = \int_\cvt \rho \dd{\vb{x}}
 \end{equation}
-and by the mass conservation principle
+and as a result of the mass conservation principle
 \begin{equation} \label{eq:cde_continuity_2}
 	\frac{\dd m(t)}{\dd{t}} = 
-	\frac{\dd}{\dd{t}} \int_{\cv{}(t)} \rho(\vb{x}, t) \dd{x} = 0
+	\frac{\dd}{\dd{t}} \int_\cvt \rho(\vb{x}, t) \dd{x} = 0
 \end{equation}
-Now applying Reynolds transport theorem to \eqref{eq:cde_continuity_2} setting $\vb{b} = \vb{u}$,
+Now applying Reynolds transport theorem to \eqref{eq:cde_continuity_2} setting $\vb{b} = \vb{v}$,
 \begin{equation}
 	\int_\cvt \frac{\partial \rho}{\partial t} \dd{\vb{x}} + 
-	\int_\svt \rho \vb{u} \vdot \vb{n} \dd{S} = 0
+	\int_\cst \rho \vb{v} \vdot \vb{n} \dd{S} = 0
 \end{equation}
-
+So as to transform the surface integral into a volume integral, divergence theorem must be applied:
+\begin{equation} \label{eq:cde_continuity_4}
+	\int_\cvt \frac{\partial \rho}{\partial t} \dd{\vb{x}} + 
+	\int_\cvt \div(\rho \vb{v}) \dd{\vb{x}} = 
+	\int_\cvt \left\{ \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right\} \dd{\vb{x}} = 0
+\end{equation}
+Since the control volume is non--degenerate, it has non--zero $m$--dimensional volume for all $t \in I$, that is,
+\begin{equation}
+	V(t) = \abs{\cvt} = \int_\cvt 1 \dd{\vb{x}} \neq 0 \quad \forall t \in I
+\end{equation}
+Fix one time $t_0 \in I$ and let $\vb{x}_0 \in \mathcal{V}(t_0)$ be a point inside the moving control volume. As $\cvt$ is open, there exists $r_0 > 0$ such that $B(\vb{x}_0, r_0) \subset \mathcal{V}(t_0)$, where $B(\vb{x}_0, r_0) = \{ \vb{x} \in \real^m \mid \abs{\vb{x} - \vb{x}_0} < r_0 \}$. Since $B(\vb{x}_0, r_0)$ can be regarded as a control volume inside $\mathcal{V}(t_0)$, equation \eqref{eq:cde_continuity_4} also holds when the integral is computed over $B(\vb{x}_0, r_0)$, \ie
+\begin{equation}
+	\int_{B(\vb{x}_0, r_0)} \left\{ \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right\} \dd{\vb{x}} = 0
+\end{equation}
+and it is still true if it is divided by the volume of $B(\vb{x}_0, r_0)$,
+\begin{equation}
+	\frac{1}{\abs{B(\vb{x}_0, r_0)}}
+	\int_{B(\vb{x}_0, r_0)} \left\{ \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right\} \dd{\vb{x}} = 0
+\end{equation}
+When $r_0 \to 0$, $\abs{B(\vb{x}_0, r_0)} \to 0$, hence applying Lebesgue's Differentiation Theorem \colorbox{red}{apendice},
+\begin{equation}
+	\lim_{r_0 \to 0}
+	\frac{1}{\abs{B(\vb{x}_0, r_0)}}
+	\int_{B(\vb{x}_0, r_0)} \left\{ \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right\} \dd{\vb{x}} = 
+	\left( \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right) (\vb{x}_0, t_0) = 0
+\end{equation}
+Since this is true for each $\vb{x}_0 \in \mathcal{V}(t_0)$ and $t_0 \in I$ is arbitrary, the continuity equation is
 \begin{equation}
 	\pdv{\rho}{t} + \div(\rho \vb{v}) = 0
 \end{equation}
