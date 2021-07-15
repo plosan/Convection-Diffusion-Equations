@@ -1,7 +1,7 @@
 
 \subsection{Evaluation of the convective terms}
 
-The discretized convection--diffusion equations requires the values of certain variables at points different from the nodes. In this section several methods to compute $\phi$ at faces are given. The values of $\rho$ and $\Gamma$ will be assumed to be known at the nodal points. East face will be taken as reference for simplicity. The generalization to the remaining faces is straightforward. 
+The discretized version of the generalized convection--diffusion equation requires the values of the magnitude $\phi$ at points different from the nodes. In this section several methods to compute $\phi$ at faces are given. The values of $\rho$ and $\Gamma$ will be assumed to be known at the nodal points. For the sake of simplicity, east face will be taken as reference. The generalization to the remaining faces is straightforward. 
 
 \subsubsection{Upwind--Difference Scheme (UDS)}
 
@@ -60,7 +60,7 @@ If $(\vb{v} \vdot \vb{n})_e = 0$, it implies $\vb{v}_e$ lies in the orthogonal s
 
 The Upwind--Difference Scheme assigns $\phi_e$ the value of $\phi$ at the upstream node, that is,
 \begin{equation}
-	\phi_e^\text{UDS} = 
+	\phi_e = 
 	\left\{
 	\begin{aligned}
 		&\phi_P & &\text{if } (\vb{v} \vdot \vb{n})_e > 0 \\
@@ -68,7 +68,7 @@ The Upwind--Difference Scheme assigns $\phi_e$ the value of $\phi$ at the upstre
 	\end{aligned}
 	\right.
 \end{equation}
-This can be expressed in a more compact form as follows
+This can be expressed in a more compact fashion as follows,
 \begin{equation}
 	\dot{m}_e ( \phi_e - \phi_P ) = 
 	\frac{\dot{m}_e - \abs{\dot{m}_e}}{2} ( \phi_E - \phi_P )
@@ -160,7 +160,7 @@ UDS is a stable scheme, however it suffers from numerical diffusion. Indeed, ass
 	\phi_P + \left(\pdv{\phi}{x}\right)_P d_{Pe} + 
 	\left(\pdv[2]{\phi}{x}\right)_{\xi_1} \frac{d_{Pe}^2}{2}
 \end{equation}
-it is apparent that UDS retains the first term on the left--hand side of \eqref{eq:UDS_taylor_polynomial_P}. As a consequence, the highest order term of the error is $(\partial_x \phi)_P d_{Pe}$, which is proportional to the distance between $P$ and the face $\cs{Pe}$. This term resembles to a diffusion flux given, for instance, by Fourier's or Fick's laws of diffusion. The same result is obtained when $E$ is the upstream node,
+it is apparent that UDS retains the first term on the left--hand side of \eqref{eq:UDS_taylor_polynomial_P}. As a consequence, the error highest order is $(\partial_x \phi)_P d_{Pe}$, which is proportional to the distance between $P$ and the face $\cs{Pe}$. This term resembles to a diffusion flux given, for instance, by Fourier's or Fick's laws of diffusion. The same result is obtained when $E$ is the upstream node,
 \begin{equation}
 	\phi_e = 
 	\phi_E - \left(\pdv{\phi}{x}\right)_E d_{Ee} + \left(\pdv[2]{\phi}{x}\right)_{\xi_2} \frac{d_{Ee}^2}{2}
@@ -169,7 +169,7 @@ whence it can be deduced that the error is bounded by $\max\{ \abs{(\partial_x \
 
 \subsubsection{Central--Difference Scheme (CDS)}
 
-The Central--Difference Scheme assumes a linear distribution for $\phi$ as illustrated in figure \ref{fig:central_difference_scheme},
+The Central--Difference Scheme assumes a linear distribution for $\phi$ as illustrated in figure \ref{fig:central_difference_scheme}. 
 \begin{figure}[h]
 	\centering
 	\begin{tikzpicture}
@@ -350,8 +350,7 @@ On the one hand, when $(\vb{v} \vdot \vb{n})_e > 0$, the line between points $(x
 \end{equation}
 and substituting at $x = x_e$, the formula for $\phi_e$ is obtained:
 \begin{equation} \label{eq:suds_1_1}
-	\phi_e = 
-	\phi(x_e) = 
+	\phi_e =
 	\phi_W + \frac{\phi_P - \phi_W}{d_{PW}} (x_e - x_W) = 
 	\phi_P + \frac{d_{Pe}}{d_{PW}} (\phi_P - \phi_W) 
 \end{equation}
@@ -361,14 +360,13 @@ On the other hand, in the case of $(\vb{v} \vdot \vb{n})_e < 0$, the line betwee
 \end{equation}
 and the approximation of $\phi_e$ is
 \begin{equation} \label{eq:suds_2_1}
-	\phi_e = 
-	\phi(x_e) = 
+	\phi_e =
 	\phi_E + \frac{\phi_{EE} - \phi_E}{d_{E,EE}} (x_e - x_E) =
-	\phi_E + \frac{d_{Ee}}{d_{E,EE}} (\phi_{EE} - \phi_E)	
+	\phi_E + \frac{d_{Ee}}{d_{E,EE}} (\phi_E - \phi_{EE})	
 \end{equation}
 Using the new notation, \eqref{eq:suds_1_1} and \eqref{eq:suds_2_1} are both rewritten in the following manner:
 \begin{equation}
-	\phi_f - \phi_C = \frac{d_{Cf}}{d_{CU}} (\phi_C - \phi_U)
+	\phi_f = \phi_C + \frac{d_{Cf}}{d_{CU}} (\phi_C - \phi_U)
 \end{equation}
 
 In order to prove that SUDS is a second order scheme when a locally uniform mesh is used and $(\vb{v} \vdot \vb{n})_e > 0$, consider the Taylor expansion up to $2^{nd}$ degree of $\phi$ about point $x_W$,
@@ -398,7 +396,7 @@ thereby,
 	\left( \pdv[2]{\phi}{x} \right)_{\xi_2} \frac{(d_{PW} + d_{Pe}) d_{PW}}{2}	
 	\label{eq:suds_error}
 \end{align}
-The scheme retains the two first terms on the right--hand side of \eqref{eq:suds_error}, therefore the error is composed by the last two terms. The locally uniform mesh hypothesis implies $d_{PW} = 2 d_{Pe} = L$, therefore the error term is multiplied by $L^2$,
+The scheme retains the two first terms on the right--hand side of \eqref{eq:suds_error}, therefore the error is composed by the last two terms. The uniform mesh hypothesis implies $d_{PW} = 2 d_{Pe} = L$, therefore the error term is multiplied by $L^2$,
 \begin{equation}
 	\phi_e = 
 	\phi_P + \frac{d_{Pe}}{d_{PW}} (\phi_P - \phi_W) + 
@@ -595,13 +593,13 @@ where $u$ is the component of $\vb{v}$ in the $x$ direction. So as to ease the s
 \begin{equation} \label{eq:eds_ivp}
 	\left\{
 	\begin{aligned}
-		&\frac{\dd^2 \phi}{\phi{x^2}} - \frac{\rho u}{\Gamma} \frac{\dd{\phi}}{\dd{x}} = 0 & &\text{in } (x_P, x_E) \\
+		&\frac{\dd^2 \phi}{\phi{x^2}} - \frac{\rho u}{\Gamma} \frac{\dd{\phi}}{\dd{x}} = 0 & &\text{in } (x_P, x_E) \subset \real \\
 		&\phi(x_P) = \phi_P \\
 		&\phi(x_E) = \phi_E \\
 	\end{aligned}
 	\right.
 \end{equation}
-Since \eqref{eq:eds_ivp} is a second order linear ODE with two boundary conditions, its solutions exists, is unique, and is given by
+Since the initial value problem \eqref{eq:eds_ivp} is a second order linear ODE with two boundary conditions, its solutions exists, is unique, and is given by
 \begin{equation} \label{eq:eds_ivp_solution_1}
 	\phi(x) = 
 	\phi_P - 
@@ -633,7 +631,7 @@ Owing to numerical reasons, it is convenient to normalize spatial and convective
 	\hat{x} &= \frac{x - x_U}{x_D - x_U} \\
 	\hat{\phi} &= \frac{\phi - \phi_U}{\phi_D - \phi_U}
 \end{align*}
-Of course, $(\hat{x}_U, \hat{\phi}_U) = (0,0)$, $(\hat{x}_D, \hat{\phi}_D) = (1,1)$ and $\hat{x}_C, \hat{x}_f \in (0,1)$. However, $\hat{\phi}$ is not necessarily in $[0,1]$ for all $x \in [0,1]$, nor does it have to be an increasing function. These situations are represented in figures \ref{fig:normalization_of_variables_1} and \ref{fig:normalization_of_variables_2}.
+Of course, $(\hat{x}_U, \hat{\phi}_U) = (0,0)$, $(\hat{x}_D, \hat{\phi}_D) = (1,1)$ and $\hat{x}_C, \hat{x}_f \in [0,1]$. However, $\hat{\phi}$ is not necessarily in $[0,1]$ for all $x \in [0,1]$, nor does it have to be an increasing function. These situations are represented in figures \ref{fig:normalization_of_variables_1} and \ref{fig:normalization_of_variables_2}.
 
 The normalized variable $\hat{\phi}_f$ can be computed directly as shown in section \colorbox{red}{referencia sección posterior} and, based on this, the variable at face,
 \begin{equation}
