@@ -1,0 +1,14 @@
+
+\subsection{Final form of the generalized convection--diffusion equation}
+
+Some of the convective properties evaluation schemes presented only involve adjacent nodes to the volume faces. As a consequence, these schemes can be introduced in a compact form \cite{patankar2008numerical}. Nonetheless, high--resolution schemes (HRS), such as QUICK or SMART, not only use adjacent nodes to the faces but also the most upstream node, \ie involve a larger molecule. In this case is preferable to use the deferred correction approach \cite{cttc_cde_2021}. The idea for any face is the following
+\begin{equation}
+	\phi_f^\text{HRS} - \phi_P = 
+	\left( \phi_f^\text{UDS} - \phi_P \right) + 
+	\left( \phi_f^{\text{HRS,}\ast} - \phi_f^{\text{UDS,}\ast} \right)
+\end{equation}
+where $\phi_f^\text{HRS}$ and $\phi_f^\text{UDS}$ are the current calculated values of $\phi$ using the chosen HRS scheme and UDS, respectively; whereas $\phi_f^{\text{HRS},\ast}$ and $\phi_f^{\text{UDS},\ast}$ are the previous iteration values. Ideally, after convergence $\phi_f^\text{HRS} = \phi_f^{\text{HRS},\ast}$ and $\phi_f^\text{UDS} = \phi_f^{\text{UDS},\ast}$.
+
+
+\cite{cfd_online_schemes}
+

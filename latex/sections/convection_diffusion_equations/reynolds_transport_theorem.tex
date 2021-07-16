@@ -3,7 +3,7 @@
 
 The main result needed to derive the conservation laws of the subsequent subsections, namely, mass, momentum, energy and species conservation, is Reynolds transport theorem. This theorem is a generalization to higher dimensions of Leibniz integral rule:
 
-\begin{theorem}[Leibniz integral rule]
+\begin{theorem}[Leibniz integral rule \cite{kaplan2002advanced}]
 	Let  $U$ and $I = [t_1, t_2]$ be closed intervals of $\real$ and let $a, b \colon I \rightarrow U$ be continuous functions with continuous derivative. Let $f \colon U \times I \rightarrow \real$, $(x,t) \mapsto f(x,t)$ be a continuous function such that $\pdv{f}{t}$ is also continuous. Then for all $t \in I$,
 	\begin{equation} \label{eq:leibniz_rule}
 		\frac{\dd}{\dd{t}} \int_{a(t)}^{b(t)} f(x,t) \dd{x} = 
@@ -14,7 +14,7 @@ The main result needed to derive the conservation laws of the subsequent subsect
 \noindent
 Reynolds transport theorem allows computing the left--hand side of \eqref{eq:leibniz_rule} but when $f$ is integrated over a bounded smooth control volume $\cv{}(t) \subset \real^m$ which depends upon time. 
 
-\begin{theorem}[Reynolds transport theorem]
+\begin{theorem}[Reynolds transport theorem \cite{kundu2008fluid}]
 	Let $U \subset \real^m$ be a compact set and let $\cv{}(t)$ be a control volume depending on time such that it is smooth and $\cv{}(t) \subset U$ for all $t \in I = [0, T]$ with $T > 0$. Let $\cs{}(t) = \partial \cv{}(t)$ be the boundary of $\cv{}(t)$ and let $F \in \mathcal{C}^1(U \times I, \real)$ be a scalar field. Then for all $t \in I$,
 	\begin{equation} \label{eq:reynolds_transport_theorem}
 		\frac{\dd}{\dd{t}} \int_\cvt F(\vb{x}, t) \dd{\vb{x}} = 
