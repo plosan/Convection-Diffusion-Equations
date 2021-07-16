@@ -4,8 +4,10 @@
 #include <random>
 #include <string>
 #include "matrix.h"
+// #include "gnuplot/gnuplot-iostream.h"
 
 void compute2DNodesPositionUniform(unsigned int nx, unsigned int ny, double lx, double ly, double* nodeX, double* nodeY);
+void compute2DUniformMesh(unsigned int nx, unsigned int ny, double lx, double ly, double lz, double* nodeX, double* nodeY, double* faceX, double* faceY, double* surfX, double* surfY, double* vol);
 
 int main(int arg, char* argv[]) {
 
@@ -33,17 +35,31 @@ int main(int arg, char* argv[]) {
     unsigned int ny = 6;
     double lx = 1;
     double ly = 1;
+    double lz = 1;
 
     double* nodeX = (double*) malloc(nx * sizeof(double*));
     double* nodeY = (double*) malloc(ny * sizeof(double*));
+    double* faceX = (double*) malloc(nx * sizeof(double*));
+    double* faceY = (double*) malloc(ny * sizeof(double*));
+    double* surfX = (double*) malloc(ny * sizeof(double*));
+    double* surfY = (double*) malloc(nx * sizeof(double*));
+    double* vol   = (double*) malloc(nx * ny * sizeof(double*));
 
-    compute2DNodesPositionUniform(nx, ny, lx, ly, nodeX, nodeY);
+    // compute2DNodesPositionUniform(nx, ny, lx, ly, nodeX, nodeY);
+
+
+    compute2DUniformMesh(nx, ny, lx, ly, lz, nodeX, nodeY, faceX, faceY, surfX, surfY, vol);
+
+    // Revise the mesh is generated properly
+    // Create new matrix functions to print matrices in reverse row order
+    // Plot u map using MMS with sin(2*pi*x/lx)*cos(2*pi*y/ly)
 
     printf("Nodes X\n");
     printMatrix(nodeX, 1, nx);
 
     printf("Nodes Y\n");
     printMatrix(nodeY, ny, 1);
+
 
 
     return 0;
