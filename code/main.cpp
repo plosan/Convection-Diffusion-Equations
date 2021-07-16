@@ -91,21 +91,21 @@ void compute2DUniformMesh(unsigned int nx, unsigned int ny, double lx, double ly
     }
 
     // Faces surface in X axis
-    surfX[0] = stepY / 2;
-    surfX[ny-1] = stepY / 2;
+    surfX[0] = 0.5 * stepY * lz;
+    surfX[ny-1] = surfX[0];
     for(unsigned int j = 1; j < ny - 1; ++j)
         surfX[j] = stepY;
 
     // Faces surface in Y axis
-    surfY[0] = stepX / 2;
-    surfY[nx-1] = stepX / 2;
+    surfY[0] = 0.5 * stepX * lz;
+    surfY[nx-1] = surfY[0];
     for(unsigned int i = 1; i < nx - 1; ++i)
         surfY[i] = stepX;
 
     // Volumes
     for(unsigned int i = 0; i < nx; ++i)
         for(unsigned int j = 0; j < ny; ++j)
-            vol[i*nx+j] = surfX[j] * surfY[i];
+            vol[i*nx+j] = surfX[j] * surfY[i] * lz;
 }
 
 void compute2DNodesPositionUniform(unsigned int nx, unsigned int ny, double lx, double ly, double* nodeX, double* nodeY) {
