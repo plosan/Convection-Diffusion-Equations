@@ -1,30 +1,93 @@
 #include "matrix.h"
 
-void printMatrix(double* mat, unsigned int rows, unsigned int cols) {
+void printMatrix(const double* mat, const unsigned int rows, const unsigned int cols) {
+    /*
+    printMatrix: prints a double array. The array must be given in "vector" format.
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - mat: matrix to be printed     [const double*]
+        - rows: matrix rows             [const unsigned int]
+        - cols: matrix columns          [const double]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs: none
+    */
+
     if(mat) {
         for(unsigned int i = 0; i < rows; ++i) {
             for(unsigned int j = 0; j < cols; ++j)
-                printf("%10.2f", mat[i*cols+j]);
+                printf("%10.4f", mat[i*cols+j]);
             printf("\n");
         }
         printf("\n");
     }
 }
 
-void getRandomMatrix(double* mat, unsigned int rows, unsigned int cols, int min_range, int max_range) {
+void printReversedRowMatrix(const double* mat, const unsigned int rows, const unsigned int cols) {
+    /*
+    printReversedRowMatrix: prints a double array with rows in reversed order, that is, from last row to first.
+    The array must be given in "vector" format.
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - mat: matrix to be printed     [const double*]
+        - rows: matrix rows             [const unsigned int]
+        - cols: matrix columns          [const double]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs: none
+    */
+
     if(mat) {
-        for(unsigned int i = 0; i < rows; ++i)
+        for(int i = rows-1; i > -1; --i) {
             for(unsigned int j = 0; j < cols; ++j)
-                mat[i*cols+j] = rand()%(max_range - min_range + 1) + min_range;
+                printf("%10.4f", mat[i*cols+j]);
+            printf("\n");
+        }
+        printf("\n");
     }
 }
 
-void getSDDMatrix(double* mat, unsigned int rows, int min_range, int max_range) {
+
+void getRandomMatrix(double* mat, const unsigned int rows, const unsigned int cols, const int lower, const int upper) {
+    /*
+    getRandomMatrix: returns a double array filled with random integers in the interval [lower, upper]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - mat: matrix to be filled                      [double*]
+        - rows: matrix rows                             [const unsigned int]
+        - cols: matrix columns                          [const unsigned int]
+        - lower: lower bound for the random integers    [const int]
+        - upper: upper bound for the random integers    [const int]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - mat: double array filled with random integers in the interval [lower, upper]  [double*]
+    */
+
+    if(mat) {
+        for(unsigned int i = 0; i < rows; ++i)
+            for(unsigned int j = 0; j < cols; ++j)
+                mat[i*cols+j] = rand()%(upper - lower + 1) + lower;
+    }
+}
+
+
+void getSDDMatrix(double* mat, const unsigned int rows, const int lower, const int upper) {
+    /*
+    getSDDMatrix: returns a double array filled with random integers in the interval [lower, upper] which make the matrix be a strictly diagonally
+    dominant (SDD) matrix. This is useful to the Gauss-Seidel method to solve linear systems.
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - mat: matrix to be filled                      [double*]
+        - rows: matrix rows                             [const unsigned int]
+        - lower: lower bound for the random integers    [const int]
+        - upper: upper bound for the random integers    [const int]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - mat: double array filled with random integers in the interval [lower, upper] which turn it into a SDD matrix  [double*]
+    */
     if(mat) {
         for(unsigned int i = 0; i < rows; ++i) {
             int sum = 0;
             for(unsigned int j = 0; j < rows; ++j) {
-                mat[i*rows+j] = rand()%(max_range - min_range + 1) + min_range;
+                mat[i*rows+j] = rand()%(upper - lower + 1) + lower;
                 sum += abs(mat[i*rows+j]);
             }
             mat[i*(rows+1)] = (rand()%2 == 0 ? 1 : -1)*sum;
@@ -32,7 +95,8 @@ void getSDDMatrix(double* mat, unsigned int rows, int min_range, int max_range) 
     }
 }
 
-void gaussSeidel(double* mat, double* vec, double* sol, unsigned int rows, double& error) {
+
+void gaussSeidel(const double* mat, const double* vec, double* sol, const unsigned int rows, double* error) {
     if(mat && vec && sol) {
 
     } else {
