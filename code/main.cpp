@@ -149,7 +149,7 @@ void printMeshInfo(const unsigned int nx, const unsigned int ny, const double lx
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Outputs: none
     */
-    
+
     // Basic mesh information: nx, ny, lx, ly, lzs
     printf("Basic mesh information:\n");
     printf("%6s : %d\n", "nx", nx);
@@ -178,19 +178,4 @@ void printMeshInfo(const unsigned int nx, const unsigned int ny, const double lx
     // CVs volumes
     printf("Volumes:\n");
     printReversedRowMatrix(vol, ny, nx);
-}
-
-
-void compute2DNodesPositionUniform(unsigned int nx, unsigned int ny, double lx, double ly, double* nodeX, double* nodeY) {
-    double stepX = lx / (nx - 1);
-    for(unsigned int i = 0; i < nx; ++i)
-        nodeX[i] = i*stepX;
-
-    double stepY = ly / (ny - 1);
-    for(unsigned int j = 0; j < ny; ++j)
-        nodeY[j] = j*stepY;
-}
-
-void compute2DFacesUniform(unsigned int nx, unsigned int ny, double lx, double ly, double* faceX, double* faceY) {
-
 }

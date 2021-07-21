@@ -96,12 +96,12 @@ void getSDDMatrix(double* mat, const unsigned int rows, const int lower, const i
 }
 
 
-void gaussSeidel(const double* mat, const double* vec, double* sol, const unsigned int rows, double* error) {
-    if(mat && vec && sol) {
-
-    } else {
-        error = -1;
-    }
+void gaussSeidel(const double* A, const double* b, double* x, const unsigned int n, const double tol, int* exitCode) {
+    // if(mat && vec && sol) {
+    //
+    // } else {
+    //     error = -1;
+    // }
 }
 
 double pNorm(double* vec, unsigned int size, double p) {
