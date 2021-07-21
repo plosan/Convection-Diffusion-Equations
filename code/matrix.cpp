@@ -110,7 +110,7 @@ void getRandomMatrix(double* mat, const unsigned int rows, const unsigned int co
     }
 }
 
-void getRandomIntegerMatrix(int* mat, const unsigned int rows, const unsigned int cols, const int lower, const int upper) {
+void getRandomMatrix(int* mat, const unsigned int rows, const unsigned int cols, const int lower, const int upper) {
     /*
     getRandomMatrix: returns a double array filled with random integers in the interval [lower, upper]
     --------------------------------------------------------------------------------------------------------------------------------------------------

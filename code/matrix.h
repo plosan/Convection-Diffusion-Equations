@@ -13,7 +13,7 @@ void printReversedRowMatrix(const double* mat, const unsigned int rows, const un
 
 
 void getRandomMatrix(double* mat, const unsigned int rows, const unsigned int cols, const int min_range, const int max_range);
-void getRandomIntegerMatrix(int* mat, const unsigned int rows, const unsigned int cols, const int lower, const int upper);
+void getRandomMatrix(int* mat, const unsigned int rows, const unsigned int cols, const int lower, const int upper);
 
 
 void getSDDMatrix(double* mat, const unsigned int rows, const int min_range, const int max_range);
