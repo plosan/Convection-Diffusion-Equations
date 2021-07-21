@@ -69,60 +69,53 @@ void gaussSeidel(const double* A, const double* b, double* x, const unsigned int
     computes a sequence of vectors which ideally converge to the actual solution of the system. If the matrix is strictly diagonally dominant, then
     the algorithm is guaranteed to converge. Moreover, it needs non zero elements in the matrix diagonal in order to work properly.
     --------------------------------------------------------------------------------------------------------------------------------------------------
+    This implementation does not check whether the sequence of vectors diverges or not.
+    --------------------------------------------------------------------------------------------------------------------------------------------------
     exitCode:
         - It is initialized to -maxIt.
         - As iterations happen, its value is increased. If at some point exitCode == 0, the iteration is halted. Then the exitCode is 0.
         - Each iteration the convergence condition is checked. If x, y in R^n are two consecutive vectors of the sequence, the convergence checked
             consists on calculating the maximum of the differences abs(x[i]-y[i]). In the case that the maximum difference is less than the tolerance,
             the convergence has been achieved. The exitCode in this case is 1.
-        - Each iteration the divergence condition is checked (at least the initial point for a "divergent" sequence of vectors). Again, if x, y
-            in R^n are two consecutive vectors of the sequence, let maxDiff be the maximum difference abs(x[i]-y[i]). Regarding the previous
-            iterations, let prevDiff be the maximum difference found so far in the current execution of the algorithm. If maxDiff > prevDiff, it is
-            considered a sufficient condition to stop the execution. The exitCode in this case is 2.
-        - If the algorithm cannot be started as a consequence of A, b or x being null pointers, the exitCode is 3.
+        - If the algorithm cannot be started as a consequence of A, b or x being null pointers, the exitCode is 2.
     */
 
-    if(A && b && x) {
-        int iteration = 0;
-        exitCode = -maxIt;
-        // Covergence/divergence of the solution and the iteration can be controlled with the exitCode. Just initialize exitCode to some value and execute the while loop
-        // as long as it is that value. Change the value if convergence or divergence is detected.
-        double prevDiff = DBL_MAX;
-        while(exitCode == 0) {
-            double maxDiff = -1;
+    if(A && b && x) { // Check if pointers are non-null
+        exitCode = -maxIt; // exitCode following the aforementioned
+        // Covergence of the solution and the iteration can be controlled with the exitCode. Just initialize exitCode to some value and execute the
+        // while loop as long as it is that value. Change the value if convergence or divergence is detected.
+        while(exitCode < 0) {
+            double maxDiff = -1;    // Maximum of the differences abs(x[i]-y[i]), where x and y are two consecutive elements in the sequence of vectors
             for(unsigned int i = 0; i < n; i++) {
-                double aux = x[i];
+                double aux = x[i];  // Previous value
+                // Compute x[i] using Gauss-Seidel
                 x[i] = b[i];
                 for(unsigned int j = 0; j < i; j++)
                     x[i] -= A[i*n+j] * x[j];
                 for(unsigned int j = i + 1; j < n; j++)
                     x[i] -= A[i*n+j] * x[j];
                 x[i] /= A[i*n+i];
+                // Compute difference and store the maximum
                 double diff = std::abs(x[i] - aux);
                 maxDiff = (maxDiff > diff ? maxDiff : diff);
             }
-            iteration++;
-            if(maxDiff < tol) {     // Convergence achieved
+            exitCode++; // Increase iteration counter
+            // Check convergence
+            if(maxDiff < tol)
                 exitCode = 1;
-            } else {
-                if(prevDiff <= maxDiff)
-                    prevDiff = maxDiff;
-                else
-                    exitCode = 2;   // The algorithm begins to diverge. The running is halted.
-            }
         }
-    } else {
-        exitCode = 3;
-    }
+    } else // Error when some pointer is not initialized
+        exitCode = 2;
 }
 
 int main(void) {
 
-    const int n = 5;
+    const unsigned int n = 5;
     double* A = (double*) malloc(n * n * sizeof(double*));
     double* b = (double*) malloc(n * sizeof(double*));
     double* x = (double*) malloc(n * sizeof(double*));
     const double tol = 1e-15;
+    const unsigned int maxIt = 500;
 
     getSDDMatrix(A, n, -20, 20);
     getRandomMatrix(b, n, 1, -20, 20);
@@ -133,32 +126,22 @@ int main(void) {
     printf("b = \n");
     printMatrix(b, n, 1);
 
+    int exitCode = 0;
 
-    int iteration = 0;
-    bool convergence = false;
-    while(!convergence) {
-        double maxDiff = -1;
-        for(unsigned int i = 0; i < n; i++) {
-            double aux = x[i];
-            x[i] = b[i];
-            printf("%10s : %10.5f%10s", "x[i]", x[i], "");
-            printf("%10s : %10.5f%10s", "b[i]", b[i], "");
-            for(unsigned int j = 0; j < i; j++)
-                x[i] -= A[i*n+j] * x[j];
-            for(unsigned int j = i + 1; j < n; j++)
-                x[i] -= A[i*n+j] * x[j];
-            x[i] /= A[i*n+i];
-            double diff = std::abs(x[i] - aux);
-            printf("%10s : %10.5e\n", "diff", diff);
-            maxDiff = (maxDiff > diff ? maxDiff : diff);
-        }
-        printf("%10s : %5d%10s%10s : %10.5e\n", "Iteration", iteration, "", "maxDiff", maxDiff);
-        iteration++;
-        if(maxDiff < tol)
-            convergence = true;
-        // if(iteration > 10)
-        //     convergence = true;
-    }
+    gaussSeidel(A, b, x, n, tol, maxIt, exitCode);
+
+    printf("exitCode = %d\n\n", exitCode);
+
+    printf("A = \n");
+    printMatrix(A, n, n);
+
+    printf("b = \n");
+    printMatrix(b, n, 1);
+
+    printf("x = \n");
+    printMatrix(x, n, 1);
+
+
 
     double* prod = (double*) malloc(n * sizeof(double*));
     for(int i = 0; i < n; i++) {
