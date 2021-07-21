@@ -59,6 +59,17 @@ void compute2DUniformMesh(const unsigned int nx, const unsigned int ny, const do
 
 }
 
+void computeAdjacencyList(int* list, const unsigned int nx, const unsigned int ny) {
+    if(list) {
+        const unsigned int n = 5 * nx * ny;
+        memset(list, -1, n*sizeof(int*));
+        // Corner nodes: 0, nx-1, nx*(ny-1), nx*ny-1
+        // Lower row nodes: 1 to nx-2
+        // Upper row nodes: nx*(ny-1)+1 to nx*ny-2
+        // Left column nodes: 0, nx, 2*nx, ..., nx*(ny-2)
+        // Right column nodes: 
+    }
+}
 
 void printMeshInfo(const unsigned int nx, const unsigned int ny, const double lx, const double ly, const double lz, const double* nodeX, const double* nodeY, const double* faceX, const double* faceY, const double* surfX, const double* surfY, const double* vol) {
     /*

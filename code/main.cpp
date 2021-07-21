@@ -3,10 +3,11 @@
 #include <ctime>
 #include <random>
 #include <string>
+#include <cstring>
 #include "matrix.h"
 #include "mesh.h"
 
-void pdGaussSeidel(const double* A, const double* b, double* x, const unsigned int n, const double tol, const unsigned int maxIt, int &exitCode);
+// void getAdjacencyList(int* list, int );
 
 int main(int arg, char* argv[]) {
 
@@ -49,10 +50,6 @@ int main(int arg, char* argv[]) {
 
     compute2DUniformMesh(nx, ny, lx, ly, lz, nodeX, nodeY, faceX, faceY, surfX, surfY, vol);
 
-    // Revise the mesh is generated properly
-    // Create new matrix functions to print matrices in reverse row order
-    // Plot u map using MMS with sin(2*pi*x/lx)*cos(2*pi*y/ly)
-
     printMeshInfo(nx, ny, lx, ly, lz, nodeX, nodeY, faceX, faceY, surfX, surfY, vol);
 
     free(nodeX);
@@ -62,6 +59,19 @@ int main(int arg, char* argv[]) {
     free(surfX);
     free(surfY);
     free(vol);
+
+    int n = 6;
+    int* x = (int*) malloc(n*sizeof(int*));
+
+    printf("x = \n");
+    printMatrix(x, 1, n);
+
+    memset(x, -1, n*sizeof(int*));
+
+    printf("x = \n");
+    printMatrix(x, 1, n);
+
+
 
     return 0;
 }

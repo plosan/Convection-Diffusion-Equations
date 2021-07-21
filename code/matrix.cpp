@@ -22,6 +22,50 @@ void printMatrix(const double* mat, const unsigned int rows, const unsigned int 
     }
 }
 
+void printMatrix(const int* mat, const unsigned int rows, const unsigned int cols) {
+    /*
+    printMatrix: prints a double array. The array must be given in "vector" format.
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - mat: matrix to be printed     [const double*]
+        - rows: matrix rows             [const unsigned int]
+        - cols: matrix columns          [const double]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs: none
+    */
+
+    if(mat) {
+        for(unsigned int i = 0; i < rows; ++i) {
+            for(unsigned int j = 0; j < cols; ++j)
+                printf("%10d", mat[i*cols+j]);
+            printf("\n");
+        }
+        printf("\n");
+    }
+}
+
+void printReversedRowMatrix(const int* mat, const unsigned int rows, const unsigned int cols) {
+    /*
+    printReversedRowMatrix: prints a double array with rows in reversed order, that is, from last row to first.
+    The array must be given in "vector" format.
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - mat: matrix to be printed     [const double*]
+        - rows: matrix rows             [const unsigned int]
+        - cols: matrix columns          [const double]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs: none
+    */
+    if(mat) {
+        for(int i = rows-1; i > -1; --i) {
+            for(unsigned int j = 0; j < cols; ++j)
+                printf("%10d", mat[i*cols+j]);
+            printf("\n");
+        }
+        printf("\n");
+    }
+}
+
 void printReversedRowMatrix(const double* mat, const unsigned int rows, const unsigned int cols) {
     /*
     printReversedRowMatrix: prints a double array with rows in reversed order, that is, from last row to first.
@@ -34,7 +78,6 @@ void printReversedRowMatrix(const double* mat, const unsigned int rows, const un
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Outputs: none
     */
-
     if(mat) {
         for(int i = rows-1; i > -1; --i) {
             for(unsigned int j = 0; j < cols; ++j)
@@ -44,7 +87,6 @@ void printReversedRowMatrix(const double* mat, const unsigned int rows, const un
         printf("\n");
     }
 }
-
 
 void getRandomMatrix(double* mat, const unsigned int rows, const unsigned int cols, const int lower, const int upper) {
     /*
@@ -68,6 +110,27 @@ void getRandomMatrix(double* mat, const unsigned int rows, const unsigned int co
     }
 }
 
+void getRandomIntegerMatrix(int* mat, const unsigned int rows, const unsigned int cols, const int lower, const int upper) {
+    /*
+    getRandomMatrix: returns a double array filled with random integers in the interval [lower, upper]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - mat: matrix to be filled                      [double*]
+        - rows: matrix rows                             [const unsigned int]
+        - cols: matrix columns                          [const unsigned int]
+        - lower: lower bound for the random integers    [const int]
+        - upper: upper bound for the random integers    [const int]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - mat: double array filled with random integers in the interval [lower, upper]  [double*]
+    */
+
+    if(mat) {
+        for(unsigned int i = 0; i < rows; ++i)
+            for(unsigned int j = 0; j < cols; ++j)
+                mat[i*cols+j] = rand()%(upper - lower + 1) + lower;
+    }
+}
 
 void getSDDMatrix(double* mat, const unsigned int rows, const int lower, const int upper) {
     /*
@@ -94,7 +157,6 @@ void getSDDMatrix(double* mat, const unsigned int rows, const int lower, const i
         }
     }
 }
-
 
 void gaussSeidel(const double* A, const double* b, double* x, const unsigned int n, const double tol, const unsigned int maxIt, int &exitCode) {
     /*
