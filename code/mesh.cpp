@@ -1,8 +1,7 @@
 #include "mesh.h"
 
 
-void compute2DUniformMesh(const unsigned int nx, const unsigned int ny, const double lx, const double ly, const double lz, double* nodeX, double* nodeY,
-    double* faceX, double* faceY, double* surfX, double* surfY, double* vol) {
+void compute2DUniformMesh(const unsigned int nx, const unsigned int ny, const double lx, const double ly, const double lz, double* nodeX, double* nodeY, double* faceX, double* faceY, double* surfX, double* surfY, double* vol) {
     /*
     compute2DUniformMesh: computes the geometry of a uniform cartesian discretization for a 2D rectangular domain
     --------------------------------------------------------------------------------------------------------------------------------------------------
@@ -61,13 +60,23 @@ void compute2DUniformMesh(const unsigned int nx, const unsigned int ny, const do
 
 void computeAdjacencyList(int* list, const unsigned int nx, const unsigned int ny) {
     if(list) {
+        /*
+        Corner nodes: 0, nx-1, nx*(ny-1), nx*ny-1
+        Lower row nodes: 1 to nx-2
+        Upper row nodes: nx*(ny-1)+1 to nx*ny-2
+        Left column nodes: 0, nx, 2*nx, ..., nx*(ny-2)
+        Right column nodes: nx-1, 2*nx-1, 3*nx-1, ..., (ny-2)*nx-1
+        A node is identified by its (i,j) coordinates, i referring to the column and j to the row. Since all matrices are treated as vectors,
+        the index of node (i,j) in the vector is j*nx+i.
+        Given the (i,j) node, its neighbours are:
+        - East node: (i+1,j) --> j*nx+i+1
+        - West node: (i-1,j) --> j*nx+i-1
+        - North node: (i,j+1) --> (j+1)*nx+i
+        - South node: (i,j-1) --> (j-1)*nx+i
+        */
         const unsigned int n = 5 * nx * ny;
         memset(list, -1, n*sizeof(int*));
-        // Corner nodes: 0, nx-1, nx*(ny-1), nx*ny-1
-        // Lower row nodes: 1 to nx-2
-        // Upper row nodes: nx*(ny-1)+1 to nx*ny-2
-        // Left column nodes: 0, nx, 2*nx, ..., nx*(ny-2)
-        // Right column nodes: 
+        
     }
 }
 

@@ -9,14 +9,22 @@
 
 int main(void) {
 
-    int n = 6;
-    int* x = (int*) malloc(n*sizeof(int*));
+    unsigned int nx = 7;
+    unsigned int ny = 5;
+    int* mat = (int*) malloc(nx * ny * sizeof(int*));
 
-    printf("x = \n");
-    printMatrix(x, 1, n);
+    if(mat) {
+        int counter = 0;
+        for(int j = 0; j < ny; j++)
+            for(int i = 0; i < nx; i++)
+                mat[j*nx+i] = counter++;
 
-    memset(x, -1, n*sizeof(int*));
+        printf("%10s : %d\n", "nx", nx);
+        printf("%10s : %d\n\n", "ny", ny);
 
-    printf("x = \n");
-    printMatrix(x, 1, n);
+        printf("mat = \n");
+        printReversedRowMatrix(mat, ny, nx);
+
+        free(mat);
+    }
 }
