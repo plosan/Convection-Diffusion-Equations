@@ -26,12 +26,16 @@ The simplification of the first term is analogous to that of the continuity equa
 \begin{equation}
 	(\rho \phi)_P = \frac{1}{V_P} \int_{\cv{P}} \rho \phi \dd{\vb{x}}
 \end{equation}
-then
+although the following approximation is needed:
+\begin{equation}
+	(\rho \phi)_P \approx \rho_P \phi_P
+\end{equation}
+Then the transient term is:
 \begin{equation}
 	\int_{t^n}^{t^{n+1}} \int_{\cv{P}} \pdv{(\rho \phi)}{t} \dd{\vb{x}} \dd{t} = 
 	\int_{t^n}^{t^{n+1}} \frac{\dd}{\dd{t}} \int_{\cv{P}} \rho \phi \dd{\vb{x}} \dd{t} =  
-	\int_{t^n}^{t^{n+1}} \frac{\dd(\rho \phi)_P}{\dd{t}} V_P \dd{t} = 
-	\left\{ (\rho \phi)_P - (\rho \phi)_P^0 \right\} V_P
+	\int_{t^n}^{t^{n+1}} \frac{\dd(\rho \phi)_P}{\dd{t}} V_P \dd{t} \approx 
+	\left\{ \rho_P \phi_P - \rho_P^0 \phi_P^0 \right\} V_P
 \end{equation}
 
 Divergence theorem must be applied to simplify the convective contribution,
@@ -108,7 +112,7 @@ As shall be discussed later, $S_P^\phi$ must be non--positive.
 
 Finally, the discretization of the 2D generalized convection--diffusion equation is
 \begin{align}
-	&\frac{(\rho \phi)_P - (\rho \phi)_P^0}{\Delta t} V_P + \nonumber \\
+	&\frac{\rho_P \phi_P - \rho_P^0 \phi_P^0}{\Delta t} V_P + \nonumber \\
 	&+ 
 	\beta 
 	\Big( \dot{m}_e \phi_e - \dot{m}_w \phi_w + \dot{m}_n \phi_n - \dot{m}_s \phi_s \Big) + 
@@ -124,7 +128,13 @@ Finally, the discretization of the 2D generalized convection--diffusion equation
 	D_e^0 (\phi_E^0 - \phi_P^0) - D_w^0 (\phi_P^0 - \phi_W^0) + 
 	D_n^0 (\phi_N^0 - \phi_P^0) - D_s^0 (\phi_P^0 - \phi_S^0)
 	\Big\} + \nonumber \\
-	&+ \left( S_C^\phi + S_P^\phi \phi_P \right) V_P
+	&+ \left( S_C^\phi + S_P^\phi \phi_P \right) V_P \label{eq:general_2d_cde}
 \end{align}
-
+In the case of a implicit integration scheme, that is, $\beta = 1$, equation \eqref{eq:general_2d_cde} is simplified to:
+\begin{multline}
+	\frac{\rho_P \phi_P - \rho_P^0 \phi_P^0}{\Delta t} V_P + 
+	\dot{m}_e \phi_e - \dot{m}_w \phi_w + \dot{m}_n \phi_n - \dot{m}_s \phi_s = \\ = 
+	D_e (\phi_E - \phi_P) - D_w (\phi_P - \phi_W) + D_n (\phi_N - \phi_P) - D_s (\phi_P - \phi_S) +
+	\big( S_C^\phi + S_P^\phi \phi_P \big) V_P
+\end{multline}
 

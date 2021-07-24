@@ -14,7 +14,7 @@ Let $\cs{P} = \partial \cv{P}$ be the control surface, \ie the boundary of the c
 	\int_{\cv{P}} \pdv{\rho}{t} \dd{\vb{x}} + 
 	\int_{\cs{P}} \rho \vb{v} \vdot \vb{n} \dd{S} = 0
 \end{equation}
-With the aim of simplifying the first term of \eqref{eq:discretization_continuity_equation_2}, the average density of the control volume is defined as
+With the aim of simplifying the first term of \eqref{eq:discretization_continuity_equation_2}, the average density of the control volume is defined in the following way:
 \begin{equation}
 	\overline{\rho}_P = \frac{1}{V_P} \int_{\cv{P}} \rho \dd{\vb{x}}
 \end{equation}
@@ -23,13 +23,13 @@ Introducing this relation in equation \eqref{eq:discretization_continuity_equati
 	\frac{\dd \overline{\rho}_P}{\dd{t}} V_P + 
 	\int_{\cs{P}} \rho \vb{v} \vdot \vb{n} \dd{S} = 0
 \end{equation}
-The mass flow term can be further simplified if a cartesian mesh is being used. In case of a 2D--mesh, the control surface can be partitioned into four different faces, namely, the east, west, north and south faces. In this context the control surface is $\cs{P} = \cs{Pe} \cup \cs{Pw} \cup \cs{Pn} \cup \cs{Ps}$ and the mass flow term may be expressed as
+The mass flow term can be further simplified if a cartesian mesh is being used. In case of a 2D--mesh, the control surface can be partitioned into four different faces, namely, the east, west, north and south faces. In this context, the control surface is $\cs{P} = \cs{Pe} \cup \cs{Pw} \cup \cs{Pn} \cup \cs{Ps}$, therefore mass flow term may be expressed as
 \begin{equation}
 	\int_{\cs{P}} \rho \vb{v} \vdot \vb{n} \dd{S} = 
 	\sum_{i} \int_{\cs{Pi}} \rho \vb{v} \vdot \vb{n} \dd{S} = 
 	\dot{m}_e + \dot{m}_w + \dot{m}_n + \dot{m}_s
 \end{equation}
-If a 3D--mesh is being used, the contributions of top and bottom faces must be considered. The control surface is the union $\cs{P} = \cs{Pe} \cup \cs{Pw} \cup \cs{Pn} \cup \cs{Ps} \cup \cs{Pt} \cup \cs{Pb}$, and therefore the mass flow incorporates two new terms
+If a 3D--mesh is being used, the contributions of top and bottom faces must be considered. The control surface is the union $\cs{P} = \cs{Pe} \cup \cs{Pw} \cup \cs{Pn} \cup \cs{Ps} \cup \cs{Pt} \cup \cs{Pb}$, hence the mass flow incorporates two new terms
 \begin{equation}
 	\int_{\cs{P}} \rho \vb{v} \vdot \vb{n} \dd{S} = 
 	\sum_{i} \int_{\cs{Pi}} \rho \vb{v} \vdot \vb{n} \dd{S} = 
