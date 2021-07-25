@@ -1,0 +1,62 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\babel@toc {english}{}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2}The convection--diffusion equations}{3}{section.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.1}Reynolds transport theorem}{3}{subsection.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.2}Continuity equation}{4}{subsection.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.3}Momentum equation}{5}{subsection.2.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.4}Energy equation}{5}{subsection.2.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.5}Species equation}{5}{subsection.2.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.6}Convection--diffusion equations}{5}{subsection.2.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3}Numerical study}{6}{section.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.1}Assumptions}{6}{subsection.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.2}Spatial discretization}{6}{subsection.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3}Time discretization}{7}{subsection.3.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.4}Discretization of the continuity equation}{7}{subsection.3.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.5}Discretization of the general convection--diffusion equation}{8}{subsection.3.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.6}Evaluation of the convective terms}{10}{subsection.3.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.6.1}Upwind--Difference Scheme (UDS)}{10}{subsubsection.3.6.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.6.2}Central--Difference Scheme (CDS)}{12}{subsubsection.3.6.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.6.3}Exponential--Difference Scheme (EDS)}{13}{subsubsection.3.6.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.6.4}Second--order Upwind Linear Extrapolation (SUDS)}{14}{subsubsection.3.6.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.6.5}Quadratic Upwind Interpolation for Convective Kinematics (QUICK)}{15}{subsubsection.3.6.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.6.6}Normalization of variables}{17}{subsubsection.3.6.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.6.7}Sharp and Monotonic Algorithm for Realistic Transport (SMART)}{18}{subsubsection.3.6.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.6.8}Summary of schemes}{18}{subsubsection.3.6.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.7}Treatment of boundary conditions}{19}{subsection.3.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.8}Final form of the generalized convection--diffusion equation}{21}{subsection.3.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.8.1}Small molecule schemes}{21}{subsubsection.3.8.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.8.2}Large molecule schemes}{22}{subsubsection.3.8.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.9}Algorithms}{22}{subsection.3.9}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.9.1}Algorithm for the evaluation of convective terms}{22}{subsubsection.3.9.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.9.2}Solving algorithm}{22}{subsubsection.3.9.2}%

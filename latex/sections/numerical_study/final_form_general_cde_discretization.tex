@@ -1,7 +1,57 @@
 
 \subsection{Final form of the generalized convection--diffusion equation}
 
-Some of the convective properties evaluation schemes presented only involve adjacent nodes to the volume faces. As a consequence, these schemes can be introduced in a compact form \cite{patankar2008numerical}. Nonetheless, high--resolution schemes (HRS), such as QUICK or SMART, not only use adjacent nodes to the faces but also the most upstream node, \ie involve a larger molecule. In this case is preferable to use the deferred correction approach \cite{cttc_cde_2021}. The idea for any face is the following
+The purpose of this subsection is to obtain a discretization equation of the form
+\begin{equation}
+	A_P \phi_P + \sum_I A_I \phi_I = Q_P
+\end{equation}
+which can be easily implemented to be solved numerically, starting from equation \eqref{eq:general_cde_discretized_implicit} and the studied schemes to evaluate convective properties. Among the revised schemes, some use only the surrounding nodes, whilst others involve a larger amount of nodes. As a consequence of the different treatment needed, separate subsections are devoted to each type of scheme.
+
+\subsubsection{Small molecule schemes}
+
+Small molecule schemes are those which only involve adjacent nodes to the volume faces. Therefore these schemes can be introduced in a compact form as \colorbox{red}{Patankar} suggests \cite{patankar2008numerical}. However a different approach will be followed here. 
+
+Schemes UDS, CDS and EDS can all be gathered in the following manner
+\begin{equation}
+	\phi_f = A_f \phi_P + B_f \phi_F
+\end{equation}
+where $f$ denotes the face, $F$ the corresponding node, and $A_f$, $B_f$ depend upon the face and the selected scheme. Particularizing for each face,
+\begin{align}
+	\phi_e &= A_e \phi_P + B_e \phi_E \label{eq:generalized_scheme_1} \\ 
+	\phi_w &= A_w \phi_P + B_w \phi_W \\ 
+	\phi_n &= A_n \phi_P + B_n \phi_N \\ 
+	\phi_s &= A_s \phi_P + B_s \phi_S \label{eq:generalized_scheme_2} 
+\end{align}
+Introducing \eqref{eq:generalized_scheme_1} through \eqref{eq:generalized_scheme_2} in \eqref{eq:general_cde_discretized_implicit} and rearranging terms, the discretization equation for schemes UDS, CDS and EDS is obtained:
+\begin{multline} \label{eq:discretization_equation_uds_cds_eds}
+	\left\{
+	\frac{\rho_P V_P}{\Delta t} + 
+	D_e + \dot{m}_e A_e + D_w - \dot{m}_w A_w + D_n + \dot{m}_n A_n + D_s - \dot{m}_s A_s - S_P^\phi V_P
+	\right\} \phi_P = \\
+	= 
+	\left\{ D_e - \dot{m}_e B_e \right\} \phi_E + 
+	\left\{ D_w + \dot{m}_w B_w \right\} \phi_W + 
+	\left\{ D_n - \dot{m}_n B_n \right\} \phi_N + 
+	\left\{ D_s + \dot{m}_s B_s \right\} \phi_S + 
+	\left( S_C^\phi + \frac{\rho_P^0 \phi_P^0}{\Delta t} \right) V_P
+\end{multline}
+In order to make \eqref{eq:discretization_equation_uds_cds_eds} more tractable, the following discretization coefficients are defined:
+\begin{gather}
+	a_E = D_e - \dot{m}_e B_e \\
+	a_W = D_w + \dot{m}_w B_w \\
+	a_N = D_n - \dot{m}_n B_n \\
+	a_S = D_s + \dot{m}_s B_s \\
+	b_P = \left( S_C^\phi + \frac{\rho_P^0 \phi_P^0}{\Delta t} \right) V_P \\
+	a_P = D_e + \dot{m}_e A_E + D_w - \dot{m}_w A_w + D_n + \dot{m}_n A_n + D_s - \dot{m}_s A_s - S_P^\phi V_P	
+\end{gather}
+Hence the discretization equation is:
+\begin{equation}
+	a_P \phi_P = a_E \phi_E + a_W \phi_W + a_N \phi_N + a_S \phi_S + b_P
+\end{equation}
+
+\subsubsection{Large molecule schemes}
+
+Some of the convective properties evaluation schemes presented only involve adjacent nodes to the volume faces. As a consequence, . Nonetheless, high--resolution schemes (HRS), such as QUICK or SMART, not only use adjacent nodes to the faces but also the most upstream node, \ie involve a larger molecule. In this case is preferable to use the deferred correction approach \cite{cttc_cde_2021}. The idea for any face is the following
 \begin{equation}
 	\phi_f^\text{HRS} - \phi_P = 
 	\left( \phi_f^\text{UDS} - \phi_P \right) + 

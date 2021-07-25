@@ -12,31 +12,3 @@
 \input{sections/numerical_study/final_form_general_cde_discretization.tex}
 \input{sections/numerical_study/algorithm.tex}
 
-\begin{multline}
-	\left\{
-	\frac{\rho_P V_P}{\Delta t} + 
-		D_e + \dot{m}_e A_E + D_w - \dot{m}_w A_w + D_n + \dot{m}_n A_n + D_s - \dot{m}_s A_s - S_P^\phi V_P
-	\right\} \phi_P = \\
-	= 
-	\left\{ D_e - \dot{m}_e B_e \right\} \phi_E + 
-	\left\{ D_w + \dot{m}_w B_w \right\} \phi_W + 
-	\left\{ D_n - \dot{m}_n B_n \right\} \phi_N + 
-	\left\{ D_s + \dot{m}_s B_s \right\} \phi_S + 
-	\left( S_C^\phi + \frac{\rho_P^0 \phi_P^0}{\Delta t} \right) V_P
-\end{multline}
-
-\begin{align}
-	a_E &= D_e - \dot{m}_e B_e \\
-	a_W &= D_w + \dot{m}_w B_w \\
-	a_N &= D_n - \dot{m}_n B_n \\
-	a_S &= D_s + \dot{m}_s B_s \\
-	b_P &= \left( S_C^\phi + \frac{\rho_P^0 \phi_P^0}{\Delta t} \right) V_P
-\end{align}
-
-\begin{equation}
-	a_P = D_e + \dot{m}_e A_E + D_w - \dot{m}_w A_w + D_n + \dot{m}_n A_n + D_s - \dot{m}_s A_s - S_P^\phi V_P
-\end{equation}
-
-\begin{equation}
-	a_P \phi_P = a_E \phi_E + a_W \phi_W + a_N \phi_N + a_S \phi_S + b_P
-\end{equation}
