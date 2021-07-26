@@ -5,5 +5,26 @@
 
 \subsubsection{Solving algorithm}
 
+\begin{algorithm}[h]
+	\caption{}
+	\label{algorithm:algoritme_resolucio_2}
+	\begin{algorithmic}[0]
+		\State 
+		\begin{enumerate}[label=\textbf{\arabic*},topsep=0pt]
+			\item Input data:
+			\begin{enumerate}[label=\textbf{1.\arabic*}]
+				\item Physical data: geometry, thermophysical properties, initial conditions and boundary conditions.
+				\item Numerical data: mesh, $\Delta t$ (time step), $\delta$ (convergence criterion).
+			\end{enumerate}
+			\item Mesh generation: generació de la malla, distàncies, superfícies, volums i conductivitats tèrmiques a les cares. Avaluació dels coeficients de discretització $a_W, \, a_E, \, a_S, \, a_N, \, a_P$ i dels coeficients $b_P$ constants.
+			\item Initial map $(t^n = 0)$: $n \gets 0$, $T^n[i][j] = T_0(x,y)$.
+			\item Compute the new time step. \label{enum:algoritme2_4}
+			\item Initial estimated values:
+			\item Evaluation of the discretization coefficients:
+			\item Resolution of the linear system:
+		\end{enumerate}
+	\end{algorithmic}
+\end{algorithm}
+
 
 
