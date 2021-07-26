@@ -137,8 +137,8 @@ In the case of a implicit integration scheme, that is, $\beta = 1$, equation \eq
 	D_e (\phi_E - \phi_P) - D_w (\phi_P - \phi_W) + D_n (\phi_N - \phi_P) - D_s (\phi_P - \phi_S) +
 	\big( S_C^\phi + S_P^\phi \phi_P \big) V_P
 \end{multline}
-An equivalent discretization equation can be found by multiplying \eqref{eq:continuity_equation_2d_discretized} times $\phi_P$ and subtracting it from \eqref{eq:general_cde_discretized_implicit}, which results in
-\begin{multline}
+An equivalent and more useful form of the discretization equation can be found by multiplying \eqref{eq:continuity_equation_2d_discretized} times $\phi_P$ and subtracting it from \eqref{eq:general_cde_discretized_implicit}, which results in
+\begin{multline} \label{eq:general_cde_discretized_implicit_useful}
 	\rho_P^0 \frac{\phi_P - \phi_P^0}{\Delta t} V_P
 	+ \dot{m}_e (\phi_e - \phi_P) - \dot{m}_w (\phi_w - \phi_P) 
 	+ \dot{m}_n (\phi_n - \phi_P) - \dot{m}_s (\phi_s - \phi_P) 
@@ -147,4 +147,16 @@ An equivalent discretization equation can be found by multiplying \eqref{eq:cont
 	+ D_n (\phi_N - \phi_P) - D_s (\phi_P - \phi_S)
 	+ (S_C^\phi + S_P^\phi \phi_P) V_P
 \end{multline}
+
+The 3D analog of \eqref{eq:general_cde_discretized_implicit_useful} includes the top and bottom faces contributions:
+\begin{align} \label{eq:general_cde_discretized_implicit_useful_3d}
+	\rho_P^0 \frac{\phi_P - \phi_P^0}{\Delta t} V_P
+	&+ \dot{m}_e (\phi_e - \phi_P) - \dot{m}_w (\phi_w - \phi_P)  + \dot{m}_n (\phi_n - \phi_P) 
+	\nonumber \\
+	&- \dot{m}_s (\phi_s - \phi_P) + \dot{m}_t (\phi_t - \phi_P) - \dot{m}_b (\phi_b - \phi_P) 
+	\nonumber \\
+	&= D_e (\phi_E - \phi_P) - D_w (\phi_P - \phi_W) + D_n (\phi_N - \phi_P) 
+	\nonumber \\
+	&- D_s (\phi_P - \phi_S) + D_t (\phi_T - \phi_P) - D_b (\phi_P - \phi_B) + (S_C^\phi + S_P^\phi \phi_P) V_P
+\end{align}
 

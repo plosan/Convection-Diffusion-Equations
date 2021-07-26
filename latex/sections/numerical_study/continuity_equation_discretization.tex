@@ -5,7 +5,7 @@ As seen before, the continuity equation in differential form is
 \begin{equation}
 	\pdv{\rho}{t} + \div(\rho \vb{v}) = 0 \quad (\vb{x},t) \in \Omega \times I
 \end{equation}
-Since the above relation is true on $\Omega \times I$, fixing one time $t \in I$ and integrating over a control volume $\cv{P} \subset \Omega$ yields
+Since the above relation is true on $\Omega \times I$, fixing one time $t \in I$ and integrating over a control volume $\cv{P} \subset \Omega$ gives
 \begin{equation} \label{eq:discretization_continuity_equation_1}
 	\int_{\cv{P}} \pdv{\rho}{t} \dd{\vb{x}} + \int_{\cv{P}} \div(\rho \vb{v}) \dd{\vb{x}} = 0
 \end{equation}
@@ -23,49 +23,71 @@ Introducing this relation in equation \eqref{eq:discretization_continuity_equati
 	\frac{\dd \overline{\rho}_P}{\dd{t}} V_P + 
 	\int_{\cs{P}} \rho \vb{v} \vdot \vb{n} \dd{S} = 0
 \end{equation}
-The mass flow term can be further simplified if a cartesian mesh is being used. In case of a 2D--mesh, the control surface can be partitioned into four different faces, namely, the east, west, north and south faces. In this context, the control surface is $\cs{P} = \cs{Pe} \cup \cs{Pw} \cup \cs{Pn} \cup \cs{Ps}$, therefore mass flow term may be expressed as
+The mass flow term can be further simplified if a cartesian mesh is being used. In case of a 2D--mesh, the control surface can be partitioned into four different faces, namely, the east, west, north and south faces. Hence the control surface is $\cs{P} = \cs{Pe} \cup \cs{Pw} \cup \cs{Pn} \cup \cs{Ps}$ and the mass flow term can be expressed as
+\begin{align}
+	\int_{\cs{P}} \rho \vb{v} \vdot \vb{n} \dd{S} 
+	&= 
+	\underbrace{\int_{\cs{Pe}} \rho \vb{v} \vdot \vb{n} \dd{S}}_{\dot{m}_e}
+	+ \underbrace{\int_{\cs{Pw}} \rho \vb{v} \vdot \vb{n} \dd{S}}_{-\dot{m}_w}
+	+ \underbrace{\int_{\cs{Pn}} \rho \vb{v} \vdot \vb{n} \dd{S}}_{\dot{m}_n}
+	+ \underbrace{\int_{\cs{Ps}} \rho \vb{v} \vdot \vb{n} \dd{S}}_{-\dot{m}_s} \nonumber \\
+	&= \dot{m}_e - \dot{m}_w + \dot{m}_n - \dot{m}_s \label{eq:discretization_continuity_equation_7}
+\end{align}
+Since evaluating each integral may be computationally expensive or impossible, the following approach is followed. Given a face $f$, the normal outer vector is constant on $\cs{Pf}$. Indeed, if $\vb{n}_f$ denotes the normal outer vector to face $f$, then $\vb{n}_e = \vb{i}$, $\vb{n}_w = -\vb{i}$, $\vb{n}_n = \vb{j}$ and $\vb{n}_s = -\vb{j}$. Since $\vb{v} = u \vb{i} + v \vb{j}$, the dot products are $\vb{v} \vdot \vb{n}_e = u$, $\vb{v} \vdot \vb{n}_w = -u$ and so on. Moreover, the integrand $(\rho \vb{v} \vdot \vb{n})_f$ can be approximated by the value each term takes at the face center, \ie
 \begin{equation}
-	\int_{\cs{P}} \rho \vb{v} \vdot \vb{n} \dd{S} = 
-	\sum_{i} \int_{\cs{Pi}} \rho \vb{v} \vdot \vb{n} \dd{S} = 
-	\dot{m}_e + \dot{m}_w + \dot{m}_n + \dot{m}_s
+	(\rho \vb{v} \vdot \vb{n})_f \approx \rho_f (\vb{v} \vdot \vb{n})_f
 \end{equation}
-If a 3D--mesh is being used, the contributions of top and bottom faces must be considered. The control surface is the union $\cs{P} = \cs{Pe} \cup \cs{Pw} \cup \cs{Pn} \cup \cs{Ps} \cup \cs{Pt} \cup \cs{Pb}$, hence the mass flow incorporates two new terms
-\begin{equation}
-	\int_{\cs{P}} \rho \vb{v} \vdot \vb{n} \dd{S} = 
-	\sum_{i} \int_{\cs{Pi}} \rho \vb{v} \vdot \vb{n} \dd{S} = 
-	\dot{m}_e + \dot{m}_w + \dot{m}_n + \dot{m}_s + \dot{m}_t + \dot{m}_b
+Therefore the integral over $\cs{Pe}$ on equation \eqref{eq:discretization_continuity_equation_7} may be simplified as follows:
+\begin{align}
+	\int_{\cs{Pe}} \rho \vb{v} \vdot \vb{n} \dd{S} \approx
+	\int_{\cs{Pe}} (\rho \vb{v} \vdot \vb{n})_e \dd{S} \approx
+	\int_{\cs{Pe}} \rho_e (\vb{v} \vdot \vb{n})_e) \dd{S} = 
+	\int_{\cs{Pe}} \rho_e u_e \dd{S} = 
+	\rho_e u_e S_{Pe} \eqqcolon \dot{m}_e
+\end{align}
+The same simplifications are applied to compute the remaining integral. Defining $\dot{m}_w$ and $\dot{m}_s$ as the negative integral makes the mass flow terms be positive in the positive coordinate direction. Introducing these in \eqref{eq:discretization_continuity_equation_3} yields
+\begin{equation} \label{eq:discretization_continuity_equation_8}
+	\frac{\dd \overline{\rho}_P}{\dd{t}} V_P 
+	+ \dot{m}_e - \dot{m}_w + \dot{m}_n - \dot{m}_s = 0
 \end{equation}
-This allows writing equation \eqref{eq:discretization_continuity_equation_3} in the following way:
-\begin{equation} \label{eq:discretization_continuity_equation_4}
-	\frac{\dd \overline{\rho}_P}{\dd{t}} V_P + \sum_i \dot{m}_i = 0
-\end{equation}
-The average density of the control volume is roughly the density at the discretization node, that is, $\overline{\rho}_P \approx \rho_P$. Integrating \eqref{eq:discretization_continuity_equation_4} over the time interval $[t^n, t^{n+1}]$ gives
+The average density of the control volume is roughly the density at the discretization node, that is, $\overline{\rho}_P \approx \rho_P$. Integrating \eqref{eq:discretization_continuity_equation_8} over the time interval $[t^n, t^{n+1}]$ gives
 \begin{equation} \label{eq:discretization_continuity_equation_5}
-	V_P \int_{t^n}^{t^{n+1}} \frac{\dd \overline{\rho}_P}{\dd{t}} \dd{t} + 
-	\int_{t^n}^{t^{n+1}} \sum_i \dot{m}_i \dd{t} = 0
+	V_P \int_{t^n}^{t^{n+1}} \frac{\dd \rho_P}{\dd{t}} \dd{t} + 
+	\int_{t^n}^{t^{n+1}} ( \dot{m}_e - \dot{m}_w + \dot{m}_n - \dot{m}_s ) \dd{t} = 0
 \end{equation}
-The first term of \eqref{eq:discretization_continuity_equation_5} has a straightforward simplification applying a corollary of the fundamental theorem of calculus. Regarding the second term, numerical integration is applied,
-\begin{equation} \label{eq:discretization_continuity_equation_6}
-	(\rho_P^{n+1} - \rho_P^n) V_P + 
-	\left( \beta \sum_i \dot{m}_i^{n+1} + (1 - \beta) \sum_i \dot{m}_i^{n} \right) (t^{n+1} - t^n) = 0
-\end{equation}
+The first term of \eqref{eq:discretization_continuity_equation_5} has a straightforward simplification applying a corollary of the fundamental theorem of calculus. Regarding the second term, numerical integration is used,
+\begin{align} 
+	(\rho_P^{n+1} - \rho_P^n) V_P
+	&+ \beta (\dot{m}_e^{n+1} - \dot{m}_w^{n+1} + \dot{m}_n^{n+1} - \dot{m}_s^{n+1}) (t^{n+1} - t^n) 
+	\nonumber \\
+	&+ (1 - \beta) (\dot{m}_e^n - \dot{m}_w^n + \dot{m}_n^n - \dot{m}_s^n) (t^{n+1} - t^n) = 0
+	\label{eq:discretization_continuity_equation_6}
+\end{align}
 where $\beta \in \{ 0, \frac{1}{2}, 1 \}$ depends on the chosen integration scheme. For the sake of simplicity, superindex $n+1$ shall be dropped and the time instant $n$ will be denoted by the superindex $0$. Assuming a uniform time step $\Delta t$, the resulting discretized continuity equation is
 \begin{equation}
-	\frac{\rho_P - \rho_P^0}{\Delta t} V_P + \beta \sum_i \dot{m}_i + (1 - \beta) \sum_i \dot{m}_i^0 = 0
+	\frac{\rho_P - \rho_P^0}{\Delta t} V_P 
+	+ \beta (\dot{m}_e - \dot{m}_w + \dot{m}_n - \dot{m}_s)
+	+ (1 - \beta) (\dot{m}_e^0 - \dot{m}_w^0 + \dot{m}_n^0 - \dot{m}_s^0) = 0
 \end{equation}
-
-
+Finally, when an implicit scheme is selected for the time integration,
 \begin{equation} \label{eq:continuity_equation_2d_discretized}
 	\frac{\rho_P - \rho_P^0}{\Delta t} V_P + 
 	\dot{m}_e - \dot{m}_w + 
 	\dot{m}_n - \dot{m}_s = 0
 \end{equation}
 
+If a 3D--mesh is being used, the contributions of top and bottom faces must be considered. The control surface is the union $\cs{P} = \cs{Pe} \cup \cs{Pw} \cup \cs{Pn} \cup \cs{Ps} \cup \cs{Pt} \cup \cs{Pb}$, hence equation \eqref{eq:continuity_equation_2d_discretized} incorporates two new terms
 \begin{equation} \label{eq:continuity_equation_3d_discretized}
 	\frac{\rho_P - \rho_P^0}{\Delta t} V_P + 
-	\dot{m}_e - \dot{m}_w + 
-	\dot{m}_n - \dot{m}_s + 
-	\dot{m}_t - \dot{m}_b = 0
+	\dot{m}_e - \dot{m}_w + \dot{m}_n - \dot{m}_s + \dot{m}_t - \dot{m}_b = 0
 \end{equation}
+
+
+
+
+
+
+
+
 
 
