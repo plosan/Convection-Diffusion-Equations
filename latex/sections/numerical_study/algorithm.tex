@@ -1,30 +1,71 @@
 
-\subsection{Algorithms}
+\subsection{Solving algorithm}
 
-\subsubsection{Algorithm for the evaluation of convective terms}
-
-\subsubsection{Solving algorithm}
+The procedure to solve of a transient convection--diffusion problem with 2D--cartesian mesh is shown in Algorithm \ref{algorithm:general_solving_algorithm}.
 
 \begin{algorithm}[h]
-	\caption{}
-	\label{algorithm:algoritme_resolucio_2}
+	\caption{Resolution of a transient convection--diffusion problem with 2D--cartesian mesh.}
+	\label{algorithm:general_solving_algorithm}
 	\begin{algorithmic}[0]
 		\State 
 		\begin{enumerate}[label=\textbf{\arabic*},topsep=0pt]
 			\item Input data:
 			\begin{enumerate}[label=\textbf{1.\arabic*}]
-				\item Physical data: geometry, thermophysical properties, initial conditions and boundary conditions.
+				\item Physical data: geometry, thermophysical properties, initial and boundary conditions.
 				\item Numerical data: mesh, $\Delta t$ (time step), $\delta$ (convergence criterion).
 			\end{enumerate}
-			\item Mesh generation: generació de la malla, distàncies, superfícies, volums i conductivitats tèrmiques a les cares. Avaluació dels coeficients de discretització $a_W, \, a_E, \, a_S, \, a_N, \, a_P$ i dels coeficients $b_P$ constants.
-			\item Initial map $(t^n = 0)$: $n \gets 0$, $T^n[i][j] = T_0(x,y)$.
-			\item Compute the new time step. \label{enum:algoritme2_4}
-			\item Initial estimated values:
-			\item Evaluation of the discretization coefficients:
-			\item Resolution of the linear system:
+			\item Mesh generation: nodes position, faces position, distances, surfaces and volumes. 
+			\item Initial map: $n \gets 0$, $t^n \gets 0$, $\phi^0[i][j] = \phi(x,y,t) \rvert_{t = 0}$.
+			\item Compute the new time step: $t^{n+1} = t^n + \Delta t$. \label{alg:algorithm2_compute_new_time_step}
+			\begin{enumerate}[label=\textbf{4.\arabic*}]
+				\item Initial estimated values: $\phi^\ast [i][j] \gets \phi^0[i][j]$.
+				\item Evaluation of the discretization coefficients: $a_E[i][j]$, $a_W[i][j]$, $a_N[i][j]$, $a_S[i][j]$, $a_P[i][j]$, $b_P[i][j]$. \label{alg:algorithm2_discretization_coefficients}
+				\item Resolution of the linear system \label{alg:algorithm2_linear_system}
+				\begin{align*}
+					a_P[i][j] \, \phi[i][j] 
+					= a_E[i][j] \, \phi[i+1][j] 
+					&+ a_W[i][j] \, \phi[i-1][j] \\
+					&+ a_N[i][j] \, \phi[i][j+1]
+					+ a_S[i][j] \, \phi[i][j-1] 
+					+ b_P[i][j]
+				\end{align*}
+				\item Is $\displaystyle \max_{i,j} \abs{\phi^\ast[i][j] - \phi[i][j]} < \delta$? \label{alg:algorithm2_convergence_condition}
+				\begin{itemize}
+					\item Yes: continue.
+					\item No: $\phi^\ast[i][j] \gets \phi[i][j]$, go to \ref{alg:algorithm2_discretization_coefficients}.
+				\end{itemize}
+			\end{enumerate}
+			\item New time step?
+			\begin{itemize}
+				\item Yes: $n \gets n + 1$, go to \ref{alg:algorithm2_compute_new_time_step}.
+				\item No: continue.
+			\end{itemize}
+			\item Final computations, print results.
+			\item End.
 		\end{enumerate}
 	\end{algorithmic}
 \end{algorithm}
 
+Hereinafter, the term iteration will be used to refer to the iterative procedure to solve the linear system on step \ref{alg:algorithm2_linear_system}. It must not be confused with the next time instant term.
 
+On step \ref{alg:algorithm2_compute_new_time_step} the next time instant is computed. This is the most computationally expensive step in the algorithm, specially part \ref{alg:algorithm2_linear_system} where the resolution of the linear system of discretized equations is carried out. As a result of the convection--diffusion equations nature, the system matrix $A$ and the vector of independent terms $b$ change each time the convergence condition is not fulfilled on step \eqref{alg:algorithm2_convergence_condition}. Since $A$ and $b$ depend on the previous iteration value of $\phi$, that is to say, $A = A(\phi^\ast)$ and $b = b(\phi^\ast)$, the linear system of equations is
+\begin{equation} \label{eq:algorithm_linear_system}
+	A(\phi^\ast) \, \phi = b(\phi^\ast)
+\end{equation}
+In the case both $A$ and $b$ were constant, the algorithm needed to solve the linear system \eqref{eq:algorithm_linear_system} would be clear at first glance. Since each node is influenced only by the adjacent nodes, $A$ is a pentadiagonal by blocks matrix, therefore $A$ is sparse, \ie most of the elements are zero, hence an iterative method for solving the linear system would be convenient. Let $A_{ij}$ denote the element in the $i$-th row and $j$-th column of $A$. If $A$ is, in addition, a strictly diagonally dominant (SDD) matrix, that is to say,
+\begin{equation} \label{eq:sdd_matrix_1}
+	\abs{A_{ii}} \geq 
+	\sum_{\substack{j = 1 \\ j \neq i}}^n \abs{A_{ij}} 
+\end{equation}
+then Gauss--Seidel algorithm is guaranteed to converge and eventually solve the system. In terms of the discretization coefficients, condition \eqref{eq:sdd_matrix_1} is written as
+\begin{equation}
+	\abs{a_P[i][j]} \geq 
+	\abs{a_W[i][j]} +
+	\abs{a_E[i][j]} +
+	\abs{a_S[i][j]} +
+	\abs{a_N[i][j]}
+\end{equation}
+Nonetheless the SDD condition is not assured as a consequence of the discretization coefficients.
+
+As the execution of an iterative procedure to solve the linear system may diverge, arguably the most convenient is a direct method.
 
