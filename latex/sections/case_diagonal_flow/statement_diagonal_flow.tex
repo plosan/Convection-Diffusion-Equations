@@ -1,0 +1,75 @@
+
+\subsection{Statement}
+
+The diagonal flow case is a steady state problem which takes places in a square domain $\Omega = (0,L) \times (0,L) \subset \real^2$ where $L > 0$ is a fixed length. In it the steady state general convection--diffusion equation with no source term, constant density and constant diffusion coefficient is considered. Under these hypothesis equation \eqref{eq:cde_general_convection_diffusion_equation} is simplified to
+\begin{equation} \label{eq:diagcase_statement_pde1}
+	\frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} = \laplacian{\phi}
+\end{equation}
+The following boundary conditions are prescribed:
+\begin{itemize}[topsep=0pt]
+	\item $\phi = \phi_\text{low}$ on $[0,L) \times \{ y = 0 \}$ and on $\{ x = L \} \times [0,L)$.
+	\item $\phi = \phi_\text{high}$ on $\{ x = 0 \} \times (0,L]$ and on $(0,L] \times \{ y = L \}$.
+\end{itemize}
+Furthermore, the velocity field is $\vb{v} = v_0 \cos(\alpha) \vb{i} + v_0 \sin(\alpha) \vb{j}$, with $v_0 > 0$ constant and $\alpha = \pi / 4$. Therefore the left--hand side of \eqref{eq:diagcase_statement_pde1} is
+\begin{equation}
+	\frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} = 
+	\frac{\rho}{\Gamma} 
+	\left( v_0 \cos(\alpha) \pdv{\phi}{x} + v_0 \sin(\alpha) \pdv{\phi}{y} \right) = 
+	\beta \left( \pdv{\phi}{x} + \pdv{\phi}{y} \right), \quad
+	\beta = \frac{\rho v_0 \cos(\alpha)}{\Gamma}
+\end{equation}
+The Cauchy problem for the diagonal flow case is
+\begin{equation} \label{eq:diagcase_cauchy_problem}
+	\left\{
+	\begin{aligned}
+		&\Delta \phi - \beta \left( \pdv{\phi}{x} + \pdv{\phi}{y} \right) = 0 &
+		&\text{in } \Omega = (0,L) \times (0,L) \\
+		&\phi = \phi_\text{low} &
+		&\text{on } [0,L) \times \{ y = 0 \} \cup \{ x = L \} \times [0,L) \\
+		&\phi = \phi_\text{high} &
+		&\text{on } \{ x = 0 \} \times (0,L] \cup (0,L] \times \{ y = L \}
+	\end{aligned}
+	\right.
+\end{equation}
+and is summarized in figure \ref{fig:case_diagonal_flow_statement}.
+
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}
+		% Lenghts
+		\def\alength{5}
+		\def\L{4.5}
+		\def\mlength{0.1}
+		% Axis
+		\draw[-stealth] (0,-0.5) -- (0,\alength) node[right]{$y$};
+		\draw[-stealth] (-0.5,0) -- (\alength,0) node[above]{$x$};
+		\draw[black, thick] (\L,0) -- ++(0,-\mlength) node[below]{$L$};
+		\draw[black, thick] (0,\L) -- ++(-\mlength,0) node[left]{$L$};
+		% Domain
+		\fill[cyan!70!white,opacity=0.7] (0,0) rectangle (\L, \L);
+		\draw[thick, thick] (0,0) rectangle (\L, \L);
+		% Right boundary condition
+		\node[inner sep=0pt] at (\L,{0.5*\L}) (rb) {};
+		\node[] at ({\L+1},{0.5*\L+1}) (rbc) {$\phi = \phi_\text{low}$};
+		\path[-latex] (rbc) edge[bend left] node [left] {} (rb);
+		% Top boundary condition
+		\node[inner sep=0pt] at ({0.5*\L},\L) (tb) {};
+		\node[] at ({0.5*\L+1},{\L+1}) (tbc) {$\phi = \phi_\text{low}$};
+		\path[-latex] (tbc) edge[bend right] node [left] {} (tb);
+		% Left boundary condition
+		\node[inner sep=0pt] at (0,{0.5*\L}) (lb) {};
+		\node[] at (-1,{0.5*\L-1}) (lbc) {$\phi = \phi_\text{high}$};
+		\path[-latex] (lbc) edge[bend left] node [left] {} (lb);
+		% Bottom boundary condition
+		\node[inner sep=0pt] at ({0.5*\L},0) (bb) {};
+		\node[] at ({0.5*\L-1},-1) (bbc) {$\phi = \phi_\text{high}$};
+		\path[-latex] (bbc) edge[bend right] node [left] {} (bb);
+		% PDE
+		\node[] at ({0.5*\L},{0.5*\L}) 
+		{$\Delta{\phi} - \beta \left( \pdv{\phi}{x} + \pdv{\phi}{x} \right) = 0$};
+	\end{tikzpicture}
+	\caption{Cauchy problem for the diagonal flow case.}
+	\label{fig:case_diagonal_flow_statement}
+\end{figure}
+
+
