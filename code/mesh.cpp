@@ -1,5 +1,54 @@
 #include "mesh.h"
 
+void compute2DUniformRectangularMesh(const double x0, const double y0, const unsigned int nx, const unsigned int ny, const double lx, const double ly,
+    const double lz, double* nodeX, double* nodeY, double* faceX, double* faceY, double* surfX, double* surfY, double* vol) {
+
+    double stepX = lx / (nx - 1);
+    double stepY = ly / (ny - 1);
+
+    for(int i = 0; i < nx; i++) {
+        nodeX[i] = x0 + i * stepX;
+    }
+
+    for(int j = 0; j < ny; j++)
+        nodeY[j] = y0 + j * stepY;
+
+    faceX[0] = x0;
+    for(int i = 0; i < nx; i++) {
+        faceX[i+1] = nodeX[i] + 0.5 * stepX;
+    }
+
+    faceY[0] = y0;
+    for(int j = 0; j < ny; j++) {
+        faceY[j+1] = nodeY[j] + 0.5 * stepY;
+    }
+
+    // Surfaces X
+    const double surfXDefault = stepY * lz;
+    surfX[0] = 0.5 * surfXDefault;
+    surfX[ny-1] = 0.5 * surfXDefault;
+    for(int j = 1; j < ny-1; j++)
+        surfX[j] = surfXDefault;
+
+    // Surfaces Y
+    const double surfYDefault = stepX * lz;
+    surfY[0] = 0.5 * surfYDefault;
+    surfY[nx-1] = 0.5 * surfYDefault;
+    for(int i = 1; i < nx-1; i++)
+        surfY[i] = surfYDefault;
+
+    // volumes
+    const double volCentralCV = stepX * stepY * lz;
+    for(int i = 1; i < nx-1; i++)
+        for(int j = 1; j < ny-1; j++)
+            vol[j * nx + i] = volCentralCV;
+
+    const double volBoundaryCV = stepX * stepY * lz;
+
+    const double volCornerCV = 0.25 * stepX * stepY * lz;
+
+
+}
 
 void compute2DUniformMesh(const unsigned int nx, const unsigned int ny, const double lx, const double ly, const double lz, double* nodeX, double* nodeY, double* faceX, double* faceY, double* surfX, double* surfY, double* vol) {
     /*
@@ -76,7 +125,7 @@ void computeAdjacencyList(int* list, const unsigned int nx, const unsigned int n
         */
         const unsigned int n = 5 * nx * ny;
         memset(list, -1, n*sizeof(int*));
-        
+
     }
 }
 

@@ -5,6 +5,9 @@
 #include <cstring>
 #include "matrix.h"
 
+void compute2DUniformRectangularMesh(const double x0, const double y0, const unsigned int nx, const unsigned int ny, const double lx, const double ly,
+    const double lz, double* nodeX, double* nodeY, double* faceX, double* faceY, double* surfX, double* surfY, double* vol);
+
 void compute2DUniformMesh(const unsigned int nx, const unsigned int ny, const double lx, const double ly, const double lz,
     double* nodeX, double* nodeY, double* faceX, double* faceY, double* surfX, double* surfY, double* vol);
 
