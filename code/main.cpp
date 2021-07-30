@@ -31,6 +31,8 @@ int main(int arg, char* argv[]) {
     // double p = 2.45678;
     // printf("%.5f\n", pNorm(vec, rows, p));
 
+    double x0 = 0;
+    double y0 = 0;
     unsigned int nx = 7;
     unsigned int ny = 5;
     double lx = 1;
@@ -39,39 +41,32 @@ int main(int arg, char* argv[]) {
 
     double* nodeX = (double*) malloc(nx * sizeof(double*));
     double* nodeY = (double*) malloc(ny * sizeof(double*));
+
+    double* distX = (double*) malloc((nx - 1) * sizeof(double*));
+    double* distY = (double*) malloc((ny - 1) * sizeof(double*));
+
     double* faceX = (double*) malloc((nx + 1) * sizeof(double*));
     double* faceY = (double*) malloc((ny + 1) * sizeof(double*));
+
     double* surfX = (double*) malloc(ny * sizeof(double*));
     double* surfY = (double*) malloc(nx * sizeof(double*));
+
     double* vol   = (double*) malloc(nx * ny * sizeof(double*));
     // compute2DNodesPositionUniform(nx, ny, lx, ly, nodeX, nodeY);
 
-    printf("Here\n");
+    compute2DUniformRectangularMesh(x0, y0, nx, ny, lx, ly, lz, nodeX, nodeY, distX, distY, faceX, faceY, surfX, surfY, vol);
 
-    compute2DUniformMesh(nx, ny, lx, ly, lz, nodeX, nodeY, faceX, faceY, surfX, surfY, vol);
-
-    printMeshInfo(nx, ny, lx, ly, lz, nodeX, nodeY, faceX, faceY, surfX, surfY, vol);
+    printMeshInfo(x0, y0, nx, ny, lx, ly, lz, nodeX, nodeY, distX, distY, faceX, faceY, surfX, surfY, vol);
 
     free(nodeX);
     free(nodeY);
+    free(distX);
+    free(distY);
     free(faceX);
     free(faceY);
     free(surfX);
     free(surfY);
     free(vol);
-
-    int n = 6;
-    int* x = (int*) malloc(n*sizeof(int*));
-
-    printf("x = \n");
-    printMatrix(x, 1, n);
-
-    memset(x, -1, n*sizeof(int*));
-
-    printf("x = \n");
-    printMatrix(x, 1, n);
-
-
 
     return 0;
 }
