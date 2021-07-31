@@ -1,17 +1,32 @@
 
 \subsection{Statement}
 
-This section deals with the steady state version of the problem proposed by Smith and Hutton (1982). The problem takes place in the domain $\Omega = (-L,L) \times (0,L) \subset \real$ where $L > 0$ is a constant. In it the steady state version of the general convection--diffusion equation is considered
+This section deals with the steady state version of the problem proposed by Smith and Hutton (1982) described in \cite{smith1982numerical}. The problem takes place in the domain $\Omega = (-L,L) \times (0,L) \subset \real$ where $L > 0$ is a constant. Both density and diffusion coefficient are assumed to be constant and known values. In $\Omega$ the steady state version of the general convection--diffusion equation with no source term is considered, that is,
 \begin{equation}
-	\rho \vb{v} \vdot \grad{\phi} = \div(\Gamma \grad{\phi}) + \dot{s}_\phi
+	\frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} = \Delta{\phi}
 \end{equation}
 On the boundary of $\Omega$ the following conditions are prescribed:
 \begin{itemize}[topsep=0pt]
-	\item $\phi = 1 + \tanh(10(2x+1))$ on $[-L,0] \times \{ y = 0 \}$ (inlet flow).
-	\item $\frac{\partial \phi}{\partial y} = 0$ on $(0,L] \times \{ y = 0 \}$ (outlet flow).
-	\item $\phi = 1 - \tanh(10)$ on $(\partial \Omega) \setminus ([-L,L] \times \{ y = 0 \})$. 
+	\item $\phi = 1 + \tanh(10(2x+1))$ on $[-L,0] \times \{ 0 \}$ (inlet flow).
+	\item $\dfrac{\partial \phi}{\partial y} = 0$ on $(0,L] \times \{ 0 \}$ (outlet flow).
+	\item $\phi = 1 - \tanh(10)$ on $\{ -L \} \times (0,L) \cup [-L,L] \times \{ L \} \cup \{ L \} \times (0,L)$.
 \end{itemize}
-The velocity field is given by $v_x = 2 y (1 - x^2)$ and $v_y = -2 x (1 - y^2)$, which verifies the incompressibility condition since $\div{\vb{v}} = 0$.
+The velocity field is given by $v_x = 2 y (1 - x^2)$ and $v_y = -2 x (1 - y^2)$, which verifies the incompressibility condition since $\div{\vb{v}} = 0$. The Cauchy problem is the following:
+\begin{equation} \label{eq:smith_hutton_cauchy_problem}
+	\left\{
+	\begin{aligned}
+		&\Delta \phi - \frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} = 0 &
+		&\text{in } \Omega = (0,L) \times (0,L) \\
+		&\phi = 1 + \tanh(10(2x+1)) & 
+		&\text{on } [-L,0] \times \{ 0 \} \\
+		&\frac{\partial \phi}{\partial y} = 0 & 
+		&\text{on } (0,L] \times \{ 0 \} \\
+		&\phi = 1 - \tanh(10) & 
+		&\text{on } \{ -L \} \times (0,L) \cup [-L,L] \times \{ L \} \cup \{ L \} \times (0,L)
+	\end{aligned}
+	\right.
+\end{equation}
+Problem \eqref{eq:smith_hutton_cauchy_problem} is summarized in figure \ref{fig:smith_hutton_cauchy_problem}.
 
 \begin{figure}[h]
 	\centering
@@ -57,7 +72,7 @@ The velocity field is given by $v_x = 2 y (1 - x^2)$ and $v_y = -2 x (1 - y^2)$,
 		\node[] at ({0.5*\L},0.3) {Outlet};
 	\end{tikzpicture}
 	\caption{Cauchy problem for the diagonal flow case.}
-	\label{fig:case_diagonal_flow_statement}
+	\label{fig:smith_hutton_cauchy_problem}
 \end{figure}
 
 
