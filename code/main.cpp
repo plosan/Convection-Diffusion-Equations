@@ -33,10 +33,10 @@ int main(int arg, char* argv[]) {
 
     double x0 = 0;
     double y0 = 0;
-    unsigned int nx = 7;
+    unsigned int nx = 13;
     unsigned int ny = 5;
-    double lx = 1;
-    double ly = 1;
+    double lx = 12;
+    double ly = 8;
     double lz = 1;
 
     double* nodeX = (double*) malloc(nx * sizeof(double*));
@@ -51,7 +51,7 @@ int main(int arg, char* argv[]) {
     double* surfX = (double*) malloc(ny * sizeof(double*));
     double* surfY = (double*) malloc(nx * sizeof(double*));
 
-    double* vol   = (double*) malloc(nx * ny * sizeof(double*));
+    double* vol = (double*) malloc(nx * ny * sizeof(double*));
     // compute2DNodesPositionUniform(nx, ny, lx, ly, nodeX, nodeY);
 
     compute2DUniformRectangularMesh(x0, y0, nx, ny, lx, ly, lz, nodeX, nodeY, distX, distY, faceX, faceY, surfX, surfY, vol);
