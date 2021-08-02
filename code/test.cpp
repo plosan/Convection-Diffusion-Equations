@@ -4,27 +4,21 @@
 #include <cmath>
 #include <cfloat>
 #include <cstring>
-#include "matrix.h"
+// #include "matrix.h"
+
+
+int add(int x, int y) {
+    return x + y;
+}
+
+void printFunction(int x, int y, int (*f)(int, int)) {
+    int z = (*f)(x,y);
+    printf("%d + %d = %d\n", x, y, z);
+}
 
 
 int main(void) {
 
-    unsigned int nx = 7;
-    unsigned int ny = 5;
-    int* mat = (int*) malloc(nx * ny * sizeof(int*));
+    printFunction(9,6,add);
 
-    if(mat) {
-        int counter = 0;
-        for(int j = 0; j < ny; j++)
-            for(int i = 0; i < nx; i++)
-                mat[j*nx+i] = counter++;
-
-        printf("%10s : %d\n", "nx", nx);
-        printf("%10s : %d\n\n", "ny", ny);
-
-        printf("mat = \n");
-        printReversedRowMatrix(mat, ny, nx);
-
-        free(mat);
-    }
 }

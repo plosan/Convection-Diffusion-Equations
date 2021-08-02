@@ -12,6 +12,136 @@
 #include "matrix.h"
 #include "mesh.h"
 
+void printToFile(const unsigned int nx, const unsigned int ny, const double* nodeX, const double* nodeY, const double* phi, std::string fileName, const int precision);
+
+void plotSolution(std::string fileName);
+
+void checkSystemSolution(const unsigned int nx, const unsigned int ny, double** A_mat, const double* b, const double* phi);
+
+void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* A, double** A_mat);
+
+void checkSystemMatrix(const unsigned int nx, const unsigned int ny, const double tol, const double* A);
+
+void computeDiscretizationCoefficientsDiagonalCase(const unsigned int nx, const unsigned int ny, const double* nodeX, const double* nodeY,
+    const double* distX, const double* distY, const double* faceX, const double* faceY, const double* surfX, const double* surfY, const double* vol,
+    const double* phi_boundary, const double* v, const double rho, const double gamma, double* A, double* b, const int scheme);
+
+void solveSystem(const unsigned int nx, const unsigned int ny, const double tol, const unsigned int maxIt, const double* A, const double* b, double* phi);
+
+void verification(const double lx, const double ly, const double lz, const unsigned int nx, const unsigned int ny, const double* nodeX, const double* nodeY,
+const double* distX, const double* distY, const double* faceX, const double* faceY, const double* surfX, const double* surfY, const double* vol,
+const double* phi_boundary, const double* v, const double rho, const double gamma, double* A, double* b, double* phi, const int scheme);
+
+void computeDiscretizationCoefficientsInternalNodes(const unsigned int nx, const unsigned int ny, const double* nodeX, const double* nodeY,
+    const double* distX, const double* distY, const double* faceX, const double* faceY, const double* surfX, const double* surfY, const double* vol,
+    const double* phi_boundary, const double* v, const double rho, const double gamma, double* A, double* b, const int scheme);
+
+int main(int arg, char* argv[]) {
+
+    // // Physical data
+    // Sizes
+    double x0 = 0;  // Lower left corner x coordinate for rectangular domain    [m]
+    double y0 = 0;  // Lower left corner y coordinate for rectangular domain    [m]
+    double lx = 1;  // Domain size in x axis                                    [m]
+    double ly = 1;  // Domain size in y axis                                    [m]
+    double lz = 1;  // Domain size in z axis                                    [m]
+    // Boundary conditions
+    const double phi_low = 10;      // Minimum value for phi
+    const double phi_high = 20;     // Maximum value for phi
+    // Flow
+    const double v0 = 1;                // Velocity modulus     [m/s]
+    const double alpha = 0.25 * M_PI;   // Velocity angle       [rad]
+    // Thermophysical properties for water at 20 ºC
+    const double lambda = 0.5861;       // Thermal conductivity                         [W/(k*m)]
+    const double cv = 4183;             // Specific heat at constant volume (pressure)  [J/(kg*K)]
+    const double rho = 998.2;           // Density                                      [kg/m^3]
+    const double gamma = lambda / cv;   // Diffusion coefficient
+
+    // // Numerical data
+    unsigned int nx = 200;      // Number of nodes in x axis
+    unsigned int ny = 200;      // Number of nodes in y axis
+    const double phi0 = 1;      // Initial value to fill phi vector for linear system resolution
+    const double tol = 1e-15;   // Tolerance to stop iteration
+
+    double* nodeX = (double*) malloc(nx * sizeof(double*));
+    double* nodeY = (double*) malloc(ny * sizeof(double*));
+
+    double* distX = (double*) malloc((nx - 1) * sizeof(double*));
+    double* distY = (double*) malloc((ny - 1) * sizeof(double*));
+
+    double* faceX = (double*) malloc((nx + 1) * sizeof(double*));
+    double* faceY = (double*) malloc((ny + 1) * sizeof(double*));
+
+    double* surfX = (double*) malloc(ny * sizeof(double*));
+    double* surfY = (double*) malloc(nx * sizeof(double*));
+
+    double* vol = (double*) malloc(nx * ny * sizeof(double*));
+
+    compute2DUniformRectangularMesh(x0, y0, nx, ny, lx, ly, lz, nodeX, nodeY, distX, distY, faceX, faceY, surfX, surfY, vol);
+    // printMeshInfo(x0, y0, nx, ny, lx, ly, lz, nodeX, nodeY, distX, distY, faceX, faceY, surfX, surfY, vol);
+
+
+    double* A = (double*) malloc(5 * nx * ny * sizeof(double*));
+    double* b = (double*) malloc(nx * ny * sizeof(double*));
+    double* phi_boundary = (double*) malloc(2 * sizeof(double*));
+    phi_boundary[0] = phi_low;
+    phi_boundary[1] = phi_high;
+
+    double* v = (double*) malloc(2 * sizeof(double*));
+    v[0] = v0 * cos(alpha);
+    v[1] = v0 * sin(alpha);
+
+    int scheme = 0;
+    computeDiscretizationCoefficientsDiagonalCase(nx, ny, nodeX, nodeY, distX, distY, faceX, faceY, surfX, surfY, vol, phi_boundary, v, rho, gamma, A, b, scheme);
+
+
+
+    checkSystemMatrix(nx, ny, tol, A);
+    double* phi = (double*) malloc(nx * ny * sizeof(double*));
+    std::fill_n(phi, nx*ny, phi0);
+
+    const int maxIt = 1e6;
+    solveSystem(nx, ny, tol, maxIt, A, b, phi);
+
+    std::string fileName("output/output.dat");
+    printToFile(nx, ny, nodeX, nodeY, phi, fileName, 5);
+    plotSolution(fileName);
+
+    // double** A_mat = (double**) malloc(nx * ny * sizeof(double*));
+    // for(unsigned int row = 0; row < nx * ny; row++) {
+    //     A_mat[row] = (double*) malloc(nx * ny * sizeof(double*));
+    // }
+    //
+    // assembleMatrix(nx, ny, A, A_mat);
+    // checkSystemSolution(nx, ny, A_mat, b, phi);
+    //
+    // for(unsigned int row = 0; row < nx * ny; row++) {
+    //     free(A_mat[row]);
+    // }
+    // free(A_mat);
+
+    // verification(lx, ly, lz, nx, ny, nodeX, nodeY, distX, distY, faceX, faceY, surfX, surfY, vol, phi_boundary, v, rho, gamma, A, b, phi, scheme);
+
+    // Free memory allocated
+    free(nodeX);
+    free(nodeY);
+    free(distX);
+    free(distY);
+    free(faceX);
+    free(faceY);
+    free(surfX);
+    free(surfY);
+    free(vol);
+
+    free(A);
+    free(b);
+    free(phi_boundary);
+    free(v);
+    free(phi);
+
+    return 0;
+}
+
 void printToFile(const unsigned int nx, const unsigned int ny, const double* nodeX, const double* nodeY, const double* phi, std::string fileName, const int precision) {
     std::ofstream file;
     file.open(fileName);
@@ -30,15 +160,16 @@ void printToFile(const unsigned int nx, const unsigned int ny, const double* nod
     printf("\n");
 }
 
-void checkSystemSolution(const unsigned int nx, const unsigned int ny, double** A_mat, const double* b, const double* phi);
+void plotSolution(std::string fileName) {
 
-void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* A, double** A_mat);
+    FILE *gnupipe = NULL;
+    char *GnuCommands[] = {"set xrange [0:1]", "set yrange [0:1]", "set size ratio 1", "set palette rgb 33,13,10", "plot 'output/output.dat' with image",};
 
-void checkSystemMatrix(const unsigned int nx, const unsigned int ny, const double tol, const double* A);
-
-void computeDiscretizationCoefficientsDiagonalCase(const unsigned int nx, const unsigned int ny, const double* nodeX, const double* nodeY,
-    const double* distX, const double* distY, const double* faceX, const double* faceY, const double* surfX, const double* surfY, const double* vol,
-    const double* phi_boundary, const double* v, const double rho, const double gamma, double* A, double* b, const int scheme);
+    gnupipe = popen("gnuplot -persistent", "w");
+    printf("Size: %ld\n", sizeof(GnuCommands));
+    for(int i = 0; i < 5; i++)
+        fprintf(gnupipe, "%s\n", GnuCommands[i]);
+}
 
 void solveSystem(const unsigned int nx, const unsigned int ny, const double tol, const unsigned int maxIt, const double* A, const double* b, double* phi) {
     printf("Solving linear system...\n");
@@ -75,117 +206,6 @@ void solveSystem(const unsigned int nx, const unsigned int ny, const double tol,
         it++;
     }
     printf("\tIterations: %d\n\n", it);
-}
-
-void verification(const double lx, const double ly, const double lz, const unsigned int nx, const unsigned int ny, const double* nodeX, const double* nodeY,
-const double* distX, const double* distY, const double* faceX, const double* faceY, const double* surfX, const double* surfY, const double* vol,
-const double* phi_boundary, const double* v, const double rho, const double gamma, double* A, double* b, double* phi, const int scheme);
-
-int main(int arg, char* argv[]) {
-
-    double x0 = 0;
-    double y0 = 0;
-    unsigned int nx = 100;
-    unsigned int ny = 100;
-    double lx = 1;
-    double ly = 1;
-    double lz = 1;
-
-    double* nodeX = (double*) malloc(nx * sizeof(double*));
-    double* nodeY = (double*) malloc(ny * sizeof(double*));
-
-    double* distX = (double*) malloc((nx - 1) * sizeof(double*));
-    double* distY = (double*) malloc((ny - 1) * sizeof(double*));
-
-    double* faceX = (double*) malloc((nx + 1) * sizeof(double*));
-    double* faceY = (double*) malloc((ny + 1) * sizeof(double*));
-
-    double* surfX = (double*) malloc(ny * sizeof(double*));
-    double* surfY = (double*) malloc(nx * sizeof(double*));
-
-    double* vol = (double*) malloc(nx * ny * sizeof(double*));
-
-    compute2DUniformRectangularMesh(x0, y0, nx, ny, lx, ly, lz, nodeX, nodeY, distX, distY, faceX, faceY, surfX, surfY, vol);
-
-    // printMeshInfo(x0, y0, nx, ny, lx, ly, lz, nodeX, nodeY, distX, distY, faceX, faceY, surfX, surfY, vol);
-
-
-    double* A = (double*) malloc(5 * nx * ny * sizeof(double*));
-    double* b = (double*) malloc(nx * ny * sizeof(double*));
-
-    const double phi_low = 10;
-    const double phi_high = 20;
-    double* phi_boundary = (double*) malloc(2 * sizeof(double*));
-    phi_boundary[0] = phi_low;
-    phi_boundary[1] = phi_high;
-
-
-    const double v0 = 1;
-    const double alpha = 0.25 * M_PI;
-    double* v = (double*) malloc(2 * sizeof(double*));
-    v[0] = v0 * cos(alpha);
-    v[1] = v0 * sin(alpha);
-
-    // Thermophysical properties for water at 20 ºC
-    const double lambda = 0.5861;       // Thermal conductivity                         [W/(k*m)]
-    const double cv = 4183;             // Specific heat at constant volume (pressure)  [J/(kg*K)]
-    const double rho = 998.2;           // Density                                      [kg/m^3]
-    const double gamma = lambda / cv;   // Diffusion coefficient
-
-    int scheme = 0;
-    computeDiscretizationCoefficientsDiagonalCase(nx, ny, nodeX, nodeY, distX, distY, faceX, faceY, surfX, surfY, vol, phi_boundary, v, rho, gamma, A, b, scheme);
-
-    const double tol = 1e-15;
-    checkSystemMatrix(nx, ny, tol, A);
-
-    const double phi0 = 1;
-    double* phi = (double*) malloc(nx * ny * sizeof(double*));
-    std::fill_n(phi, nx*ny, phi0);
-
-    const int maxIt = 1e6;
-    solveSystem(nx, ny, tol, maxIt, A, b, phi);
-
-    std::string fileName("output/output.dat");
-    printToFile(nx, ny, nodeX, nodeY, phi, fileName, 5);
-
-    // printf("phi = \n");
-    // printReversedRowMatrix(phi, ny, nx);
-
-    double** A_mat = (double**) malloc(nx * ny * sizeof(double*));
-    for(unsigned int row = 0; row < nx * ny; row++) {
-        A_mat[row] = (double*) malloc(nx * ny * sizeof(double*));
-    }
-
-    assembleMatrix(nx, ny, A, A_mat);
-
-    checkSystemSolution(nx, ny, A_mat, b, phi);
-
-    for(unsigned int row = 0; row < nx * ny; row++) {
-        free(A_mat[row]);
-    }
-    free(A_mat);
-
-    printf("Verificating solution...\n");
-    verification(lx, ly, lz, nx, ny, nodeX, nodeY, distX, distY, faceX, faceY, surfX, surfY, vol, phi_boundary, v, rho, gamma, A, b, phi, scheme);
-
-    // Free memory allocated
-    free(nodeX);
-    free(nodeY);
-    free(distX);
-    free(distY);
-    free(faceX);
-    free(faceY);
-    free(surfX);
-    free(surfY);
-    free(vol);
-
-    free(A);
-    free(b);
-    free(phi_boundary);
-    free(v);
-    free(phi);
-
-    return 0;
 }
 
 void checkSystemSolution(const unsigned int nx, const unsigned int ny, double** A_mat, const double* b, const double* phi) {
@@ -292,6 +312,7 @@ void verification(const double lx, const double ly, const double lz, const unsig
 const double* distX, const double* distY, const double* faceX, const double* faceY, const double* surfX, const double* surfY, const double* vol,
 const double* phi_boundary, const double* v, const double rho, const double gamma, double* A, double* b, double* phi, const int scheme) {
 
+    printf("Verificating solution...\n");
     double stepX = lx / (nx - 1);
     double stepY = ly / (ny - 1);
     double maxDiff = -1;
@@ -338,7 +359,8 @@ const double* phi_boundary, const double* v, const double rho, const double gamm
 
 
 
-void computeDiscretizationCoefficientsDiagonalCase(const unsigned int nx, const unsigned int ny, const double* nodeX, const double* nodeY, const double* distX, const double* distY, const double* faceX, const double* faceY, const double* surfX, const double* surfY, const double* vol,
+void computeDiscretizationCoefficientsDiagonalCase(const unsigned int nx, const unsigned int ny, const double* nodeX, const double* nodeY,
+const double* distX, const double* distY, const double* faceX, const double* faceY, const double* surfX, const double* surfY, const double* vol,
 const double* phi_boundary, const double* v, const double rho, const double gamma, double* A, double* b, const int scheme) {
 
     printf("Computing discretization coefficients for the diagonal case...\n");
@@ -347,8 +369,8 @@ const double* phi_boundary, const double* v, const double rho, const double gamm
     std::fill_n(b, nx*ny, 0);
 
     // Internal nodes, 1 <= i <= nx-2; 1 <= j <= ny-2
-    for(unsigned int i = 1; i < nx-1; i++) {
-        for(unsigned int j = 1; j < ny-1; j++) {
+    for(unsigned int j = 1; j < ny-1; j++) {
+        for(unsigned int i = 1; i < nx-1; i++) {
             int node = j * nx + i;
             // South node
             double massFlow = -rho * v[1] * surfY[i];
