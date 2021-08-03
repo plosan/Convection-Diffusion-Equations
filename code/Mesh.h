@@ -59,6 +59,16 @@ public:
     double* getVol(void) const;         // Returns vol
 
     // Safe access to arrays
+    double satNodeX(unsigned int) const;
+    double satNodeY(unsigned int) const;
+    double satDistX(unsigned int) const;
+    double satDistY(unsigned int) const;
+    double satFaceX(unsigned int) const;
+    double satFaceY(unsigned int) const;
+    double satSurfX(unsigned int) const;
+    double satSurfY(unsigned int) const;
+    double satVol(unsigned int) const;
+    double satVol(unsigned int, unsigned int) const;
 
 
     // Unsafe access to arrays
@@ -74,6 +84,7 @@ public:
     double atVol(int, int) const;
 
     // Build mesh
+    void buildUniformMesh(double _x0, double _y0, double _lx, double _ly, double _lz, unsigned int _nx, unsigned int _ny);
 
     // Other functions
     void printMeshInfo(void) const;

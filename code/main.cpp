@@ -163,7 +163,8 @@ void printToFile(const unsigned int nx, const unsigned int ny, const double* nod
 void plotSolution(std::string fileName) {
 
     FILE *gnupipe = NULL;
-    char *GnuCommands[] = {"set xrange [0:1]", "set yrange [0:1]", "set size ratio 1", "set palette rgb 33,13,10", "plot 'output/output.dat' with image",};
+    // char *GnuCommands[] = {"set xrange [0:1]", "set yrange [0:1]", "set size ratio 1", "set palette rgb 33,13,10", "plot 'output/output.dat' with image"};
+    char *GnuCommands[] = {};
 
     gnupipe = popen("gnuplot -persistent", "w");
     printf("Size: %ld\n", sizeof(GnuCommands));

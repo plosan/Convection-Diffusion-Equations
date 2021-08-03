@@ -64,11 +64,9 @@ Mesh::~Mesh(void) {
         free(vol);
 }
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GETTERS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 bool Mesh::isBuilt(void) const {
     return built;
 }
@@ -140,13 +138,222 @@ double* Mesh::getVol(void) const {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // SAFE ACCESS TO DATA
+// These functions check whether the mesh is built and the argument/s give/n are within the range. If the argument/s is/are in the correct range,
+// the function returns the specified value. Otherwise it returns a value which should not cause issues, for instance, if a distance is requested,
+// it returns 1 instead of 0.
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+double Mesh::satNodeX(unsigned int i) const {
+    if(built) { // Mesh is built
+        if(i < nx)      // Safe range: 0 <= i < nx
+            return nodeX[i];
+        else            // Unsuitable argument
+            printf("\tError accessing nodeX. Argument provided (%d) is not within the range 0 <= i < %d\n", i, nx);
+    } else      // Mesh is not built
+        printf("\tError accessing nodeX. Mesh is not built\n");
+    return 0;
+}
 
+double Mesh::satNodeY(unsigned int j) const {
+    if(built) { // Mesh is built
+        if(j < ny)  // Safe range: 0 <= j < ny
+            return nodeY[j];
+        else        // Unsuitable argument
+            printf("\tError accessing nodeY. Argument provided (%d) is not within the range 0 <= j < %d\n", j, ny);
+    } else      // Mesh is not built
+        printf("\tError accessing nodeY. Mesh is not built\n");
+    return 0;
+}
+
+double Mesh::satDistX(unsigned int i) const {
+    if(built) { // Mesh is built
+        if(i < nx-1)    // Safe range: 0 <= i < nx-1
+            return distX[i];
+        else            // Unsuitable argument
+            printf("\tError accessing distX. Argument provided (%d) is not within the range 0 <= i < %d\n", i, nx-1);
+    } else      // Mesh is not built
+        printf("\tError accessing distX. Mesh is not built\n");
+    return 1;
+}
+
+double Mesh::satDistY(unsigned int j) const {
+    if(built) { // Mesh is built
+        if(j < ny-1)    // Safe range: 0 <= j < ny-1
+            return distY[j];
+        else            // Unsuitable argument
+            printf("\tError accessing distY. Argument provided (%d) is not within the range 0 <= j < %d\n", j, ny-1);
+    } else      // Mesh is not built
+        printf("\tError accessing distY. Mesh is not built\n");
+    return 1;
+}
+
+double Mesh::satFaceX(unsigned int i) const {
+    if(built) { // Mesh is built
+        if(i < nx+1)    // Safe range: 0 <= i < nx+1
+            return faceX[i];
+        else            // Unsuitable argument
+            printf("\tError accessing faceX. Argument provided (%d) is not within the range 0 <= i < %d\n", i, nx+1);
+    } else      // Mesh is not built
+        printf("\tError accessing faceX. Mesh is not built\n");
+    return 1;
+}
+
+double Mesh::satFaceY(unsigned int j) const {
+    if(built) { // Mesh is built
+        if(j < ny+1)    // Safe range: 0 <= j < ny+1
+            return faceY[j];
+        else            // Unsuitable argument
+            printf("\tError accessing faceY. Argument provided (%d) is not within the range 0 <= j < %d\n", j, ny+1);
+    } else      // Mesh is not built
+        printf("\tError accessing faceY. Mesh is not built\n");
+    return 1;
+}
+
+double Mesh::satSurfX(unsigned int j) const {
+    if(built) { // Mesh is built
+        if(j < ny)  // Safe range: 0 <= j < ny
+            return surfX[j];
+        else        // Unsuitable argument
+            printf("\tError accessing surfX. Argument provided (%d) is not within the range 0 <= j < %d\n", j, ny);
+    } else      // Mesh is not built
+        printf("\tError accessing surfX. Mesh is not built\n");
+    return 1;
+}
+
+double Mesh::satSurfY(unsigned int i) const {
+    if(built) { // Mesh is built
+        if(i < nx)  // Safe range: 0 <= i < nx
+            return surfY[i];
+        else        // Unsuitable argument
+            printf("\tError accessing surfY. Argument provided (%d) is not within the range 0 <= i < %d\n", i, nx);
+    } else      // Mesh is not built
+        printf("\tError accessing surfY. Mesh is not built\n");
+    return 1;
+}
+
+double Mesh::satVol(unsigned int i) const {
+    if(built) { // Mesh is built
+        if(i < nx*ny)   // Safe range: 0 <= i < nx*ny
+            return vol[i];
+        else            // Unsuitable argument
+            printf("\tError accessing vol. Argument provided (%d) is not within the range 0 <= i < %d\n", i, nx*ny);
+    } else      // Mesh is not built
+        printf("\tError accessing vol. Mesh is not built\n");
+    return 1;
+}
+
+double Mesh::satVol(unsigned int i, unsigned int j) const {
+    if(built) { // Mesh is built
+        if(i < nx && j < ny)    // Safe range: 0 <= i < nx; 0 <= j < ny
+            return vol[j*nx+i];
+        else                    // Unsuitable arguments
+            printf("\tError accessing vol. Arguments provided (i = %d, j = %d) are not within the ranges 0 <= i < %d, 0 <= j < %d\n", i, j, nx, ny);
+    } else      // Mesh is not built
+        printf("\tError accessing vol. Mesh is not built\n");
+    return 1;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // UNSAFE ACCESS TO DATA
+// These functions do not check if the argument/s give/n are within the range.
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+double Mesh::atNodeX(int i) const {
+    return nodeX[i];
+}
 
+double Mesh::atNodeY(int j) const {
+    return nodeY[j];
+}
+
+double Mesh::atDistX(int i) const {
+    return distX[i];
+}
+
+double Mesh::atDistY(int j) const {
+    return distY[j];
+}
+
+double Mesh::atFaceX(int i) const {
+    return faceX[i];
+}
+
+double Mesh::atFaceY(int j) const {
+    return faceY[j];
+}
+
+double Mesh::atSurfX(int j) const {
+    return surfX[j];
+}
+
+double Mesh::atSurfY(int i) const {
+    return surfY[i];
+}
+
+double Mesh::atVol(int i) const {
+    return vol[i];
+}
+
+double Mesh::atVol(int i, int j) const {
+    return vol[j*nx+i];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// BUILD MESH
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, double _lz, unsigned int _nx, unsigned int _ny) {
+    /*
+    compute2DUniformMesh: computes the geometry of a uniform cartesian discretization for a 2D rectangular domain
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - nx: discretization nodes in X axis    [unsigned int]
+        - ny: discretization nodes in Y axis    [unsigned int]
+        - lx: domain length in X axis           [double]
+        - ly: domain length in Y axis           [double]
+        - lz: domain length in Z axis           [double]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - nodeX: discretization nodes position in X axis                    [double* - dimension nx - units of lx]
+        - nodeY: discretization nodes position in Y axis                    [double* - dimension ny - units of ly]
+        - faceX: position in X axis of faces perpendicular to the X axis.   [double* - dimension nx+1 - units of lx]
+        - faceY: position in Y axis of faces perpendicular to the Y axis.   [double* - dimension ny+1 - units of ly]
+        - surfX: surface of faces perpendicular to the X axis.              [double* - dimension ny - units of ly*lz]
+        - surfY: surface of faces perpendicular to the Y axis.              [double* - dimension nx - units of lx*lz]
+        - vol: volume of control volumes.                                   [double* - dimension nx*ny - units of lx*ly*lz]
+    */
+
+    // nodeX[0] = 0;
+    // double stepX = lx / (nx - 1);
+    // for(unsigned int i = 1; i < nx; i++)
+    //     nodeX[i] = i * stepX;
+    //
+    // nodeY[0] = 0;
+    // double stepY = ly / (ny - 1);
+    // for(unsigned int j = 1; j < ny; j++)
+    //     nodeY[j] = j * stepY;
+    //
+    // faceX[0] = 0;
+    // for(unsigned int i = 1; i < nx; i++)
+    //     faceX[i] = nodeX[i] - 0.5 * stepX;
+    // faceX[nx] = lx;
+    //
+    // faceY[0] = 0;
+    // for(unsigned int j = 1; j < ny; j++)
+    //     faceY[j] = nodeY[j] - 0.5 * stepY;
+    // faceY[ny] = ly;
+    //
+    // surfX[0] = 0.5 * stepY * lz;
+    // for(unsigned int j = 1; j < ny - 1; j++)
+    //     surfX[j] = stepY * lz;
+    // surfX[ny-1] = 0.5 * stepY * lz;
+    //
+    // surfY[0] = 0.5 * stepX * lz;
+    // for(unsigned int i = 1; i < nx - 1; i++)
+    //     surfY[i] = stepX * lz;
+    // surfY[nx-1] = 0.5 * stepX * lz;
+    //
+    // for(unsigned int i = 0; i < nx; i++)
+    //     for(unsigned int j = 0; j < ny; j++)
+    //         vol[j * nx + i] = surfX[j] * surfY[i] * lz;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // OTHER FUNCTIONS
