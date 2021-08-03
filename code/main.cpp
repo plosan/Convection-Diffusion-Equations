@@ -10,7 +10,7 @@
 #include <string>
 
 #include "matrix.h"
-#include "mesh.h"
+#include "meshC.h"
 
 void printToFile(const unsigned int nx, const unsigned int ny, const double* nodeX, const double* nodeY, const double* phi, std::string fileName, const int precision);
 

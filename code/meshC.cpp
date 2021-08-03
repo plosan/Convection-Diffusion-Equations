@@ -1,4 +1,4 @@
-#include "mesh.h"
+#include "meshC.h"
 
 void compute2DUniformRectangularMesh(const double x0, const double y0, const unsigned int nx, const unsigned int ny, const double lx, const double ly,
 const double lz, double* nodeX, double* nodeY, double* distX, double* distY, double* faceX, double* faceY, double* surfX, double* surfY, double* vol) {
