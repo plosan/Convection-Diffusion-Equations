@@ -34,7 +34,7 @@ public:
     Mesh();
 
     // Destructor
-    ~Mesh();
+    // ~Mesh();
 
     // Setters
     // void setInitialCoordinates(double _x0, double _y0);

@@ -26,45 +26,45 @@ Mesh::Mesh(void) {
 // Destructor
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Mesh::~Mesh(void) {
-    /*
-    Mesh: destructor. Only executes if the mesh is not built. Sets built to false. Sets x0, y0, lx, ly, lz, nx, ny to zero. Frees pointers.
-    --------------------------------------------------------------------------------------------------------------------------------------------------
-    Inputs: none
-    --------------------------------------------------------------------------------------------------------------------------------------------------
-    Outputs: none
-    */
-    printf("Deleting mesh object...\n");
-    // Set member variables (double and unsigned int) to zero
-    x0 = 0;
-    y0 = 0;
-    lx = 0;
-    ly = 0;
-    lz = 0;
-    nx = 0;
-    ny = 0;
-    // Free memory
-    if(nodeX)
-        free(nodeX);
-    if(nodeY)
-        free(nodeY);
-    if(distX)
-        free(distX);
-    if(distY)
-        free(distY);
-    if(faceX)
-        free(faceX);
-    if(faceY)
-        free(faceY);
-    if(surfX)
-        free(surfX);
-    if(surfY)
-        free(surfY);
-    if(vol)
-        free(vol);
-    // Set built to false
-    built = false;
-}
+// Mesh::~Mesh(void) {
+//     /*
+//     Mesh: destructor. Only executes if the mesh is not built. Sets built to false. Sets x0, y0, lx, ly, lz, nx, ny to zero. Frees pointers.
+//     --------------------------------------------------------------------------------------------------------------------------------------------------
+//     Inputs: none
+//     --------------------------------------------------------------------------------------------------------------------------------------------------
+//     Outputs: none
+//     */
+//     printf("Deleting mesh object...\n");
+//     // Set member variables (double and unsigned int) to zero
+//     x0 = 0;
+//     y0 = 0;
+//     lx = 0;
+//     ly = 0;
+//     lz = 0;
+//     nx = 0;
+//     ny = 0;
+//     // Free memory
+//     if(nodeX)
+//         free(nodeX);
+//     if(nodeY)
+//         free(nodeY);
+//     if(distX)
+//         free(distX);
+//     if(distY)
+//         free(distY);
+//     if(faceX)
+//         free(faceX);
+//     if(faceY)
+//         free(faceY);
+//     if(surfX)
+//         free(surfX);
+//     if(surfY)
+//         free(surfY);
+//     if(vol)
+//         free(vol);
+//     // Set built to false
+//     built = false;
+// }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GETTERS
