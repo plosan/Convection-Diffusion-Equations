@@ -4,7 +4,9 @@
 #include <cmath>
 #include <cfloat>
 #include <cstring>
-// #include "matrix.h"
+
+#include "Mesh.h"
+#include "matrix.h"
 
 int n;
 int* mat;
@@ -27,18 +29,10 @@ int main(void) {
 
     // printFunction(9,6,add);
 
-    n = 5;
-    mat = (int*) malloc(n * sizeof(int*));
-    for(int i = 0; i < n; i++)
-        mat[i] = i;
-
-    for(int i = 0; i < n; i++)
-        printf("%5d", mat[i]);
-    printf("\n");
-
-    for(int i = 0; i < n; i++)
-        printf("mat[%d] : %d\n", i, at(i));
-    printf("\n");
+    Mesh m;
+    m.printInfo();
+    m.buildUniformMesh(0, 0, 1, 1, 1, 5, 5);
+    m.printInfo();
 
     return 0;
 }

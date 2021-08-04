@@ -84,10 +84,13 @@ public:
     double atVol(int, int) const;
 
     // Build mesh
-    void buildUniformMesh(double _x0, double _y0, double _lx, double _ly, double _lz, unsigned int _nx, unsigned int _ny);
+    int buildUniformMesh(double _x0, double _y0, double _lx, double _ly, double _lz, unsigned int _nx, unsigned int _ny);
+
+    // Reset mesh
+    void resetMesh(void);
 
     // Other functions
-    void printMeshInfo(void) const;
+    void printInfo(void) const;
 
 };
 
