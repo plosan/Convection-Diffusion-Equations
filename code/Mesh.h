@@ -58,7 +58,7 @@ public:
     double* getSurfY(void) const;       // Returns surfY
     double* getVol(void) const;         // Returns vol
 
-    // Safe access to arrays
+    // Safe access to pointers
     double satNodeX(unsigned int) const;
     double satNodeY(unsigned int) const;
     double satDistX(unsigned int) const;
@@ -71,7 +71,7 @@ public:
     double satVol(unsigned int, unsigned int) const;
 
 
-    // Unsafe access to arrays
+    // Unsafe access to pointers
     double atNodeX(int) const;
     double atNodeY(int) const;
     double atDistX(int) const;
