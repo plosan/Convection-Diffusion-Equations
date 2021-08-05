@@ -17,11 +17,13 @@
 #define ALPHA 0.25*M_PI
 
 double vxDiagonal(double x, double y) {
-    return V0*cos(ALPHA);
+    // return V0*cos(ALPHA);
+    return cos(0.25*M_PI);
 }
 
 double vyDiagonal(double x, double y) {
-    return V0*sin(ALPHA);
+    // return V0*sin(ALPHA);
+    return sin(0.25*M_PI);
 }
 
 double sourceDiagonal(double x, double y) {
@@ -79,8 +81,8 @@ int main(int arg, char* argv[]) {
     prop[1] = gamma;
 
     // // Numerical data
-    unsigned int nx = 5;      // Number of nodes in x axis
-    unsigned int ny = 5;      // Number of nodes in y axis
+    unsigned int nx = 100;      // Number of nodes in x axis
+    unsigned int ny = 100;      // Number of nodes in y axis
     const double phi0 = 1;      // Initial value to fill phi vector for linear system resolution
     const double tol = 1e-15;   // Tolerance to stop iteration
     const int maxIt = 1e6;      // Maximum number of iterations
@@ -93,36 +95,101 @@ int main(int arg, char* argv[]) {
     Mesh m;
     printf("Building uniform cartesian mesh...\n");
     m.buildUniformMesh(x0, y0, L, L, lz, nx, ny);
-
+    if(!m.isBuilt())
+        return -2;
+    m.printInfo();
 
     double* A = (double*) malloc(5 * nx * ny * sizeof(double*));
     double* b = (double*) malloc(nx * ny * sizeof(double*));
     int scheme = 0;
-    computeSteadyStateDiscretizationCoefficientsInternalNodes(m, prop, vxDiagonal, vyDiagonal, sourceDiagonal, A, b, scheme);
+    if(!A) {
+        printf("Not A\n");
+        return -2;
+    }
+    if(!b) {
+        printf("Not b\n");
+        return -2;
+    }
+
     computeDiscretizationCoefficientsBoundaryNodesDiagonalCase(m, phi_boundary, A, b);
+
+    // computeSteadyStateDiscretizationCoefficientsInternalNodes(m, prop, vxDiagonal, vyDiagonal, sourceDiagonal, A, b, scheme);
+
+    std::fill_n(A, 5*m.getNX()*m.getNY(), 0);
+    std::fill_n(b, m.getNX()*m.getNY(), 0);
+    printf("Here\n");
+
+
+    // Internal nodes
+    for(unsigned int j = 1; j < ny-1; j++) {
+        for(unsigned int i = 1; i < nx-1; i++) {
+            printf("%5d|", 1);
+            int node = j * nx + i;
+            printf("%5d|", 2);
+            printf("%10d%10d%10d", i, j, node);
+            double x = m.satNodeX(i);
+            double y = m.satNodeY(j);
+            printf("%5d|", 3);
+            // South node
+            printf("%5d", 4);
+            double mf = -prop[0] * vyDiagonal(x,y) * m.satSurfY(i);
+            printf("%d", 4);
+            double C = (std::abs(mf) != 0 ? (mf + std::abs(mf))/(2*mf) : 0);
+            printf("%d", 4);
+            double D = prop[1] * m.satSurfY(i) / m.satDistY(j-1);
+            printf("%d|", 4);
+            A[5*node] = D - mf * C;
+            printf("%15s", "South");
+            // West node
+            mf = -prop[0] * vxDiagonal(x,y) * m.satSurfX(j);
+            C = (std::abs(mf) != 0 ? (mf + std::abs(mf))/(2*mf) : 0);
+            D = prop[1] * m.satSurfX(j) / m.satDistX(i-1);
+            A[5*node+1] = D - mf * C;
+            printf("%15s", "West");
+            // East node
+            mf = prop[0] * vxDiagonal(x,y) * m.satSurfX(j);
+            C = (std::abs(mf) != 0 ? (mf - std::abs(mf))/(2*mf) : 0);
+            D = prop[1] * m.satSurfX(j) / m.satDistX(i);
+            A[5*node+2] = D - mf * C;
+            printf("%15s", "East");
+            // North node
+            mf = prop[0] * vyDiagonal(x,y) * m.satSurfY(i);
+            C = (std::abs(mf) != 0 ? (mf - std::abs(mf))/(2*mf) : 0);
+            D = prop[1] * m.satSurfY(i) / m.satDistY(j);
+            A[5*node+3] = D - mf * C;
+            printf("%15s", "North");
+            // Central node
+            A[5*node+4] = A[5*node] + A[5*node+1] + A[5*node+2] + A[5*node+3] - sourceDiagonal(x,y) * m.satVol(i,j);
+            printf("%15s", "Central");
+            // Independent term
+            b[5*node] = sourceDiagonal(x,y) * m.satVol(i,j);
+            printf("%15s%5d\n", "b", m.isBuilt());
+        }
+    }
+
+
 
     double* phi = (double*) malloc(nx * ny * sizeof(double*));
     std::fill_n(phi, nx*ny, phi0);
 
     solveSystem(nx, ny, tol, maxIt, A, b, phi);
 
-    const char* filename = "output/output.dat";
-    printToFile(m, phi, filename, 5);
+    // const char* filename = "output/output.dat";
+    // printToFile(m, phi, filename, 5);
     // plotSolution(filename);
-
-    double checkSol = checkSystemSolution(nx, ny, A, b, phi);
-    printf("checkSol : %.5e\n\n\n", checkSol);
+    //
+    // double checkSol = checkSystemSolution(nx, ny, A, b, phi);
+    // printf("checkSol : %.5e\n\n\n", checkSol);
 
     // Free memory allocated
+    free(prop);
     free(phi_boundary);
+    free(A);
+    free(b);
     free(phi);
+    printf("Here\n");
 
-    char buffer[20+strlen(filename)];
-
-    sprintf(buffer, "plot '%s' with image", filename);
-    printf("%s\n", buffer);
-
-    return 0;
+    return 1;
 }
 
 void computeSteadyStateDiscretizationCoefficientsInternalNodes(const Mesh m, const double* prop,
@@ -150,37 +217,53 @@ double (*vx)(double,double), double (*vy)(double, double), double (*source)(doub
     // Initialize matrix of discretization coefficients (A) and vector of independent terms (b) to zero
     std::fill_n(A, 5*m.getNX()*m.getNY(), 0);
     std::fill_n(b, m.getNX()*m.getNY(), 0);
+    printf("Here\n");
+
 
     // Internal nodes
     for(unsigned int j = 1; j < m.getNY()-1; j++) {
         for(unsigned int i = 1; i < m.getNX()-1; i++) {
+            printf("%5d|", 1);
             int node = j * m.getNX() + i;
-            double x = m.atNodeX(i);
-            double y = m.atNodeY(j);
+            printf("%5d|", 2);
+            printf("%10d%10d%10d", i, j, node);
+            double x = m.satNodeX(i);
+            double y = m.satNodeY(j);
+            printf("%5d|", 3);
             // South node
-            double mf = -prop[0] * (*vy)(x,y) * m.atSurfY(i);
+            printf("%5d", 4);
+            double mf = -prop[0] * (*vy)(x,y) * m.satSurfY(i);
+            printf("%d", 4);
             double C = (std::abs(mf) != 0 ? (mf + std::abs(mf))/(2*mf) : 0);
-            double D = prop[1] * m.atSurfY(i) / m.atDistY(j-1);
+            printf("%d", 4);
+            double D = prop[1] * m.satSurfY(i) / m.satDistY(j-1);
+            printf("%d|", 4);
             A[5*node] = D - mf * C;
+            printf("%15s", "South");
             // West node
-            mf = -prop[0] * (*vx)(x,y) * m.atSurfX(j);
+            mf = -prop[0] * (*vx)(x,y) * m.satSurfX(j);
             C = (std::abs(mf) != 0 ? (mf + std::abs(mf))/(2*mf) : 0);
-            D = prop[1] * m.atSurfX(j) / m.atDistX(i-1);
+            D = prop[1] * m.satSurfX(j) / m.satDistX(i-1);
             A[5*node+1] = D - mf * C;
+            printf("%15s", "West");
             // East node
-            mf = prop[0] * (*vx)(x,y) * m.atSurfX(j);
+            mf = prop[0] * (*vx)(x,y) * m.satSurfX(j);
             C = (std::abs(mf) != 0 ? (mf - std::abs(mf))/(2*mf) : 0);
-            D = prop[1] * m.atSurfX(j) / m.atDistX(i);
+            D = prop[1] * m.satSurfX(j) / m.satDistX(i);
             A[5*node+2] = D - mf * C;
+            printf("%15s", "East");
             // North node
-            mf = prop[0] * (*vy)(x,y) * m.atSurfY(i);
+            mf = prop[0] * (*vy)(x,y) * m.satSurfY(i);
             C = (std::abs(mf) != 0 ? (mf - std::abs(mf))/(2*mf) : 0);
-            D = prop[1] * m.atSurfY(i) / m.atDistY(j);
+            D = prop[1] * m.satSurfY(i) / m.satDistY(j);
             A[5*node+3] = D - mf * C;
+            printf("%15s", "North");
             // Central node
-            A[5*node+4] = A[5*node] + A[5*node+1] + A[5*node+2] + A[5*node+3] - (*source)(x,y) * m.atVol(i,j);
+            A[5*node+4] = A[5*node] + A[5*node+1] + A[5*node+2] + A[5*node+3] - (*source)(x,y) * m.satVol(i,j);
+            printf("%15s", "Central");
             // Independent term
-            b[5*node] = (*source)(x,y) * m.atVol(i,j);
+            b[5*node] = (*source)(x,y) * m.satVol(i,j);
+            printf("%15s%5d\n", "b", m.isBuilt());
         }
     }
 }
@@ -205,21 +288,18 @@ void computeDiscretizationCoefficientsBoundaryNodesDiagonalCase(const Mesh m, co
         A[5*i+4] = 1;
         b[i] = phi_boundary[0];
     }
-
     // Right column nodes: i = nx-1; 1 <= j <= ny-1
     for(unsigned int j = 1; j < m.getNY(); j++) {
         int node = (j + 1) * m.getNX() - 1;
         A[5*node+4] = 1;
         b[node] = phi_boundary[0];
     }
-
     // Left column nodes: i = 0; 1 <= j <= ny-1
     for(unsigned int j = 1; j < m.getNY(); j++) {
         int node = j * m.getNX();
         A[5*node+4] = 1;
         b[node] = phi_boundary[1];
     }
-
     // Upper row nodes: 1 <= i <= nx-2, j = ny-1
     for(unsigned int i = 1; i < m.getNX()-1; i++) {
         int node = (m.getNY() - 1) * m.getNX() + i;
@@ -228,69 +308,6 @@ void computeDiscretizationCoefficientsBoundaryNodesDiagonalCase(const Mesh m, co
     }
 }
 
-void computeDiscretizationCoefficientsDiagonalCase(const unsigned int nx, const unsigned int ny, const double* nodeX, const double* nodeY,
-const double* distX, const double* distY, const double* faceX, const double* faceY, const double* surfX, const double* surfY, const double* vol,
-const double* phi_boundary, const double* v, const double rho, const double gamma, double* A, double* b, const int scheme) {
-
-    printf("Computing discretization coefficients for the diagonal case...\n");
-    // Initialize matrix of discretization coefficients (A) and vector of independent terms (b) to zero
-    std::fill_n(A, 5*nx*ny, 0);
-    std::fill_n(b, nx*ny, 0);
-
-    // Internal nodes, 1 <= i <= nx-2; 1 <= j <= ny-2
-    for(unsigned int j = 1; j < ny-1; j++) {
-        for(unsigned int i = 1; i < nx-1; i++) {
-            int node = j * nx + i;
-            // South node
-            double massFlow = -rho * v[1] * surfY[i];
-            double c = (massFlow != 0 ? (massFlow + std::abs(massFlow))/(2 * massFlow) : 0);
-            A[5*node] = gamma*surfY[i]/distY[j-1] + massFlow*c;
-            // West node
-            massFlow = -rho * v[0] * surfX[j];
-            c = (massFlow != 0 ? (massFlow + std::abs(massFlow))/(2 * massFlow) : 0);
-            A[5*node+1] = gamma*surfX[j]/distX[i-1] + massFlow*c;
-            // East node
-            massFlow = rho * v[0] * surfX[j];
-            c = (massFlow != 0 ? (massFlow - std::abs(massFlow))/(2 * massFlow) : 0);
-            A[5*node+2] = gamma*surfX[j]/distX[i] + massFlow*c;
-            // North node
-            massFlow = rho * v[1] * surfY[i];
-            c = (massFlow != 0 ? (massFlow - std::abs(massFlow))/(2 * massFlow) : 0);
-            A[5*node+3] = gamma*surfY[i]/distY[j] + massFlow*c;
-            // Central node
-            A[5*node+4] = A[5*node] + A[5*node+1] + A[5*node+2] + A[5*node+3];
-        }
-    }
-
-    // Lower row nodes: 0 <= i <= nx-1; j=0
-    for(unsigned int i = 0; i < nx; i++) {
-        A[5*i+4] = 1;
-        b[i] = phi_boundary[0];
-    }
-
-    // Right column nodes: i = nx-1; 1 <= j <= ny-1
-    for(unsigned int j = 1; j < ny; j++) {
-        int node = (j + 1) * nx - 1;
-        A[5*node+4] = 1;
-        b[node] = phi_boundary[0];
-    }
-
-    // Left column nodes: i = 0; 1 <= j <= ny-1
-    for(unsigned int j = 1; j < ny; j++) {
-        int node = j * nx;
-        A[5*node+4] = 1;
-        b[node] = phi_boundary[1];
-    }
-
-    // Upper row nodes: 1 <= i <= nx-2, j = ny-1
-    for(unsigned int i = 1; i < nx-1; i++) {
-        int node = (ny - 1) * nx + i;
-        A[5*node+4] = 1;
-        b[node] = phi_boundary[1];
-    }
-
-    printf("\n");
-}
 
 void checkSystemMatrix(const unsigned int nx, const unsigned int ny, const double tol, const double* A) {
     /*
@@ -398,6 +415,18 @@ void solveSystem(const unsigned int nx, const unsigned int ny, const double tol,
 }
 
 void printToFile(const Mesh m, const double* phi, const char* filename, const int precision) {
+    /*
+    printToFile: prints the solution of the linear system to a file. When the file is open, the function creates a new file or overwrites the previous
+    one if it already exists.
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - m                 Mesh object                                                 [const Mesh]
+        - phi               Solution of the linar system. Rows: nx*ny, Columns: 1       [const double*]
+        - filename          Name of the file where the solution is to be written        [const char*]
+        - precision         Number of decimal places to write doubles                   [const int]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs: the file where the solution has been written.
+    */
     printf("Printing the solution to file...\n");
     std::ofstream file;
     file.open(filename);
@@ -409,25 +438,32 @@ void printToFile(const Mesh m, const double* phi, const char* filename, const in
                 file << m.atNodeX(i) << " " << m.atNodeY(j) << " " << phi[j*m.getNX()+i] << std::endl;
             file << std::endl;
         }
-    } else {
+    } else
         printf("\tCould not open file\n");
-    }
     file.close();
-    printf("\n");
+    printf("\tClosing file...\n\n");
 }
 
 void plotSolution(const char* filename) {
+    /*
+    plotSolution: plots phi vs (x,y) in a temperature map using gnuplot.
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - filename          Name of the file where the solution has been previously written     [const char*]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs: temperature map of phi. Prior to running the program,
+        - the command "export DISPLAY=:0 gnuplot" must be executed (only needed before the first execution)
+        - Xming server must be running
+    */
 
-    FILE *gnupipe = NULL;
+    // Plotting command, uses filename parameter
     char plotCommand[30+strlen(filename)];
-
     sprintf(plotCommand, "plot '%s' with image", filename);
-
-    // const char* GnuCommands[] = {"set xrange [0:1]", "set yrange [0:1]", "set size ratio 1", "set palette rgb 33,13,10", "plot 'output/output.dat' with image"};
+    // Commands sent to gnuplot
     const char* GnuCommands[] = {"set xrange [0:1]", "set yrange [0:1]", "set size ratio 1", "set palette rgb 33,13,10", plotCommand};
 
+    FILE *gnupipe = NULL;
     gnupipe = popen("gnuplot -persistent", "w");
-    printf("Size: %ld\n", sizeof(GnuCommands));
     for(int i = 0; i < 5; i++)
         fprintf(gnupipe, "%s\n", GnuCommands[i]);
 }
@@ -544,4 +580,67 @@ const double* phi_boundary, const double* v, const double rho, const double gamm
         }
     }
     printf("\tMaximum difference: %.5e\n\n", maxDiff);
+}
+
+void computeDiscretizationCoefficientsDiagonalCase(const unsigned int nx, const unsigned int ny, const double* nodeX, const double* nodeY,
+const double* distX, const double* distY, const double* faceX, const double* faceY, const double* surfX, const double* surfY, const double* vol,
+const double* phi_boundary, const double* v, const double rho, const double gamma, double* A, double* b, const int scheme) {
+
+    printf("Computing discretization coefficients for the diagonal case...\n\n");
+    // Initialize matrix of discretization coefficients (A) and vector of independent terms (b) to zero
+    std::fill_n(A, 5*nx*ny, 0);
+    std::fill_n(b, nx*ny, 0);
+
+    // Internal nodes, 1 <= i <= nx-2; 1 <= j <= ny-2
+    for(unsigned int j = 1; j < ny-1; j++) {
+        for(unsigned int i = 1; i < nx-1; i++) {
+            int node = j * nx + i;
+            printf("%10s : %d\n", "Node", node);
+            // South node
+            double massFlow = -rho * v[1] * surfY[i];
+            double c = (massFlow != 0 ? (massFlow + std::abs(massFlow))/(2 * massFlow) : 0);
+            A[5*node] = gamma*surfY[i]/distY[j-1] + massFlow*c;
+            // West node
+            massFlow = -rho * v[0] * surfX[j];
+            c = (massFlow != 0 ? (massFlow + std::abs(massFlow))/(2 * massFlow) : 0);
+            A[5*node+1] = gamma*surfX[j]/distX[i-1] + massFlow*c;
+            // East node
+            massFlow = rho * v[0] * surfX[j];
+            c = (massFlow != 0 ? (massFlow - std::abs(massFlow))/(2 * massFlow) : 0);
+            A[5*node+2] = gamma*surfX[j]/distX[i] + massFlow*c;
+            // North node
+            massFlow = rho * v[1] * surfY[i];
+            c = (massFlow != 0 ? (massFlow - std::abs(massFlow))/(2 * massFlow) : 0);
+            A[5*node+3] = gamma*surfY[i]/distY[j] + massFlow*c;
+            // Central node
+            A[5*node+4] = A[5*node] + A[5*node+1] + A[5*node+2] + A[5*node+3];
+        }
+    }
+
+    // Lower row nodes: 0 <= i <= nx-1; j=0
+    for(unsigned int i = 0; i < nx; i++) {
+        A[5*i+4] = 1;
+        b[i] = phi_boundary[0];
+    }
+
+    // Right column nodes: i = nx-1; 1 <= j <= ny-1
+    for(unsigned int j = 1; j < ny; j++) {
+        int node = (j + 1) * nx - 1;
+        A[5*node+4] = 1;
+        b[node] = phi_boundary[0];
+    }
+
+    // Left column nodes: i = 0; 1 <= j <= ny-1
+    for(unsigned int j = 1; j < ny; j++) {
+        int node = j * nx;
+        A[5*node+4] = 1;
+        b[node] = phi_boundary[1];
+    }
+
+    // Upper row nodes: 1 <= i <= nx-2, j = ny-1
+    for(unsigned int i = 1; i < nx-1; i++) {
+        int node = (ny - 1) * nx + i;
+        A[5*node+4] = 1;
+        b[node] = phi_boundary[1];
+    }
 }
