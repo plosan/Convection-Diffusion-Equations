@@ -48,8 +48,7 @@ void plotSolution(const char* filename);
 
 void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* A, double** A_mat);
 
-
-double checkSystemSolution(const unsigned int nx, const unsigned int ny, const double* A, const double* b, const double* phi);
+double computeSolutionDifference(const unsigned int nx, const unsigned int ny, const double* A, const double* b, const double* phi);
 
 void verification(const double lx, const double ly, const double lz, const unsigned int nx, const unsigned int ny, const double* nodeX, const double* nodeY,
 const double* distX, const double* distY, const double* faceX, const double* faceY, const double* surfX, const double* surfY, const double* vol,
@@ -80,7 +79,7 @@ int main(int arg, char* argv[]) {
     prop[1] = gamma;
 
     // // Numerical data
-    unsigned int N = 75;
+    unsigned int N = 250;
     unsigned int nx = N;      // Number of nodes in x axis
     unsigned int ny = N;      // Number of nodes in y axis
     const double phi0 = 1;      // Initial value to fill phi vector for linear system resolution
@@ -111,7 +110,6 @@ int main(int arg, char* argv[]) {
     }
 
 
-
     printf("Computing internal nodes discretization coefficients...\n\n");
     computeSteadyStateDiscretizationCoefficientsInternalNodes(m, prop, vxDiagonal, vyDiagonal, sourceDiagonal, A, b, scheme);
 
@@ -123,13 +121,13 @@ int main(int arg, char* argv[]) {
 
     printf("Computing boundary nodes discretization coefficients for the diagonal case...\n\n");
     solveSystem(nx, ny, tol, maxIt, A, b, phi);
+    double checkSol = computeSolutionDifference(nx, ny, A, b, phi);
+    printf("checkSol : %.5e\n\n\n", checkSol);
 
     const char* filename = "output/output.dat";
     printToFile(m, phi, filename, 5);
     plotSolution(filename);
 
-    double checkSol = checkSystemSolution(nx, ny, A, b, phi);
-    printf("checkSol : %.5e\n\n\n", checkSol);
 
     // Free memory allocated
     free(prop);
@@ -440,9 +438,9 @@ void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* 
     }
 }
 
-double checkSystemSolution(const unsigned int nx, const unsigned int ny, const double* A, const double* b, const double* phi) {
+double computeSolutionDifference(const unsigned int nx, const unsigned int ny, const double* A, const double* b, const double* phi) {
     /*
-    checkSystemSolution: checks the solution of the linear system resulting from the 2D convection-diffusion equations in a cartesian mesh. If _A is
+    computeSolutionDifference: checks the solution of the linear system resulting from the 2D convection-diffusion equations in a cartesian mesh. If _A is
     the linear system matrix, the function returns the infinity norm of _A * phi - b.
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Inputs:
@@ -458,21 +456,21 @@ double checkSystemSolution(const unsigned int nx, const unsigned int ny, const d
     double maxDiff = -1;
     // Lower row nodes
     for(unsigned int i = 0; i < nx; i++) {
-        double diff = b[i] - A[5*i+3] * phi[i+nx] - A[5*i+4] * phi[i];
+        double diff = b[i] + A[5*i+3] * phi[i+nx] - A[5*i+4] * phi[i];
         maxDiff = std::max(maxDiff, std::abs(diff));
     }
     // Central row nodes
     for(unsigned int j = 1; j < ny-1; j++) {
         for(unsigned int i = 0; i < nx; i++) {
             int node = j * nx + i;
-            double diff = b[node] - (A[5*node]*phi[node-nx]) - (A[5*node+1]*phi[node-1]) - (A[5*node+2]*phi[node+1]) - (A[5*node+3]*phi[node+nx]) - (A[5*node+4]*phi[node]);
+            double diff = b[node] + (A[5*node]*phi[node-nx]) + (A[5*node+1]*phi[node-1]) + (A[5*node+2]*phi[node+1]) + (A[5*node+3]*phi[node+nx]) - (A[5*node+4]*phi[node]);
             maxDiff = std::max(maxDiff, std::abs(diff));
         }
     }
     // Upper row nodes
     for(unsigned int i = 0; i < nx; i++) {
         int node = (ny-1) * nx + i;
-        double diff = b[node] - (A[5*node] * phi[node-nx]) - (A[5*node+4] * phi[node]);
+        double diff = b[node] + (A[5*node] * phi[node-nx]) - (A[5*node+4] * phi[node]);
         maxDiff = std::max(maxDiff, std::abs(diff));
     }
     return maxDiff;
