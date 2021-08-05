@@ -48,7 +48,6 @@ void plotSolution(const char* filename);
 
 void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* A, double** A_mat);
 
-void checkSystemSolution(const unsigned int nx, const unsigned int ny, double** A_mat, const double* b, const double* phi);
 
 double checkSystemSolution(const unsigned int nx, const unsigned int ny, const double* A, const double* b, const double* phi);
 
@@ -81,8 +80,9 @@ int main(int arg, char* argv[]) {
     prop[1] = gamma;
 
     // // Numerical data
-    unsigned int nx = 100;      // Number of nodes in x axis
-    unsigned int ny = 100;      // Number of nodes in y axis
+    unsigned int N = 75;
+    unsigned int nx = N;      // Number of nodes in x axis
+    unsigned int ny = N;      // Number of nodes in y axis
     const double phi0 = 1;      // Initial value to fill phi vector for linear system resolution
     const double tol = 1e-15;   // Tolerance to stop iteration
     const int maxIt = 1e6;      // Maximum number of iterations
@@ -93,11 +93,10 @@ int main(int arg, char* argv[]) {
 
 
     Mesh m;
-    printf("Building uniform cartesian mesh...\n");
+    printf("Building uniform cartesian mesh...\n\n");
     m.buildUniformMesh(x0, y0, L, L, lz, nx, ny);
     if(!m.isBuilt())
         return -2;
-    m.printInfo();
 
     double* A = (double*) malloc(5 * nx * ny * sizeof(double*));
     double* b = (double*) malloc(nx * ny * sizeof(double*));
@@ -111,75 +110,26 @@ int main(int arg, char* argv[]) {
         return -2;
     }
 
+
+
+    printf("Computing internal nodes discretization coefficients...\n\n");
+    computeSteadyStateDiscretizationCoefficientsInternalNodes(m, prop, vxDiagonal, vyDiagonal, sourceDiagonal, A, b, scheme);
+
+    printf("Computing boundary nodes discretization coefficients for the diagonal case...\n\n");
     computeDiscretizationCoefficientsBoundaryNodesDiagonalCase(m, phi_boundary, A, b);
-
-    // computeSteadyStateDiscretizationCoefficientsInternalNodes(m, prop, vxDiagonal, vyDiagonal, sourceDiagonal, A, b, scheme);
-
-    std::fill_n(A, 5*m.getNX()*m.getNY(), 0);
-    std::fill_n(b, m.getNX()*m.getNY(), 0);
-    printf("Here\n");
-
-
-    // Internal nodes
-    for(unsigned int j = 1; j < ny-1; j++) {
-        for(unsigned int i = 1; i < nx-1; i++) {
-            printf("%5d|", 1);
-            int node = j * nx + i;
-            printf("%5d|", 2);
-            printf("%10d%10d%10d", i, j, node);
-            double x = m.satNodeX(i);
-            double y = m.satNodeY(j);
-            printf("%5d|", 3);
-            // South node
-            printf("%5d", 4);
-            double mf = -prop[0] * vyDiagonal(x,y) * m.satSurfY(i);
-            printf("%d", 4);
-            double C = (std::abs(mf) != 0 ? (mf + std::abs(mf))/(2*mf) : 0);
-            printf("%d", 4);
-            double D = prop[1] * m.satSurfY(i) / m.satDistY(j-1);
-            printf("%d|", 4);
-            A[5*node] = D - mf * C;
-            printf("%15s", "South");
-            // West node
-            mf = -prop[0] * vxDiagonal(x,y) * m.satSurfX(j);
-            C = (std::abs(mf) != 0 ? (mf + std::abs(mf))/(2*mf) : 0);
-            D = prop[1] * m.satSurfX(j) / m.satDistX(i-1);
-            A[5*node+1] = D - mf * C;
-            printf("%15s", "West");
-            // East node
-            mf = prop[0] * vxDiagonal(x,y) * m.satSurfX(j);
-            C = (std::abs(mf) != 0 ? (mf - std::abs(mf))/(2*mf) : 0);
-            D = prop[1] * m.satSurfX(j) / m.satDistX(i);
-            A[5*node+2] = D - mf * C;
-            printf("%15s", "East");
-            // North node
-            mf = prop[0] * vyDiagonal(x,y) * m.satSurfY(i);
-            C = (std::abs(mf) != 0 ? (mf - std::abs(mf))/(2*mf) : 0);
-            D = prop[1] * m.satSurfY(i) / m.satDistY(j);
-            A[5*node+3] = D - mf * C;
-            printf("%15s", "North");
-            // Central node
-            A[5*node+4] = A[5*node] + A[5*node+1] + A[5*node+2] + A[5*node+3] - sourceDiagonal(x,y) * m.satVol(i,j);
-            printf("%15s", "Central");
-            // Independent term
-            b[5*node] = sourceDiagonal(x,y) * m.satVol(i,j);
-            printf("%15s%5d\n", "b", m.isBuilt());
-        }
-    }
-
-
 
     double* phi = (double*) malloc(nx * ny * sizeof(double*));
     std::fill_n(phi, nx*ny, phi0);
 
+    printf("Computing boundary nodes discretization coefficients for the diagonal case...\n\n");
     solveSystem(nx, ny, tol, maxIt, A, b, phi);
 
-    // const char* filename = "output/output.dat";
-    // printToFile(m, phi, filename, 5);
-    // plotSolution(filename);
-    //
-    // double checkSol = checkSystemSolution(nx, ny, A, b, phi);
-    // printf("checkSol : %.5e\n\n\n", checkSol);
+    const char* filename = "output/output.dat";
+    printToFile(m, phi, filename, 5);
+    plotSolution(filename);
+
+    double checkSol = checkSystemSolution(nx, ny, A, b, phi);
+    printf("checkSol : %.5e\n\n\n", checkSol);
 
     // Free memory allocated
     free(prop);
@@ -187,7 +137,6 @@ int main(int arg, char* argv[]) {
     free(A);
     free(b);
     free(phi);
-    printf("Here\n");
 
     return 1;
 }
@@ -213,57 +162,40 @@ double (*vx)(double,double), double (*vy)(double, double), double (*source)(doub
         - b         Vector of indenpendent terms. Rows: nx*ny, Columns: 1                    [double*]
     */
 
-    printf("Computing internal nodes discretization coefficients...\n");
     // Initialize matrix of discretization coefficients (A) and vector of independent terms (b) to zero
     std::fill_n(A, 5*m.getNX()*m.getNY(), 0);
     std::fill_n(b, m.getNX()*m.getNY(), 0);
-    printf("Here\n");
-
 
     // Internal nodes
     for(unsigned int j = 1; j < m.getNY()-1; j++) {
         for(unsigned int i = 1; i < m.getNX()-1; i++) {
-            printf("%5d|", 1);
             int node = j * m.getNX() + i;
-            printf("%5d|", 2);
-            printf("%10d%10d%10d", i, j, node);
-            double x = m.satNodeX(i);
-            double y = m.satNodeY(j);
-            printf("%5d|", 3);
+            double x = m.atNodeX(i);
+            double y = m.atNodeY(j);
             // South node
-            printf("%5d", 4);
-            double mf = -prop[0] * (*vy)(x,y) * m.satSurfY(i);
-            printf("%d", 4);
+            double mf = -prop[0] * (*vy)(x,y) * m.atSurfY(i);
             double C = (std::abs(mf) != 0 ? (mf + std::abs(mf))/(2*mf) : 0);
-            printf("%d", 4);
-            double D = prop[1] * m.satSurfY(i) / m.satDistY(j-1);
-            printf("%d|", 4);
+            double D = prop[1] * m.atSurfY(i) / m.atDistY(j-1);
             A[5*node] = D - mf * C;
-            printf("%15s", "South");
             // West node
-            mf = -prop[0] * (*vx)(x,y) * m.satSurfX(j);
+            mf = -prop[0] * (*vx)(x,y) * m.atSurfX(j);
             C = (std::abs(mf) != 0 ? (mf + std::abs(mf))/(2*mf) : 0);
-            D = prop[1] * m.satSurfX(j) / m.satDistX(i-1);
+            D = prop[1] * m.atSurfX(j) / m.atDistX(i-1);
             A[5*node+1] = D - mf * C;
-            printf("%15s", "West");
             // East node
-            mf = prop[0] * (*vx)(x,y) * m.satSurfX(j);
+            mf = prop[0] * (*vx)(x,y) * m.atSurfX(j);
             C = (std::abs(mf) != 0 ? (mf - std::abs(mf))/(2*mf) : 0);
-            D = prop[1] * m.satSurfX(j) / m.satDistX(i);
+            D = prop[1] * m.atSurfX(j) / m.atDistX(i);
             A[5*node+2] = D - mf * C;
-            printf("%15s", "East");
             // North node
-            mf = prop[0] * (*vy)(x,y) * m.satSurfY(i);
+            mf = prop[0] * (*vy)(x,y) * m.atSurfY(i);
             C = (std::abs(mf) != 0 ? (mf - std::abs(mf))/(2*mf) : 0);
-            D = prop[1] * m.satSurfY(i) / m.satDistY(j);
+            D = prop[1] * m.atSurfY(i) / m.atDistY(j);
             A[5*node+3] = D - mf * C;
-            printf("%15s", "North");
             // Central node
-            A[5*node+4] = A[5*node] + A[5*node+1] + A[5*node+2] + A[5*node+3] - (*source)(x,y) * m.satVol(i,j);
-            printf("%15s", "Central");
+            A[5*node+4] = A[5*node] + A[5*node+1] + A[5*node+2] + A[5*node+3] - (*source)(x,y) * m.atVol(i,j);
             // Independent term
-            b[5*node] = (*source)(x,y) * m.satVol(i,j);
-            printf("%15s%5d\n", "b", m.isBuilt());
+            b[node] = (*source)(x,y) * m.atVol(i,j);
         }
     }
 }
@@ -282,7 +214,7 @@ void computeDiscretizationCoefficientsBoundaryNodesDiagonalCase(const Mesh m, co
         - A                 Linear system matrix. Rows: nx*ny, Columns: 5                                   [double*]
         - b                 Vector of indenpendent terms. Rows: nx*ny, Columns: 1                           [double*]
     */
-    printf("Computing boundary nodes discretization coefficients for the diagonal case...\n");
+    printf("Computing boundary nodes discretization coefficients for the diagonal case...\n\n");
     // Lower row nodes: 0 <= i <= nx-1; j=0
     for(unsigned int i = 0; i < m.getNX(); i++) {
         A[5*i+4] = 1;
@@ -506,18 +438,6 @@ void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* 
     } else {
         printf("A_mat not allocated\n");
     }
-}
-
-void checkSystemSolution(const unsigned int nx, const unsigned int ny, double** A_mat, const double* b, const double* phi) {
-    printf("Checking system solution...\n");
-    double maxDiff = -1;
-    for(unsigned int row = 0; row < nx*ny; row++) {
-        double sum = 0;
-        for(unsigned int col = 0; col < nx*ny; col++)
-            sum += A_mat[row][col] * phi[col];
-        maxDiff = std::max(maxDiff, std::abs(sum - b[row]));
-    }
-    printf("\tMaximum difference: %.5e\n\n", maxDiff);
 }
 
 double checkSystemSolution(const unsigned int nx, const unsigned int ny, const double* A, const double* b, const double* phi) {
