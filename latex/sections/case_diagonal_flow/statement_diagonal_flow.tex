@@ -10,7 +10,7 @@ The following boundary conditions are prescribed:
 	\item $\phi = \phi_\text{low}$ on $[0,L) \times \{ 0 \} \cup \{ L \} \times [0,L)$.
 	\item $\phi = \phi_\text{high}$ on $\{ 0 \} \times (0,L] \cup (0,L] \times \{ L \}$.
 \end{itemize}
-Furthermore, the velocity field is $\vb{v} = v_0 \cos(\alpha) \vb{i} + v_0 \sin(\alpha) \vb{j}$, with $v_0 > 0$ constant and $\alpha = \pi / 4$. Therefore the left--hand side of \eqref{eq:diagcase_statement_pde1} is
+The velocity field is $\vb{v} = v_0 \cos(\alpha) \vb{i} + v_0 \sin(\alpha) \vb{j}$, with $v_0 > 0$ constant and $\alpha = \pi / 4$. Therefore the left--hand side of \eqref{eq:diagcase_statement_pde1} is
 \begin{align}
 	\frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} &= 
 	\frac{\rho}{\Gamma} 
@@ -22,7 +22,7 @@ Furthermore, the velocity field is $\vb{v} = v_0 \cos(\alpha) \vb{i} + v_0 \sin(
 	\left( \pdv{\phi}{x} + \pdv{\phi}{y} \right) = 
 	\beta \mathrm{Pe} \left( \pdv{\phi}{x} + \pdv{\phi}{y} \right)
 \end{align}
-The Cauchy problem for the diagonal flow case is
+The resulting Cauchy problem is
 \begin{equation} \label{eq:diagonal_case_cauchy_problem}
 	\left\{
 	\begin{aligned}
