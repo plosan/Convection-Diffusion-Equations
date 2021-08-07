@@ -52,6 +52,10 @@ Mesh::Mesh(void) {
 //         free(distX);
 //     if(distY)
 //         free(distY);
+//     if(distNFX)
+//         free(distNFX);
+//     if(distNFY)
+//         free(distNFY);
 //     if(faceX)
 //         free(faceX);
 //     if(faceY)
@@ -115,6 +119,14 @@ double* Mesh::getDistX(void) const {
 
 double* Mesh::getDistY(void) const {
     return distY;
+}
+
+double* Mesh::getDistNFX(void) const {
+    return distNFX;
+}
+
+double* Mesh::getDistNFY(void) const {
+    return distNFY;
 }
 
 double* Mesh::getFaceX(void) const {
@@ -185,6 +197,28 @@ double Mesh::satDistY(unsigned int j) const {
             printf("\tError accessing distY. Argument provided (%d) is not within the range 0 <= j < %d.\n", j, ny-1);
     } else      // Mesh is not built
         printf("\tError accessing distY. Mesh is not built.\n");
+    return 1;
+}
+
+double Mesh::satDistNFX(unsigned int i) const {
+    if(built) { // Mesh is built
+        if(i < 2*nx)    // Safe range: 0 <= i < 2*nx
+            return distNFX[i];
+        else            // Unsuitable argument
+            printf("\tError accessing distNFX. Argument provided (%d) is not within the range 0 <= i < %d.\n", i, 2*nx);
+    } else      // Mesh is not built
+        printf("\tError accessing distNFX. Mesh is not built.\n");
+    return 1;
+}
+
+double Mesh::satDistNFY(unsigned int j) const {
+    if(built) { // Mesh is built
+        if(j < 2*ny)    // Safe range: 0 <= j < 2*ny
+            return distNFY[j];
+        else            // Unsuitable argument
+            printf("\tError accessing distNFY. Argument provided (%d) is not within the range 0 <= j < %d.\n", j, 2*ny);
+    } else      // Mesh is not built
+        printf("\tError accessing distNFY. Mesh is not built.\n");
     return 1;
 }
 
@@ -274,6 +308,14 @@ double Mesh::atDistY(int j) const {
     return distY[j];
 }
 
+double Mesh::atDistNFX(int i) const {
+    return distNFX[i];
+}
+
+double Mesh::atDistNFY(int j) const {
+    return distNFY[j];
+}
+
 double Mesh::atFaceX(int i) const {
     return faceX[i];
 }
@@ -352,6 +394,7 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
         nx = _nx;
         ny = _ny;
         // Allocating memory for pointers
+
         // nodeX
         double stepX = lx / (nx - 1);
         nodeX = (double*) malloc(nx * sizeof(double*));
@@ -362,6 +405,7 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
             printf("\tError building uniform mesh. Could not allocate memory for nodeX.\n");
             return -2;
         }
+
         // nodeY
         double stepY = ly / (ny - 1);
         nodeY = (double*) malloc(ny * sizeof(double*));
@@ -372,6 +416,7 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
             printf("\tError building uniform mesh. Could not allocate memory for nodeY.\n");
             return -2;
         }
+
         // distX
         distX = (double*) malloc((nx-1) * sizeof(double*));
         if(distX) {
@@ -381,6 +426,7 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
             printf("\tError building uniform mesh. Could not allocate memory for distX.\n");
             return -2;
         }
+
         // distY
         distY = (double*) malloc((ny-1) * sizeof(double*));
         if(distY) {
@@ -390,6 +436,7 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
             printf("\tError building uniform mesh. Could not allocate memory for distY.\n");
             return -2;
         }
+
         // faceX
         faceX = (double*) malloc((nx+1) * sizeof(double*));
         if(faceX) {
@@ -401,6 +448,7 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
             printf("\tError building uniform mesh. Could not allocate memory for faceX.\n");
             return -2;
         }
+
         // faceY
         faceY = (double*) malloc((ny+1) * sizeof(double*));
         if(faceY) {
@@ -412,6 +460,31 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
             printf("\tError building uniform mesh. Could not allocate memory for faceY.\n");
             return -2;
         }
+
+        // distNFX
+        distNFX = (double*) malloc(2 * nx * sizeof(double*));
+        if(distNFX) {
+            for(unsigned int i = 0; i < nx; i++) {
+                distNFX[2*i] = nodeX[i] - faceX[i];
+                distNFX[2*i+1] = faceX[i+1] - nodeX[i];
+            }
+        } else {
+            printf("\tError building uniform mesh. Could not allocate memory for distNFX.\n");
+            return -2;
+        }
+
+        // distNFY
+        distNFY = (double*) malloc(2 * ny * sizeof(double*));
+        if(distNFY) {
+            for(unsigned int j = 0; j < ny; j++) {
+                distNFY[2*j] = nodeY[j] - faceY[j];
+                distNFY[2*j+1] = faceY[j+1] - nodeY[j];
+            }
+        } else {
+            printf("\tError building uniform mesh. Could not allocate memory for distNYX.\n");
+            return -2;
+        }
+
         // surfX
         surfX = (double*) malloc(ny * sizeof(double*));
         if(surfX) {
@@ -423,6 +496,7 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
             printf("\tError building uniform mesh. Could not allocate memory for surfX.\n");
             return -2;
         }
+
         // surfY
         surfY = (double*) malloc(nx * sizeof(double*));
         if(surfY) {
@@ -434,6 +508,7 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
             printf("\tError building uniform mesh. Could not allocate memory for surfY.\n");
             return -2;
         }
+
         // vol
         vol = (double*) malloc(nx * ny * sizeof(double*));
         if(vol) {
@@ -481,6 +556,10 @@ void Mesh::resetMesh(void) {
         free(distX);
     if(distY)
         free(distY);
+    if(distNFX)
+        free(distNFX);
+    if(distNFY)
+        free(distNFY);
     if(faceX)
         free(faceX);
     if(faceY)
@@ -532,6 +611,12 @@ void Mesh::printInfo(void) const {
         // Position of the faces perpendicular to the X axis
         printf("Faces X\n");
         printMatrix(faceX, 1, nx + 1);
+        // Distance between adjacent nodes and faces in the X axis
+        printf("Node-Face distance X\n");
+        printMatrix(distNFX, 1, 2*nx);
+        // Distance between adjacent nodes and faces in the Y axis
+        printf("Node-Face distance Y\n");
+        printReversedRowMatrix(distNFY, 2*ny, 1);
         // Position of the faces perpendicular to the Y axis
         printf("Faces Y\n");
         printReversedRowMatrix(faceY, ny + 1, 1);

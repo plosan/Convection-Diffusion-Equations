@@ -22,6 +22,8 @@ private:
     double* nodeY;      // Nodes position in the Y axis. Size: ny
     double* distX;      // Distance between nodes in the X axis. Size: nx - 1
     double* distY;      // Distance between nodes in the Y axis. Size: ny - 1
+    double* distNFX;    // Distance between nodes and faces in the X axis. Size: 2*nx
+    double* distNFY;    // Distance between nodes and faces in the Y axis. Size: 2*ny
     double* faceX;      // Faces position in the X axis. Size: nx + 1
     double* faceY;      // Faces position in the Y axis. Size: ny + 1
     double* surfX;      // Surface of the faces perpendicular to the X axis. Size: ny
@@ -52,6 +54,8 @@ public:
     double* getNodeY(void) const;       // Returns nodeY
     double* getDistX(void) const;       // Returns distX
     double* getDistY(void) const;       // Returns distY
+    double* getDistNFX(void) const;     // Returns distNFX
+    double* getDistNFY(void) const;     // Returns distNFY
     double* getFaceX(void) const;       // Returns faceX
     double* getFaceY(void) const;       // Returns faceY
     double* getSurfX(void) const;       // Returns surfX
@@ -59,16 +63,18 @@ public:
     double* getVol(void) const;         // Returns vol
 
     // Safe access to pointers
-    double satNodeX(unsigned int) const;
-    double satNodeY(unsigned int) const;
-    double satDistX(unsigned int) const;
-    double satDistY(unsigned int) const;
-    double satFaceX(unsigned int) const;
-    double satFaceY(unsigned int) const;
-    double satSurfX(unsigned int) const;
-    double satSurfY(unsigned int) const;
-    double satVol(unsigned int) const;
-    double satVol(unsigned int, unsigned int) const;
+    double satNodeX(unsigned int) const;                // Returns nodeX[i], where i is the argument passed
+    double satNodeY(unsigned int) const;                // Returns nodeY[j], where j is the argument passed
+    double satDistX(unsigned int) const;                // Returns distX[i], where i is the argument passed
+    double satDistY(unsigned int) const;                // Returns distY[j], where j is the argument passed
+    double satDistNFX(unsigned int) const;              // Returns distNFX[i], where i is the argument passed
+    double satDistNFY(unsigned int) const;              // Returns distNFY[j], where j is the argument passed
+    double satFaceX(unsigned int) const;                // Returns faceX[i], where i is the argument passed
+    double satFaceY(unsigned int) const;                // Returns faceY[j], where j is the argument passed
+    double satSurfX(unsigned int) const;                // Returns surfX[i], where i is the argument passed
+    double satSurfY(unsigned int) const;                // Returns surfY[j], where j is the argument passed
+    double satVol(unsigned int) const;                  // Returns vol[i], where i is the argument passed
+    double satVol(unsigned int, unsigned int) const;    // Returns vol[j*nx+i], where (i,j) are the arguments passed
 
 
     // Unsafe access to pointers
@@ -76,6 +82,8 @@ public:
     double atNodeY(int) const;
     double atDistX(int) const;
     double atDistY(int) const;
+    double atDistNFX(int) const;
+    double atDistNFY(int) const;
     double atFaceX(int) const;
     double atFaceY(int) const;
     double atSurfX(int) const;

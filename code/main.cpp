@@ -79,7 +79,7 @@ int main(int arg, char* argv[]) {
     prop[1] = gamma;
 
     // // Numerical data
-    unsigned int N = 100;
+    unsigned int N = 10;
     unsigned int nx = N;      // Number of nodes in x axis
     unsigned int ny = N;      // Number of nodes in y axis
     const double phi0 = 1;      // Initial value to fill phi vector for linear system resolution
@@ -99,7 +99,7 @@ int main(int arg, char* argv[]) {
 
     double* A = (double*) malloc(5 * nx * ny * sizeof(double*));
     double* b = (double*) malloc(nx * ny * sizeof(double*));
-    int scheme = 0;
+    int scheme = 1;
     if(!A) {
         printf("Not A\n");
         return -2;
@@ -116,25 +116,35 @@ int main(int arg, char* argv[]) {
     printf("Computing boundary nodes discretization coefficients for the diagonal case...\n\n");
     computeDiscretizationCoefficientsBoundaryNodesDiagonalCase(m, phi_boundary, A, b);
 
-    double* phi = (double*) malloc(nx * ny * sizeof(double*));
-    std::fill_n(phi, nx*ny, phi0);
+    checkSystemMatrix(nx, ny, tol, A);
 
-    printf("Solving linear system...\n");
-    solveSystem(nx, ny, tol, maxIt, A, b, phi);
-    double checkSol = computeSolutionDifference(nx, ny, A, b, phi);
-    printf("checkSol : %.5e\n\n\n", checkSol);
+    printf("A = \n");
+    printMatrix(A, nx*ny, 5);
 
-    const char* filename = "output/output.dat";
-    printToFile(m, phi, filename, 5);
-    plotSolution(filename);
+
+    // double* phi = (double*) malloc(nx * ny * sizeof(double*));
+    // std::fill_n(phi, nx*ny, phi0);
+    //
+    //
+    // printf("Solving linear system...\n");
+    // solveSystem(nx, ny, tol, maxIt, A, b, phi);
+    // double checkSol = computeSolutionDifference(nx, ny, A, b, phi);
+    // printf("checkSol : %.5e\n\n\n", checkSol);
+    //
+    // const char* filename = "output/output.dat";
+    // printToFile(m, phi, filename, 5);
+    // plotSolution(filename);
+    //
+    // printf("phi = \n");
+    // printMatrix(phi, nx, ny);
 
 
     // Free memory allocated
-    free(prop);
-    free(phi_boundary);
-    free(A);
-    free(b);
-    free(phi);
+    // free(prop);
+    // free(phi_boundary);
+    // free(A);
+    // free(b);
+    // free(phi);
 
     return 1;
 }
@@ -165,39 +175,71 @@ double (*vx)(double,double), double (*vy)(double, double), double (*source)(doub
     std::fill_n(b, m.getNX()*m.getNY(), 0);
 
     // Internal nodes
-    for(unsigned int j = 1; j < m.getNY()-1; j++) {
-        for(unsigned int i = 1; i < m.getNX()-1; i++) {
-            int node = j * m.getNX() + i;
-            double x = m.atNodeX(i);
-            double y = m.atNodeY(j);
-            // South node
-            double mf = -prop[0] * (*vy)(x,y) * m.atSurfY(i);
-            double C = (std::abs(mf) != 0 ? (mf + std::abs(mf))/(2*mf) : 0);
-            double D = prop[1] * m.atSurfY(i) / m.atDistY(j-1);
-            A[5*node] = D - mf * C;
-            // West node
-            mf = -prop[0] * (*vx)(x,y) * m.atSurfX(j);
-            C = (std::abs(mf) != 0 ? (mf + std::abs(mf))/(2*mf) : 0);
-            D = prop[1] * m.atSurfX(j) / m.atDistX(i-1);
-            A[5*node+1] = D - mf * C;
-            // East node
-            mf = prop[0] * (*vx)(x,y) * m.atSurfX(j);
-            C = (std::abs(mf) != 0 ? (mf - std::abs(mf))/(2*mf) : 0);
-            D = prop[1] * m.atSurfX(j) / m.atDistX(i);
-            A[5*node+2] = D - mf * C;
-            // North node
-            mf = prop[0] * (*vy)(x,y) * m.atSurfY(i);
-            C = (std::abs(mf) != 0 ? (mf - std::abs(mf))/(2*mf) : 0);
-            D = prop[1] * m.atSurfY(i) / m.atDistY(j);
-            A[5*node+3] = D - mf * C;
-            // Central node
-            A[5*node+4] = A[5*node] + A[5*node+1] + A[5*node+2] + A[5*node+3] - (*source)(x,y) * m.atVol(i,j);
-            // Independent term
-            b[node] = (*source)(x,y) * m.atVol(i,j);
+    if(scheme == 0) { // Upwind-Difference Scheme
+        for(unsigned int j = 1; j < m.getNY()-1; j++) {
+            for(unsigned int i = 1; i < m.getNX()-1; i++) {
+                int node = j * m.getNX() + i;
+                double x = m.atNodeX(i);
+                double y = m.atNodeY(j);
+                // South node
+                double mf = -prop[0] * (*vy)(x,y) * m.atSurfY(i);
+                double C = (std::abs(mf) != 0 ? (mf + std::abs(mf))/(2*mf) : 0);
+                double D = prop[1] * m.atSurfY(i) / m.atDistY(j-1);
+                A[5*node] = D - mf * C;
+                // West node
+                mf = -prop[0] * (*vx)(x,y) * m.atSurfX(j);
+                C = (std::abs(mf) != 0 ? (mf + std::abs(mf))/(2*mf) : 0);
+                D = prop[1] * m.atSurfX(j) / m.atDistX(i-1);
+                A[5*node+1] = D - mf * C;
+                // East node
+                mf = prop[0] * (*vx)(x,y) * m.atSurfX(j);
+                C = (std::abs(mf) != 0 ? (mf - std::abs(mf))/(2*mf) : 0);
+                D = prop[1] * m.atSurfX(j) / m.atDistX(i);
+                A[5*node+2] = D - mf * C;
+                // North node
+                mf = prop[0] * (*vy)(x,y) * m.atSurfY(i);
+                C = (std::abs(mf) != 0 ? (mf - std::abs(mf))/(2*mf) : 0);
+                D = prop[1] * m.atSurfY(i) / m.atDistY(j);
+                A[5*node+3] = D - mf * C;
+                // Central node
+                A[5*node+4] = A[5*node] + A[5*node+1] + A[5*node+2] + A[5*node+3] - (*source)(x,y) * m.atVol(i,j);
+                // Independent term
+                b[node] = (*source)(x,y) * m.atVol(i,j);
+            }
+        }
+    } else {
+        for(unsigned int j = 1; j < m.getNY()-1; j++) {
+            for(unsigned int i = 1; i < m.getNX()-1; i++) {
+                int node = j * m.getNX() + i;
+                double x = m.atNodeX(i);
+                double y = m.atNodeY(j);
+                // South node
+                double mf = -prop[0] * (*vy)(x,y) * m.atSurfY(i);
+                double C = m.atDistNFY(2*j) / m.atDistY(j-1);
+                double D = prop[1] * m.atSurfY(i) / m.atDistY(j-1);
+                A[5*node] = D - mf * C;
+                // West node
+                mf = -prop[0] * (*vx)(x,y) * m.atSurfX(j);
+                C = m.atDistNFX(2*i) / m.atDistX(i-1);
+                D = prop[1] * m.atSurfX(j) / m.atDistX(i-1);
+                A[5*node+1] = D - mf * C;
+                // East node
+                mf = prop[0] * (*vx)(x,y) * m.atSurfX(j);
+                C = m.atDistNFX(2*i+1) / m.atDistX(i);
+                D = prop[1] * m.atSurfX(j) / m.atDistX(i);
+                A[5*node+2] = D - mf * C;
+                // North node
+                mf = prop[0] * (*vy)(x,y) * m.atSurfY(i);
+                C = m.atDistNFY(2*j+1) / m.atDistY(j);
+                D = prop[1] * m.atSurfY(i) / m.atDistY(j);
+                A[5*node+3] = D - mf * C;
+                // Central node
+                A[5*node+4] = A[5*node] + A[5*node+1] + A[5*node+2] + A[5*node+3] - (*source)(x,y) * m.atVol(i,j);
+                // Independent term
+                b[node] = (*source)(x,y) * m.atVol(i,j);
+            }
         }
     }
-
-
 }
 
 void computeDiscretizationCoefficientsBoundaryNodesDiagonalCase(const Mesh m, const double* phi_boundary, double* A, double* b) {
