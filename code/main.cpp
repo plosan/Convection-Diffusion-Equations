@@ -66,7 +66,7 @@ int main(int arg, char* argv[]) {
     double lz = 1;  // Domain size in z axis                                    [m]
 
     // Boundary conditions
-    const double phi_low = 10;      // Minimum value for phi
+    const double phi_low = -20;      // Minimum value for phi
     const double phi_high = 20;     // Maximum value for phi
 
     // Thermophysical properties for water at 20 ºC
@@ -79,7 +79,7 @@ int main(int arg, char* argv[]) {
     prop[1] = gamma;
 
     // // Numerical data
-    unsigned int N = 250;
+    unsigned int N = 100;
     unsigned int nx = N;      // Number of nodes in x axis
     unsigned int ny = N;      // Number of nodes in y axis
     const double phi0 = 1;      // Initial value to fill phi vector for linear system resolution
@@ -119,7 +119,7 @@ int main(int arg, char* argv[]) {
     double* phi = (double*) malloc(nx * ny * sizeof(double*));
     std::fill_n(phi, nx*ny, phi0);
 
-    printf("Computing boundary nodes discretization coefficients for the diagonal case...\n\n");
+    printf("Solving linear system...\n");
     solveSystem(nx, ny, tol, maxIt, A, b, phi);
     double checkSol = computeSolutionDifference(nx, ny, A, b, phi);
     printf("checkSol : %.5e\n\n\n", checkSol);
@@ -196,6 +196,8 @@ double (*vx)(double,double), double (*vy)(double, double), double (*source)(doub
             b[node] = (*source)(x,y) * m.atVol(i,j);
         }
     }
+
+
 }
 
 void computeDiscretizationCoefficientsBoundaryNodesDiagonalCase(const Mesh m, const double* phi_boundary, double* A, double* b) {
@@ -212,7 +214,7 @@ void computeDiscretizationCoefficientsBoundaryNodesDiagonalCase(const Mesh m, co
         - A                 Linear system matrix. Rows: nx*ny, Columns: 5                                   [double*]
         - b                 Vector of indenpendent terms. Rows: nx*ny, Columns: 1                           [double*]
     */
-    printf("Computing boundary nodes discretization coefficients for the diagonal case...\n\n");
+    // printf("Computing boundary nodes discretization coefficients for the diagonal case...\n\n");
     // Lower row nodes: 0 <= i <= nx-1; j=0
     for(unsigned int i = 0; i < m.getNX(); i++) {
         A[5*i+4] = 1;
@@ -308,7 +310,7 @@ void solveSystem(const unsigned int nx, const unsigned int ny, const double tol,
         - A                 Linear system matrix. Rows: nx*ny, Columns: 5                                   [double*]
         - b                 Vector of indenpendent terms. Rows: nx*ny, Columns: 1                           [double*]
     */
-    printf("Solving linear system...\n");
+    // printf("Solving linear system...\n");
     unsigned int it = 0;        // Current iteration
     bool convergence = false;   // Boolean variable to tell whether there is convergence or not. False: no convergence, True: convergence
     // Gauss-Seidel iteration
