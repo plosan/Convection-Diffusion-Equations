@@ -78,8 +78,9 @@ int main(int arg, char* argv[]) {
     prop[0] = rho;
     prop[1] = gamma;
 
+
     // // Numerical data
-    unsigned int N = 10;
+    unsigned int N = 100;
     unsigned int nx = N;      // Number of nodes in x axis
     unsigned int ny = N;      // Number of nodes in y axis
     const double phi0 = 1;      // Initial value to fill phi vector for linear system resolution
@@ -121,30 +122,32 @@ int main(int arg, char* argv[]) {
     printf("A = \n");
     printMatrix(A, nx*ny, 5);
 
+    printf("prop = \n");
+    printMatrix(prop, 2, 1);
 
-    // double* phi = (double*) malloc(nx * ny * sizeof(double*));
-    // std::fill_n(phi, nx*ny, phi0);
-    //
-    //
-    // printf("Solving linear system...\n");
-    // solveSystem(nx, ny, tol, maxIt, A, b, phi);
-    // double checkSol = computeSolutionDifference(nx, ny, A, b, phi);
-    // printf("checkSol : %.5e\n\n\n", checkSol);
-    //
-    // const char* filename = "output/output.dat";
-    // printToFile(m, phi, filename, 5);
-    // plotSolution(filename);
-    //
-    // printf("phi = \n");
-    // printMatrix(phi, nx, ny);
+    double* phi = (double*) malloc(nx * ny * sizeof(double*));
+    std::fill_n(phi, nx*ny, phi0);
+
+
+    printf("Solving linear system...\n");
+    solveSystem(nx, ny, tol, maxIt, A, b, phi);
+    double checkSol = computeSolutionDifference(nx, ny, A, b, phi);
+    printf("checkSol : %.5e\n\n\n", checkSol);
+
+    const char* filename = "output/output.dat";
+    printToFile(m, phi, filename, 5);
+    plotSolution(filename);
+
+    printf("phi = \n");
+    printMatrix(phi, nx, ny);
 
 
     // Free memory allocated
-    // free(prop);
-    // free(phi_boundary);
-    // free(A);
-    // free(b);
-    // free(phi);
+    free(prop);
+    free(phi_boundary);
+    free(A);
+    free(b);
+    free(phi);
 
     return 1;
 }
@@ -282,7 +285,6 @@ void computeDiscretizationCoefficientsBoundaryNodesDiagonalCase(const Mesh m, co
     }
 }
 
-
 void checkSystemMatrix(const unsigned int nx, const unsigned int ny, const double tol, const double* A) {
     /*
     checkSystemMatrix: checks
@@ -329,6 +331,10 @@ void checkSystemMatrix(const unsigned int nx, const unsigned int ny, const doubl
         printf("Found null aP coefficient, row: %d\n", node-1);
     }
     printf("\n");
+}
+
+void solve(const unsigned int nx, const unsigned int ny, const double* A, const double* b, double* phi) {
+
 }
 
 void solveSystem(const unsigned int nx, const unsigned int ny, const double tol, const unsigned int maxIt, const double* A, const double* b, double* phi) {

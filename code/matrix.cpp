@@ -44,6 +44,50 @@ void printMatrix(const int* mat, const unsigned int rows, const unsigned int col
     }
 }
 
+void printMatrix(double** mat, const unsigned int rows, const unsigned int cols) {
+    /*
+    printMatrix: prints a double array. The array must be given in "vector" format.
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - mat: matrix to be printed     [const double*]
+        - rows: matrix rows             [const unsigned int]
+        - cols: matrix columns          [const double]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs: none
+    */
+
+    if(mat) {
+        for(unsigned int i = 0; i < rows; ++i) {
+            for(unsigned int j = 0; j < cols; ++j)
+                printf("%10.4f", mat[i][j]);
+            printf("\n");
+        }
+        printf("\n");
+    }
+}
+
+void printMatrix(int** mat, const unsigned int rows, const unsigned int cols) {
+    /*
+    printMatrix: prints a double array. The array must be given in "vector" format.
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - mat: matrix to be printed     [const double*]
+        - rows: matrix rows             [const unsigned int]
+        - cols: matrix columns          [const double]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs: none
+    */
+
+    if(mat) {
+        for(unsigned int i = 0; i < rows; ++i) {
+            for(unsigned int j = 0; j < cols; ++j)
+                printf("%10d", mat[i][j]);
+            printf("\n");
+        }
+        printf("\n");
+    }
+}
+
 void printReversedRowMatrix(const int* mat, const unsigned int rows, const unsigned int cols) {
     /*
     printReversedRowMatrix: prints a double array with rows in reversed order, that is, from last row to first.
@@ -129,6 +173,50 @@ void getRandomMatrix(int* mat, const unsigned int rows, const unsigned int cols,
         for(unsigned int i = 0; i < rows; ++i)
             for(unsigned int j = 0; j < cols; ++j)
                 mat[i*cols+j] = rand()%(upper - lower + 1) + lower;
+    }
+}
+
+void getRandomMatrix(double** mat, const unsigned int rows, const unsigned int cols, const int lower, const int upper) {
+    /*
+    getRandomMatrix: returns a double array filled with random integers in the interval [lower, upper]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - mat: matrix to be filled                      [double*]
+        - rows: matrix rows                             [const unsigned int]
+        - cols: matrix columns                          [const unsigned int]
+        - lower: lower bound for the random integers    [const int]
+        - upper: upper bound for the random integers    [const int]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - mat: double array filled with random integers in the interval [lower, upper]  [double*]
+    */
+
+    if(mat) {
+        for(unsigned int i = 0; i < rows; ++i)
+            for(unsigned int j = 0; j < cols; ++j)
+                mat[i][j] = rand()%(upper - lower + 1) + lower;
+    }
+}
+
+void getRandomMatrix(int** mat, const unsigned int rows, const unsigned int cols, const int lower, const int upper) {
+    /*
+    getRandomMatrix: returns a double array filled with random integers in the interval [lower, upper]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - mat: matrix to be filled                      [double*]
+        - rows: matrix rows                             [const unsigned int]
+        - cols: matrix columns                          [const unsigned int]
+        - lower: lower bound for the random integers    [const int]
+        - upper: upper bound for the random integers    [const int]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - mat: double array filled with random integers in the interval [lower, upper]  [double*]
+    */
+
+    if(mat) {
+        for(unsigned int i = 0; i < rows; ++i)
+            for(unsigned int j = 0; j < cols; ++j)
+                mat[i][j] = rand()%(upper - lower + 1) + lower;
     }
 }
 
@@ -238,4 +326,250 @@ double infNorm(double* vec, unsigned int size) {
     for(unsigned int i = 0; i < size; ++i)
         norm = (norm > abs(vec[i]) ? norm : abs(vec[i]));
     return norm;
+}
+
+
+
+void swapRows(double** A, int* perm, int i, int k, int& permSign) {
+    /*
+    swapRows: swaps rows i and k of the matrix A, writes the permutation on perm and changes the permutation sign
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - A         Matrix                                                              [double**]
+        - perm      Permutation vector. If perm[a] = b, it means row b goes to row a    [int*]
+        - i         First row to be swapped                                             [int]
+        - k         Second row to be swapped                                            [int]
+        - permSign  Sign of the permutation                                             [int&]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - A         Matrix with swapped rows                        [double**]
+        - perm      Permutation vector with the new permutation     [int*]
+        - permSign  Permutation sign times -1                       [int&]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    */
+    // Swap rows
+    double* aux = A[i];
+    A[i] = A[k];
+    A[k] = aux;
+    // Change permutation sign
+    permSign *= -1;
+    // Write permutation
+    int z = perm[i];
+    perm[i] = perm[k];
+    perm[k] = z;
+}
+
+int factorLU(double** A, int* perm, const int n, const double tol) {
+    /*
+    lup: performs the LUP factorization with scaled partial pivoting. Matrices L and U are stored in the original matrix A.
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - A         Matrix                                                              [double**]
+        - perm      Permutation vector. If perm[a] = b, it means row b goes to row a    [int*]
+        - permSign  Sign of the permutation                                             [int&]
+        - n         Matrix dimension                                                    [const int int]
+        - tol       Tolerance to decide numerical zero                                  [cont double]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - A         Matrix with L below the diagonal and U on the diagonal and above    [double**]
+        - permSign  Sign of the permutation                                             [int&]
+        - perm      Resulting permutation vector of the factorization                   [int*]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    If A is singular, its issues an error message and permSign is set to 0.
+    */
+    int permSign = 1;
+    // Initialize permutation vector
+    for(int i = 0; i < n; ++i)
+        perm[i] = i;
+    // LUP factorization
+    for(int k = 0; k < n; ++k) {
+        // Scaled partial pivoting
+        double bestCoef = 0;
+        int bestRow = 0;
+        for(int i = k; i < n; i++) {
+            double s = 0;
+            for(int j = k; j < n; j++)
+                s = std::max(s, std::abs(A[i][j]));
+            double coef = std::abs(A[i][k] / s);
+            if(coef > bestCoef) {
+                bestCoef = coef;
+                bestRow = i;
+            }
+        }
+        // Row swap
+        if(k != bestRow)
+            swapRows(A, perm, k, bestRow, permSign);
+        // Check if the pivot is non null
+        if(std::abs(A[k][k]) < tol) {
+            printf("\tError\n");
+            return 0;
+        }
+        // Gauss' elimination
+        for(int i = k+1; i < n; i++) {
+            double m = A[i][k] / A[k][k];
+            for(int j = k; j < n; j++)
+                A[i][j] -= m * A[k][j];
+            A[i][k] = m;
+        }
+    }
+    return permSign;
+}
+
+void solveLUP(double** A, double* b, double* x, int* perm, const int n) {
+    /*
+    solveLUP: solves the linear system given by matrix A and vector b. Matrix A has to be already in its LU form, that is to say, L below the
+    diagonal and U on the diagonal and above.
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - A         Linear system matrix already in LU form     [double**]
+        - b         Linear system vector of independent terms   [double*]
+        - x         Linear system solution                      [double*]
+        - perm      Permutation vector                          [int*]
+        - n         Matrix dimension                            [const int]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - x         Linear system solution                      [double*]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    */
+    // Solve L y = P b
+    double* y = (double*) malloc(n * sizeof(double*));
+    for(int i = 0; i < n; i++) {
+        double sum = 0;
+        for(int j = 0; j < i; j++)
+            sum += A[i][j] * y[j];
+        y[i] = b[perm[i]] - sum;
+    }
+    // Solve U x = y
+    for(int i = n-1; i >= 0; i--) {
+        double sum = 0;
+        for(int j = i+1; j < n; j++)
+            sum += A[i][j] * x[j];
+        x[i] = (y[i] - sum) / A[i][i];
+    }
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void swapRows(double* A, const int n, int* perm, int i, int k, int& permSign) {
+    /*
+    swapRows: swaps rows i and k of the matrix A, writes the permutation on perm and changes the permutation sign
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - A         Matrix given in vector form                                         [double**]
+        - n         Matrix dimension                                                    [const int]
+        - perm      Permutation vector. If perm[a] = b, it means row b goes to row a    [int*]
+        - i         First row to be swapped                                             [int]
+        - k         Second row to be swapped                                            [int]
+        - permSign  Sign of the permutation                                             [int&]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - A         Matrix with swapped rows                        [double**]
+        - perm      Permutation vector with the new permutation     [int*]
+        - permSign  Permutation sign times -1                       [int&]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    */
+    // Swap matrix rows
+    for(int j = 0; j < n; j++) {
+        double aux = A[i*n+j];
+        A[i*n+j] = A[k*n+j];
+        A[k*n+j] = aux;
+    }
+    // Change permutation sign
+    permSign *= -1;
+    // Write permutation
+    int z = perm[i];
+    perm[i] = perm[k];
+    perm[k] = z;
+}
+
+int factorLU(double* A, int* perm, const int n, const double tol) {
+    /*
+    lup: performs the LUP factorization of matrix A with scaled partial pivoting. Matrices L and U are stored in the original matrix A. Matrix A is
+    in diagonal form.
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - A         Matrix in diagonal form                                             [double**]
+        - perm      Permutation vector. If perm[a] = b, it means row b goes to row a    [int*]
+        - n         Matrix dimension                                                    [const int int]
+        - tol       Tolerance to decide numerical zero                                  [cont double]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - A         Matrix with L below the diagonal and U on the diagonal and above    [double**]
+        - permSign  Sign of the permutation                                             [int&]
+        - perm      Resulting permutation vector of the factorization                   [int*]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    If A is singular, its issues an error message and permSign is set to 0.
+    */
+    int permSign = 1;
+    // Initialize permutation vector
+    for(int i = 0; i < n; ++i)
+        perm[i] = i;
+    // LUP factorization
+    for(int k = 0; k < n; ++k) {
+        // Scaled partial pivoting
+        double bestCoef = 0;
+        int bestRow = 0;
+        for(int i = k; i < n; i++) {
+            double s = 0;
+            for(int j = k; j < n; j++)
+                s = std::max(s, std::abs(A[i*n+j]));
+            double coef = std::abs(A[i*n+k] / s);
+            if(coef > bestCoef) {
+                bestCoef = coef;
+                bestRow = i;
+            }
+        }
+        // Row swap
+        if(k != bestRow)
+            swapRows(A, n, perm, k, bestRow, permSign);
+        // Check if the pivot is non null
+        if(std::abs(A[k*n+k]) < tol) {
+            printf("\tError\n");
+            return 0;
+        }
+        // Gauss' elimination
+        for(int i = k+1; i < n; i++) {
+            double m = A[i*n+k] / A[k*n+k];
+            for(int j = k; j < n; j++)
+                A[i*n+j] -= m * A[k*n+j];
+            A[i*n+k] = m;
+        }
+    }
+    return permSign;
+}
+
+void solveLUP(double* A, double* b, double* x, int* perm, const int n) {
+    /*
+    solveLUP: solves the linear system given by matrix A and vector b. Matrix A has to be already in its LU form, that is to say, L below the
+    diagonal and U on the diagonal and above. In addition, matrix A  (in its LU form) is given in vector form.
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - A         Linear system matrix already in LU form (and vector form)   [double**]
+        - b         Linear system vector of independent terms                   [double*]
+        - x         Linear system solution                                      [double*]
+        - perm      Permutation vector                                          [int*]
+        - n         Matrix dimension                                            [const int]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - x         Linear system solution                                      [double*]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    */
+    // Solve L y = P b
+    double* y = (double*) malloc(n * sizeof(double*));
+    for(int i = 0; i < n; i++) {
+        double sum = 0;
+        for(int j = 0; j < i; j++)
+            sum += A[i*n+j] * y[j];
+        y[i] = b[perm[i]] - sum;
+    }
+    // Solve U x = y
+    for(int i = n-1; i >= 0; i--) {
+        double sum = 0;
+        for(int j = i+1; j < n; j++)
+            sum += A[i*n+j] * x[j];
+        x[i] = (y[i] - sum) / A[i*n+i];
+    }
 }
