@@ -41,23 +41,23 @@ void computeDiscretizationCoefficientsBoundaryNodesDiagonalCase(const Mesh m, co
 void computeDiscretizationCoefficientsInternalNodes(const Mesh m, const double* properties,
 double (*vx)(double,double), double (*vy)(double, double), double* A, double* b, const int scheme);
 
-void checkSystemMatrix(const unsigned int nx, const unsigned int ny, const double tol, const double* A);
+void checkSystemMatrix(const int nx, const int ny, const double tol, const double* A);
 
-void solveSystem(const unsigned int nx, const unsigned int ny, const double* A, const double* b, double* phi, int method);
+void solveSystem(const int nx, const int ny, const double* A, const double* b, double* phi, int method);
 
-void solveSystemGS(const unsigned int nx, const unsigned int ny, const double tol, const unsigned int maxIt, const double* A, const double* b, double* phi);
+void solveSystemGS(const int nx, const int ny, const double tol, const int maxIt, const double* A, const double* b, double* phi);
 
 void printToFile(const Mesh m, const double* phi, const char* filename, const int precision);
 
 void plotSolution(const char* filename);
 
-void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* A, double** AA);
+void assembleMatrix(const int nx, const int ny, const double* A, double** AA);
 
-void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* A, double* AA);
+void assembleMatrix(const int nx, const int ny, const double* A, double* AA);
 
-double computeSolutionDifference(const unsigned int nx, const unsigned int ny, const double* A, const double* b, const double* phi);
+double computeSolutionDifference(const int nx, const int ny, const double* A, const double* b, const double* phi);
 
-void verification(const double lx, const double ly, const double lz, const unsigned int nx, const unsigned int ny, const double* nodeX, const double* nodeY,
+void verification(const double lx, const double ly, const double lz, const int nx, const int ny, const double* nodeX, const double* nodeY,
 const double* distX, const double* distY, const double* faceX, const double* faceY, const double* surfX, const double* surfY, const double* vol,
 const double* phi_boundary, const double* v, const double rho, const double gamma, double* A, double* b, double* phi, const int scheme);
 
@@ -87,9 +87,9 @@ int main(int arg, char* argv[]) {
 
 
     // // Numerical data
-    unsigned int N = 4;
-    unsigned int nx = N;      // Number of nodes in x axis
-    unsigned int ny = N;      // Number of nodes in y axis
+    int N = 50;
+    int nx = N;      // Number of nodes in x axis
+    int ny = N;      // Number of nodes in y axis
     const double phi0 = 1;      // Initial value to fill phi vector for linear system resolution
     const double tol = 1e-15;   // Tolerance to stop iteration
     const int maxIt = 1e6;      // Maximum number of iterations
@@ -201,8 +201,8 @@ double (*vx)(double,double), double (*vy)(double, double), double (*source)(doub
 
     // Internal nodes
     if(scheme == 0) { // Upwind-Difference Scheme
-        for(unsigned int j = 1; j < m.getNY()-1; j++) {
-            for(unsigned int i = 1; i < m.getNX()-1; i++) {
+        for(int j = 1; j < m.getNY()-1; j++) {
+            for(int i = 1; i < m.getNX()-1; i++) {
                 int node = j * m.getNX() + i;
                 double x = m.atNodeX(i);
                 double y = m.atNodeY(j);
@@ -233,8 +233,8 @@ double (*vx)(double,double), double (*vy)(double, double), double (*source)(doub
             }
         }
     } else {
-        for(unsigned int j = 1; j < m.getNY()-1; j++) {
-            for(unsigned int i = 1; i < m.getNX()-1; i++) {
+        for(int j = 1; j < m.getNY()-1; j++) {
+            for(int i = 1; i < m.getNX()-1; i++) {
                 int node = j * m.getNX() + i;
                 double x = m.atNodeX(i);
                 double y = m.atNodeY(j);
@@ -283,31 +283,31 @@ void computeDiscretizationCoefficientsBoundaryNodesDiagonalCase(const Mesh m, co
     */
     // printf("Computing boundary nodes discretization coefficients for the diagonal case...\n\n");
     // Lower row nodes: 0 <= i <= nx-1; j=0
-    for(unsigned int i = 0; i < m.getNX(); i++) {
+    for(int i = 0; i < m.getNX(); i++) {
         A[5*i+4] = 1;
         b[i] = phi_boundary[0];
     }
     // Right column nodes: i = nx-1; 1 <= j <= ny-1
-    for(unsigned int j = 1; j < m.getNY(); j++) {
+    for(int j = 1; j < m.getNY(); j++) {
         int node = (j + 1) * m.getNX() - 1;
         A[5*node+4] = 1;
         b[node] = phi_boundary[0];
     }
     // Left column nodes: i = 0; 1 <= j <= ny-1
-    for(unsigned int j = 1; j < m.getNY(); j++) {
+    for(int j = 1; j < m.getNY(); j++) {
         int node = j * m.getNX();
         A[5*node+4] = 1;
         b[node] = phi_boundary[1];
     }
     // Upper row nodes: 1 <= i <= nx-2, j = ny-1
-    for(unsigned int i = 1; i < m.getNX()-1; i++) {
+    for(int i = 1; i < m.getNX()-1; i++) {
         int node = (m.getNY() - 1) * m.getNX() + i;
         A[5*node+4] = 1;
         b[node] = phi_boundary[1];
     }
 }
 
-void checkSystemMatrix(const unsigned int nx, const unsigned int ny, const double tol, const double* A) {
+void checkSystemMatrix(const int nx, const int ny, const double tol, const double* A) {
     /*
     checkSystemMatrix: checks
         - whether the system matrix has a row full of zeros (sufficient condition for incompatible system but not necessary)
@@ -315,8 +315,8 @@ void checkSystemMatrix(const unsigned int nx, const unsigned int ny, const doubl
     In either case the function prints a message.
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Inputs:
-        - nx: discretization nodes in X axis    [const unsigned int]
-        - ny: discretization nodes in Y axis    [const unsigned int]
+        - nx: discretization nodes in X axis    [const int]
+        - ny: discretization nodes in Y axis    [const int]
         - tol: tolerance                        [const double]
         - A: linear system matrix               [double*]
     --------------------------------------------------------------------------------------------------------------------------------------------------
@@ -325,7 +325,7 @@ void checkSystemMatrix(const unsigned int nx, const unsigned int ny, const doubl
     printf("Checking linear system matrix...\n");
     // Check whether the system matrix has a row full of zeros (sufficient condition for incompatible system but not necessary)
     bool foundNullRow = false;  // Bool variable: true => a null row has been found; false => no null row has been found
-    unsigned int node = 0;      // Node (row) being checked
+    int node = 0;      // Node (row) being checked
     while(node < nx*ny && !foundNullRow) {
         bool foundNonZeroElement = false;   // Bool variable: true => an element different from zero has been found in the row; false => no element different from zero has been found in the row
         int col = 0;                        // Column that is being checked
@@ -355,7 +355,7 @@ void checkSystemMatrix(const unsigned int nx, const unsigned int ny, const doubl
     printf("\n");
 }
 
-void solveSystem(const unsigned int nx, const unsigned int ny, const double* A, const double* b, double* phi, int method) {
+void solveSystem(const int nx, const int ny, const double* A, const double* b, double* phi, int method) {
     if(method == 0) // Solve using Gauss-Seidel
         solveSystemGS(nx, ny, TOL, MAXIT, A, b, phi);
     else {          // Solve using LUP factorization
@@ -363,7 +363,7 @@ void solveSystem(const unsigned int nx, const unsigned int ny, const double* A, 
     }
 }
 
-void solveSystemGS(const unsigned int nx, const unsigned int ny, const double tol, const unsigned int maxIt, const double* A, const double* b, double* phi) {
+void solveSystemGS(const int nx, const int ny, const double tol, const int maxIt, const double* A, const double* b, double* phi) {
     /*
     solveSystemGS: solves the linear system resulting from a 2D convection-diffusion problem in a domain discretized with a cartesian mesh using
     Gauss-Seidel algorithm. It has two criterion to stop the iteration:
@@ -375,7 +375,7 @@ void solveSystemGS(const unsigned int nx, const unsigned int ny, const double to
         - nx        Number of nodes in the X axis                               [const double]
         - ny        Number of nodes in the Y axis                               [const double]
         - tol       Tolerance to stop iteration                                 [const double]
-        - maxIt     Maximum number of iterations                                [const unsigned int]
+        - maxIt     Maximum number of iterations                                [const int]
         - A         Linear system matrix. Rows: nx*ny, Columns: 5               [double*]
         - b         Vector of indenpendent terms. Rows: nx*ny, Columns: 1       [double*]
         - phi       Solution of the linar system. Rows: nx*ny, Columns: 1       [double*]
@@ -385,21 +385,21 @@ void solveSystemGS(const unsigned int nx, const unsigned int ny, const double to
         - b                 Vector of indenpendent terms. Rows: nx*ny, Columns: 1                           [double*]
     */
     // printf("Solving linear system...\n");
-    unsigned int it = 0;        // Current iteration
+    int it = 0;        // Current iteration
     bool convergence = false;   // Boolean variable to tell whether there is convergence or not. False: no convergence, True: convergence
     // Gauss-Seidel iteration
     while(it < maxIt && !convergence) {
         double maxDiff = -1;    // Infinity norm of the difference phi-phi*
         // Lower row nodes
-        for(unsigned int i = 0; i < nx; i++) {
+        for(int i = 0; i < nx; i++) {
             int node = i;                                                       // Node whose phi is being computed
             double aux = phi[node];                                             // Previous value of phi[node]
             phi[node] = (b[node] + A[5*node+3] * phi[node+nx]) / A[5*node+4];   // Compute new value
             maxDiff = std::max(maxDiff, std::abs(aux - phi[node]));             // Update infinity norm
         }
         // Central rows nodes
-        for(unsigned int j = 1; j < ny-1; j++) {
-            for(unsigned int i = 0; i < nx; i++) {
+        for(int j = 1; j < ny-1; j++) {
+            for(int i = 0; i < nx; i++) {
                 int node = j * nx + i;                                          // Node whose phi is being computed
                 double aux = phi[node];                                         // Previous value of phi[node]
                 phi[node] = (b[node] + A[5*node] * phi[node-nx] + A[5*node+1] * phi[node-1] + A[5*node+2] * phi[node+1] + A[5*node+3] * phi[node+nx]) / A[5*node+4];    // Compute new value
@@ -407,7 +407,7 @@ void solveSystemGS(const unsigned int nx, const unsigned int ny, const double to
             }
         }
         // Upper row nodes
-        for(unsigned int i = 0; i < nx; i++) {
+        for(int i = 0; i < nx; i++) {
             int node = (ny - 1) * nx + i;                                       // Node whose phi is being computed
             double aux = phi[node];                                             // Previous value of phi[node]
             phi[node] = (b[node] + A[5*node] * phi[node-nx]) / A[5*node+4];     // Compute new value
@@ -421,7 +421,7 @@ void solveSystemGS(const unsigned int nx, const unsigned int ny, const double to
 }
 
 void solveSystemLUP() {
-    
+
 }
 
 void printToFile(const Mesh m, const double* phi, const char* filename, const int precision) {
@@ -443,8 +443,8 @@ void printToFile(const Mesh m, const double* phi, const char* filename, const in
     if(file.is_open()) {
         printf("\tWriting to file...\n");
         file << std::setprecision(precision) << std::fixed;
-        for(unsigned int i = 0; i < m.getNX(); i++) {
-            for(unsigned int j = 0; j < m.getNY(); j++)
+        for(int i = 0; i < m.getNX(); i++) {
+            for(int j = 0; j < m.getNY(); j++)
                 file << m.atNodeX(i) << " " << m.atNodeY(j) << " " << phi[j*m.getNX()+i] << std::endl;
             file << std::endl;
         }
@@ -478,23 +478,23 @@ void plotSolution(const char* filename) {
         fprintf(gnupipe, "%s\n", GnuCommands[i]);
 }
 
-void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* A, double** AA) {
+void assembleMatrix(const int nx, const int ny, const double* A, double** AA) {
     printf("Assembling (nx*ny) x 5 (vector) matrix to (nx*ny) x (nx*ny) (vector) matrix...\n\n");
     if(AA) {
         // // Lower row
-        for(unsigned int i = 0; i < nx; i++) {
+        for(int i = 0; i < nx; i++) {
             int node = i;
             AA[node][node+nx] = -A[5*node+3]; // aN coefficient
             AA[node][node] = A[5*node+4];    // aP coefficient
         }
         // // Central rows
-        for(unsigned int j = 1; j < ny-1; j++) {
+        for(int j = 1; j < ny-1; j++) {
             // First node
             int node = j * nx;
             AA[node][node+1] = -A[5*node+2];  // aE coefficient
             AA[node][node] = A[5*node+4];    // aP coefficient
             // Central nodes
-            for(unsigned int i = 1; i < nx-1; i++) {
+            for(int i = 1; i < nx-1; i++) {
                 node = j * nx + i;
                 AA[node][node-nx] = -A[5*node];   // aS coefficient
                 AA[node][node-1]  = -A[5*node+1]; // aW coefficient
@@ -508,7 +508,7 @@ void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* 
             AA[node][node]   = A[5*node+4];  // aP coefficient
         }
         // // Upper row
-        for(unsigned int i = 0; i < nx; i++) {
+        for(int i = 0; i < nx; i++) {
             int node = (ny - 1) * nx + i;
             AA[node][node-nx] = -A[5*node];   // aS coefficient
             AA[node][node]    = A[5*node+4]; // aP coefficient
@@ -518,23 +518,23 @@ void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* 
     }
 }
 
-void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* A, double* AA) {
+void assembleMatrix(const int nx, const int ny, const double* A, double* AA) {
     printf("Assembling (nx*ny) x 5 (vector) matrix to (nx*ny) x (nx*ny) (square) matrix...\n\n");
     if(AA) {
         int n = nx * ny;
         // // Lower row
-        for(unsigned int i = 0; i < nx; i++) {
+        for(int i = 0; i < nx; i++) {
             AA[i*n+i]    = A[5*i+4];    // aP coefficient
             AA[i*n+i+nx] = -A[5*i+3];    // aN coefficient
         }
         // // Central rows
-        for(unsigned int j = 1; j < ny-1; j++) {
+        for(int j = 1; j < ny-1; j++) {
             // First node
             int node = j * nx;
             AA[node*n+node] = A[5*node+4];    // aP coefficient
             AA[node*n+node+1] = -A[5*node+2];  // aE coefficient
             // Central nodes
-            for(unsigned int i = 1; i < nx-1; i++) {
+            for(int i = 1; i < nx-1; i++) {
                 node = j * nx + i;
                 AA[node*n+node-nx] = -A[5*node];   // aS coefficient
                 AA[node*n+node-1]  = -A[5*node+1]; // aW coefficient
@@ -548,7 +548,7 @@ void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* 
             AA[node*n+node]   = A[5*node+4];  // aP coefficient
         }
         // // Upper row
-        for(unsigned int i = 0; i < nx; i++) {
+        for(int i = 0; i < nx; i++) {
             int node = (ny - 1) * nx + i;
             AA[node*n+node-nx] = -A[5*node];   // aS coefficient
             AA[node*n+node]    = A[5*node+4]; // aP coefficient
@@ -558,7 +558,7 @@ void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* 
     }
 }
 
-double computeSolutionDifference(const unsigned int nx, const unsigned int ny, const double* A, const double* b, const double* phi) {
+double computeSolutionDifference(const int nx, const int ny, const double* A, const double* b, const double* phi) {
     /*
     computeSolutionDifference: checks the solution of the linear system resulting from the 2D convection-diffusion equations in a cartesian mesh. If _A is
     the linear system matrix, the function returns the infinity norm of _A * phi - b.
@@ -575,20 +575,20 @@ double computeSolutionDifference(const unsigned int nx, const unsigned int ny, c
     */
     double maxDiff = -1;
     // Lower row nodes
-    for(unsigned int i = 0; i < nx; i++) {
+    for(int i = 0; i < nx; i++) {
         double diff = b[i] + A[5*i+3] * phi[i+nx] - A[5*i+4] * phi[i];
         maxDiff = std::max(maxDiff, std::abs(diff));
     }
     // Central row nodes
-    for(unsigned int j = 1; j < ny-1; j++) {
-        for(unsigned int i = 0; i < nx; i++) {
+    for(int j = 1; j < ny-1; j++) {
+        for(int i = 0; i < nx; i++) {
             int node = j * nx + i;
             double diff = b[node] + (A[5*node]*phi[node-nx]) + (A[5*node+1]*phi[node-1]) + (A[5*node+2]*phi[node+1]) + (A[5*node+3]*phi[node+nx]) - (A[5*node+4]*phi[node]);
             maxDiff = std::max(maxDiff, std::abs(diff));
         }
     }
     // Upper row nodes
-    for(unsigned int i = 0; i < nx; i++) {
+    for(int i = 0; i < nx; i++) {
         int node = (ny-1) * nx + i;
         double diff = b[node] + (A[5*node] * phi[node-nx]) - (A[5*node+4] * phi[node]);
         maxDiff = std::max(maxDiff, std::abs(diff));
@@ -596,15 +596,15 @@ double computeSolutionDifference(const unsigned int nx, const unsigned int ny, c
     return maxDiff;
 }
 
-void verification(const double lx, const double ly, const double lz, const unsigned int nx, const unsigned int ny, const double* nodeX, const double* nodeY,
+void verification(const double lx, const double ly, const double lz, const int nx, const int ny, const double* nodeX, const double* nodeY,
 const double* distX, const double* distY, const double* faceX, const double* faceY, const double* surfX, const double* surfY, const double* vol,
 const double* phi_boundary, const double* v, const double rho, const double gamma, double* A, double* b, double* phi, const int scheme) {
     printf("Verificating solution...\n");
     double stepX = lx / (nx - 1);
     double stepY = ly / (ny - 1);
     double maxDiff = -1;
-    for(unsigned int i = 1; i < nx-1; i++) {
-        for(unsigned int j = 1; j < ny-1; j++) {
+    for(int i = 1; i < nx-1; i++) {
+        for(int j = 1; j < ny-1; j++) {
             int node = j * nx + i;
             double phi_xx = (phi[node+1] - 2*phi[node] + phi[node-1]) / (stepX * stepX);
             double phi_yy = (phi[node+nx] - 2*phi[node] + phi[node-nx]) / (stepY * stepY);
@@ -620,7 +620,7 @@ const double* phi_boundary, const double* v, const double rho, const double gamm
     printf("\tMaximum difference: %.5e\n\n", maxDiff);
 }
 
-void computeDiscretizationCoefficientsDiagonalCase(const unsigned int nx, const unsigned int ny, const double* nodeX, const double* nodeY,
+void computeDiscretizationCoefficientsDiagonalCase(const int nx, const int ny, const double* nodeX, const double* nodeY,
 const double* distX, const double* distY, const double* faceX, const double* faceY, const double* surfX, const double* surfY, const double* vol,
 const double* phi_boundary, const double* v, const double rho, const double gamma, double* A, double* b, const int scheme) {
 
@@ -630,8 +630,8 @@ const double* phi_boundary, const double* v, const double rho, const double gamm
     std::fill_n(b, nx*ny, 0);
 
     // Internal nodes, 1 <= i <= nx-2; 1 <= j <= ny-2
-    for(unsigned int j = 1; j < ny-1; j++) {
-        for(unsigned int i = 1; i < nx-1; i++) {
+    for(int j = 1; j < ny-1; j++) {
+        for(int i = 1; i < nx-1; i++) {
             int node = j * nx + i;
             printf("%10s : %d\n", "Node", node);
             // South node
@@ -656,27 +656,27 @@ const double* phi_boundary, const double* v, const double rho, const double gamm
     }
 
     // Lower row nodes: 0 <= i <= nx-1; j=0
-    for(unsigned int i = 0; i < nx; i++) {
+    for(int i = 0; i < nx; i++) {
         A[5*i+4] = 1;
         b[i] = phi_boundary[0];
     }
 
     // Right column nodes: i = nx-1; 1 <= j <= ny-1
-    for(unsigned int j = 1; j < ny; j++) {
+    for(int j = 1; j < ny; j++) {
         int node = (j + 1) * nx - 1;
         A[5*node+4] = 1;
         b[node] = phi_boundary[0];
     }
 
     // Left column nodes: i = 0; 1 <= j <= ny-1
-    for(unsigned int j = 1; j < ny; j++) {
+    for(int j = 1; j < ny; j++) {
         int node = j * nx;
         A[5*node+4] = 1;
         b[node] = phi_boundary[1];
     }
 
     // Upper row nodes: 1 <= i <= nx-2, j = ny-1
-    for(unsigned int i = 1; i < nx-1; i++) {
+    for(int i = 1; i < nx-1; i++) {
         int node = (ny - 1) * nx + i;
         A[5*node+4] = 1;
         b[node] = phi_boundary[1];

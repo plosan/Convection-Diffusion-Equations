@@ -16,8 +16,8 @@ private:
     double lx;          // Domain size in the X axis
     double ly;          // Domain size in the Y axis
     double lz;          // Domain size in the Z axis
-    unsigned int nx;    // Number of nodes in the X axis
-    unsigned int ny;    // Number of nodes in the Y axis
+    int nx;             // Number of nodes in the X axis
+    int ny;             // Number of nodes in the Y axis
     double* nodeX;      // Nodes position in the X axis. Size: nx
     double* nodeY;      // Nodes position in the Y axis. Size: ny
     double* distX;      // Distance between nodes in the X axis. Size: nx - 1
@@ -48,8 +48,8 @@ public:
     double getLX(void) const;           // Returns lx
     double getLY(void) const;           // Returns ly
     double getLZ(void) const;           // Returns lz
-    unsigned int getNX(void) const;     // Returns nx
-    unsigned int getNY(void) const;     // Returns ny
+    int getNX(void) const;     // Returns nx
+    int getNY(void) const;     // Returns ny
     double* getNodeX(void) const;       // Returns nodeX
     double* getNodeY(void) const;       // Returns nodeY
     double* getDistX(void) const;       // Returns distX
@@ -63,18 +63,18 @@ public:
     double* getVol(void) const;         // Returns vol
 
     // Safe access to pointers
-    double satNodeX(unsigned int) const;                // Returns nodeX[i], where i is the argument passed
-    double satNodeY(unsigned int) const;                // Returns nodeY[j], where j is the argument passed
-    double satDistX(unsigned int) const;                // Returns distX[i], where i is the argument passed
-    double satDistY(unsigned int) const;                // Returns distY[j], where j is the argument passed
-    double satDistNFX(unsigned int) const;              // Returns distNFX[i], where i is the argument passed
-    double satDistNFY(unsigned int) const;              // Returns distNFY[j], where j is the argument passed
-    double satFaceX(unsigned int) const;                // Returns faceX[i], where i is the argument passed
-    double satFaceY(unsigned int) const;                // Returns faceY[j], where j is the argument passed
-    double satSurfX(unsigned int) const;                // Returns surfX[i], where i is the argument passed
-    double satSurfY(unsigned int) const;                // Returns surfY[j], where j is the argument passed
-    double satVol(unsigned int) const;                  // Returns vol[i], where i is the argument passed
-    double satVol(unsigned int, unsigned int) const;    // Returns vol[j*nx+i], where (i,j) are the arguments passed
+    double satNodeX(int) const;                // Returns nodeX[i], where i is the argument passed
+    double satNodeY(int) const;                // Returns nodeY[j], where j is the argument passed
+    double satDistX(int) const;                // Returns distX[i], where i is the argument passed
+    double satDistY(int) const;                // Returns distY[j], where j is the argument passed
+    double satDistNFX(int) const;              // Returns distNFX[i], where i is the argument passed
+    double satDistNFY(int) const;              // Returns distNFY[j], where j is the argument passed
+    double satFaceX(int) const;                // Returns faceX[i], where i is the argument passed
+    double satFaceY(int) const;                // Returns faceY[j], where j is the argument passed
+    double satSurfX(int) const;                // Returns surfX[i], where i is the argument passed
+    double satSurfY(int) const;                // Returns surfY[j], where j is the argument passed
+    double satVol(int) const;                  // Returns vol[i], where i is the argument passed
+    double satVol(int, int) const;    // Returns vol[j*nx+i], where (i,j) are the arguments passed
 
 
     // Unsafe access to pointers
@@ -92,7 +92,7 @@ public:
     double atVol(int, int) const;
 
     // Build mesh
-    int buildUniformMesh(double _x0, double _y0, double _lx, double _ly, double _lz, unsigned int _nx, unsigned int _ny);
+    int buildUniformMesh(double _x0, double _y0, double _lx, double _ly, double _lz, int _nx, int _ny);
 
     // Reset mesh
     void resetMesh(void);

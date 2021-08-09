@@ -35,7 +35,7 @@ Mesh::Mesh(void) {
 //     Outputs: none
 //     */
 //     printf("Deleting mesh object...\n");
-//     // Set member variables (double and unsigned int) to zero
+//     // Set member variables (double and int) to zero
 //     x0 = 0;
 //     y0 = 0;
 //     lx = 0;
@@ -97,11 +97,11 @@ double Mesh::getLZ(void) const {
     return lz;
 }
 
-unsigned int Mesh::getNX(void) const {
+int Mesh::getNX(void) const {
     return nx;
 }
 
-unsigned int Mesh::getNY(void) const {
+int Mesh::getNY(void) const {
     return ny;
 }
 
@@ -156,9 +156,9 @@ double* Mesh::getVol(void) const {
 // the function returns the specified value. Otherwise it returns a value which should not cause issues, for instance, if a distance is requested,
 // it returns 1 instead of 0.
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-double Mesh::satNodeX(unsigned int i) const {
+double Mesh::satNodeX(int i) const {
     if(built) { // Mesh is built
-        if(i < nx)      // Safe range: 0 <= i < nx
+        if(i >= 0 && i < nx)      // Safe range: 0 <= i < nx
             return nodeX[i];
         else            // Unsuitable argument
             printf("\tError accessing nodeX. Argument provided (%d) is not within the range 0 <= i < %d.\n", i, nx);
@@ -167,9 +167,9 @@ double Mesh::satNodeX(unsigned int i) const {
     return 0;
 }
 
-double Mesh::satNodeY(unsigned int j) const {
+double Mesh::satNodeY(int j) const {
     if(built) { // Mesh is built
-        if(j < ny)  // Safe range: 0 <= j < ny
+        if(j >= 0 && j < ny)  // Safe range: 0 <= j < ny
             return nodeY[j];
         else        // Unsuitable argument
             printf("\tError accessing nodeY. Argument provided (%d) is not within the range 0 <= j < %d.\n", j, ny);
@@ -178,9 +178,9 @@ double Mesh::satNodeY(unsigned int j) const {
     return 0;
 }
 
-double Mesh::satDistX(unsigned int i) const {
+double Mesh::satDistX(int i) const {
     if(built) { // Mesh is built
-        if(i < nx-1)    // Safe range: 0 <= i < nx-1
+        if(i >= 0 && i < nx-1)    // Safe range: 0 <= i < nx-1
             return distX[i];
         else            // Unsuitable argument
             printf("\tError accessing distX. Argument provided (%d) is not within the range 0 <= i < %d.\n", i, nx-1);
@@ -189,9 +189,9 @@ double Mesh::satDistX(unsigned int i) const {
     return 1;
 }
 
-double Mesh::satDistY(unsigned int j) const {
+double Mesh::satDistY(int j) const {
     if(built) { // Mesh is built
-        if(j < ny-1)    // Safe range: 0 <= j < ny-1
+        if(j >= 0 && j < ny-1)    // Safe range: 0 <= j < ny-1
             return distY[j];
         else            // Unsuitable argument
             printf("\tError accessing distY. Argument provided (%d) is not within the range 0 <= j < %d.\n", j, ny-1);
@@ -200,9 +200,9 @@ double Mesh::satDistY(unsigned int j) const {
     return 1;
 }
 
-double Mesh::satDistNFX(unsigned int i) const {
+double Mesh::satDistNFX(int i) const {
     if(built) { // Mesh is built
-        if(i < 2*nx)    // Safe range: 0 <= i < 2*nx
+        if(i >= 0 && i < 2*nx)    // Safe range: 0 <= i < 2*nx
             return distNFX[i];
         else            // Unsuitable argument
             printf("\tError accessing distNFX. Argument provided (%d) is not within the range 0 <= i < %d.\n", i, 2*nx);
@@ -211,9 +211,9 @@ double Mesh::satDistNFX(unsigned int i) const {
     return 1;
 }
 
-double Mesh::satDistNFY(unsigned int j) const {
+double Mesh::satDistNFY(int j) const {
     if(built) { // Mesh is built
-        if(j < 2*ny)    // Safe range: 0 <= j < 2*ny
+        if(j >= 0 && j < 2*ny)    // Safe range: 0 <= j < 2*ny
             return distNFY[j];
         else            // Unsuitable argument
             printf("\tError accessing distNFY. Argument provided (%d) is not within the range 0 <= j < %d.\n", j, 2*ny);
@@ -222,9 +222,9 @@ double Mesh::satDistNFY(unsigned int j) const {
     return 1;
 }
 
-double Mesh::satFaceX(unsigned int i) const {
+double Mesh::satFaceX(int i) const {
     if(built) { // Mesh is built
-        if(i < nx+1)    // Safe range: 0 <= i < nx+1
+        if(i >= 0 && i < nx+1)    // Safe range: 0 <= i < nx+1
             return faceX[i];
         else            // Unsuitable argument
             printf("\tError accessing faceX. Argument provided (%d) is not within the range 0 <= i < %d.\n", i, nx+1);
@@ -233,9 +233,9 @@ double Mesh::satFaceX(unsigned int i) const {
     return 1;
 }
 
-double Mesh::satFaceY(unsigned int j) const {
+double Mesh::satFaceY(int j) const {
     if(built) { // Mesh is built
-        if(j < ny+1)    // Safe range: 0 <= j < ny+1
+        if(j >= 0 && j < ny+1)    // Safe range: 0 <= j < ny+1
             return faceY[j];
         else            // Unsuitable argument
             printf("\tError accessing faceY. Argument provided (%d) is not within the range 0 <= j < %d.\n", j, ny+1);
@@ -244,9 +244,9 @@ double Mesh::satFaceY(unsigned int j) const {
     return 1;
 }
 
-double Mesh::satSurfX(unsigned int j) const {
+double Mesh::satSurfX(int j) const {
     if(built) { // Mesh is built
-        if(j < ny)  // Safe range: 0 <= j < ny
+        if(j >= 0 && j < ny)  // Safe range: 0 <= j < ny
             return surfX[j];
         else        // Unsuitable argument
             printf("\tError accessing surfX. Argument provided (%d) is not within the range 0 <= j < %d.\n", j, ny);
@@ -255,9 +255,9 @@ double Mesh::satSurfX(unsigned int j) const {
     return 1;
 }
 
-double Mesh::satSurfY(unsigned int i) const {
+double Mesh::satSurfY(int i) const {
     if(built) { // Mesh is built
-        if(i < nx)  // Safe range: 0 <= i < nx
+        if(i >= 0 && i < nx)  // Safe range: 0 <= i < nx
             return surfY[i];
         else        // Unsuitable argument
             printf("\tError accessing surfY. Argument provided (%d) is not within the range 0 <= i < %d.\n", i, nx);
@@ -266,9 +266,9 @@ double Mesh::satSurfY(unsigned int i) const {
     return 1;
 }
 
-double Mesh::satVol(unsigned int i) const {
+double Mesh::satVol(int i) const {
     if(built) { // Mesh is built
-        if(i < nx*ny)   // Safe range: 0 <= i < nx*ny
+        if(i >= 0 && i < nx*ny)   // Safe range: 0 <= i < nx*ny
             return vol[i];
         else            // Unsuitable argument
             printf("\tError accessing vol. Argument provided (%d) is not within the range 0 <= i < %d.\n", i, nx*ny);
@@ -277,9 +277,9 @@ double Mesh::satVol(unsigned int i) const {
     return 1;
 }
 
-double Mesh::satVol(unsigned int i, unsigned int j) const {
+double Mesh::satVol(int i, int j) const {
     if(built) { // Mesh is built
-        if(i < nx && j < ny)    // Safe range: 0 <= i < nx; 0 <= j < ny
+        if(i >= 0 && i < nx && j >= 0 && j < ny)    // Safe range: 0 <= i < nx; 0 <= j < ny
             return vol[j*nx+i];
         else                    // Unsuitable arguments
             printf("\tError accessing vol. Arguments provided (i = %d, j = %d) are not within the ranges 0 <= i < %d, 0 <= j < %d.\n", i, j, nx, ny);
@@ -343,13 +343,13 @@ double Mesh::atVol(int i, int j) const {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // BUILD MESH
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, double _lz, unsigned int _nx, unsigned int _ny) {
+int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, double _lz, int _nx, int _ny) {
     /*
     compute2DUniformMesh: computes the geometry of a uniform cartesian discretization for a 2D rectangular domain
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Inputs:
-        - nx: discretization nodes in X axis    [unsigned int]
-        - ny: discretization nodes in Y axis    [unsigned int]
+        - nx: discretization nodes in X axis    [int]
+        - ny: discretization nodes in Y axis    [int]
         - lx: domain length in X axis           [double]
         - ly: domain length in Y axis           [double]
         - lz: domain length in Z axis           [double]
@@ -399,7 +399,7 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
         double stepX = lx / (nx - 1);
         nodeX = (double*) malloc(nx * sizeof(double*));
         if(nodeX) {
-            for(unsigned int i = 0; i < nx; i++)
+            for(int i = 0; i < nx; i++)
                 nodeX[i] = x0 + i * stepX;
         } else {
             printf("\tError building uniform mesh. Could not allocate memory for nodeX.\n");
@@ -410,7 +410,7 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
         double stepY = ly / (ny - 1);
         nodeY = (double*) malloc(ny * sizeof(double*));
         if(nodeY) {
-            for(unsigned int j = 0; j < ny; j++)
+            for(int j = 0; j < ny; j++)
                 nodeY[j] = y0 + j * stepY;
         } else {
             printf("\tError building uniform mesh. Could not allocate memory for nodeY.\n");
@@ -420,7 +420,7 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
         // distX
         distX = (double*) malloc((nx-1) * sizeof(double*));
         if(distX) {
-            for(unsigned int i = 0; i < nx-1; i++)
+            for(int i = 0; i < nx-1; i++)
                 distX[i] = stepX;
         } else {
             printf("\tError building uniform mesh. Could not allocate memory for distX.\n");
@@ -430,7 +430,7 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
         // distY
         distY = (double*) malloc((ny-1) * sizeof(double*));
         if(distY) {
-            for(unsigned int j = 0; j < ny-1; j++)
+            for(int j = 0; j < ny-1; j++)
                 distY[j] = stepY;
         } else {
             printf("\tError building uniform mesh. Could not allocate memory for distY.\n");
@@ -442,7 +442,7 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
         if(faceX) {
             faceX[0] = x0;
             faceX[nx] = x0 + lx;
-            for(unsigned int i = 0; i < nx-1; i++)
+            for(int i = 0; i < nx-1; i++)
                 faceX[i+1] = nodeX[i] + 0.5 * stepX;
         } else {
             printf("\tError building uniform mesh. Could not allocate memory for faceX.\n");
@@ -454,7 +454,7 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
         if(faceY) {
             faceY[0] = y0;
             faceY[ny] = y0 + ly;
-            for(unsigned int j = 0; j < ny-1; j++)
+            for(int j = 0; j < ny-1; j++)
                 faceY[j+1] = nodeY[j] + 0.5 * stepY;
         } else {
             printf("\tError building uniform mesh. Could not allocate memory for faceY.\n");
@@ -464,7 +464,7 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
         // distNFX
         distNFX = (double*) malloc(2 * nx * sizeof(double*));
         if(distNFX) {
-            for(unsigned int i = 0; i < nx; i++) {
+            for(int i = 0; i < nx; i++) {
                 distNFX[2*i] = nodeX[i] - faceX[i];
                 distNFX[2*i+1] = faceX[i+1] - nodeX[i];
             }
@@ -476,7 +476,7 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
         // distNFY
         distNFY = (double*) malloc(2 * ny * sizeof(double*));
         if(distNFY) {
-            for(unsigned int j = 0; j < ny; j++) {
+            for(int j = 0; j < ny; j++) {
                 distNFY[2*j] = nodeY[j] - faceY[j];
                 distNFY[2*j+1] = faceY[j+1] - nodeY[j];
             }
@@ -490,7 +490,7 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
         if(surfX) {
             surfX[0] = 0.5 * stepY * lz;
             surfX[ny-1] = surfX[0];
-            for(unsigned int j = 1; j < ny-1; j++)
+            for(int j = 1; j < ny-1; j++)
                 surfX[j] = stepY * lz;
         } else {
             printf("\tError building uniform mesh. Could not allocate memory for surfX.\n");
@@ -502,7 +502,7 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
         if(surfY) {
             surfY[0] = 0.5 * stepX * lz;
             surfY[nx-1] = 0.5 * stepX * lz;
-            for(unsigned int i = 1; i < nx-1; i++)
+            for(int i = 1; i < nx-1; i++)
                 surfY[i] = stepX * lz;
         } else {
             printf("\tError building uniform mesh. Could not allocate memory for surfY.\n");
@@ -512,8 +512,8 @@ int Mesh::buildUniformMesh(double _x0, double _y0, double _lx, double _ly, doubl
         // vol
         vol = (double*) malloc(nx * ny * sizeof(double*));
         if(vol) {
-            for(unsigned int i = 0; i < nx; i++)
-                for(unsigned int j = 0; j < ny; j++)
+            for(int i = 0; i < nx; i++)
+                for(int j = 0; j < ny; j++)
                     vol[j*nx+i] = surfX[j] * surfY[i] / lz;
         } else {
             printf("\tError building uniform mesh. Could not allocate memory for vol.\n");
@@ -539,7 +539,7 @@ void Mesh::resetMesh(void) {
     Outputs: none
     */
     printf("Reset mesh...\n");
-    // Set member variables (double and unsigned int) to zero
+    // Set member variables (double and int) to zero
     x0 = 0;
     y0 = 0;
     lx = 0;

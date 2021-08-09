@@ -5,27 +5,27 @@
 #include <cmath>
 #include <algorithm>
 
-void printMatrix(const int* mat, const unsigned int rows, const unsigned int cols);
-void printMatrix(const double* mat, const unsigned int rows, const unsigned int cols);
-void printMatrix(int** mat, const unsigned int rows, const unsigned int cols);
-void printMatrix(double** mat, const unsigned int rows, const unsigned int cols);
+void printMatrix(const int* mat, const int rows, const int cols);
+void printMatrix(const double* mat, const int rows, const int cols);
+void printMatrix(int** mat, const int rows, const int cols);
+void printMatrix(double** mat, const int rows, const int cols);
 
-void printReversedRowMatrix(const int* mat, const unsigned int rows, const unsigned int cols);
-void printReversedRowMatrix(const double* mat, const unsigned int rows, const unsigned int cols);
-
-
-void getRandomMatrix(double* mat, const unsigned int rows, const unsigned int cols, const int min_range, const int max_range);
-void getRandomMatrix(int* mat, const unsigned int rows, const unsigned int cols, const int lower, const int upper);
-void getRandomMatrix(double** mat, const unsigned int rows, const unsigned int cols, const int min_range, const int max_range);
-void getRandomMatrix(int** mat, const unsigned int rows, const unsigned int cols, const int lower, const int upper);
+void printReversedRowMatrix(const int* mat, const int rows, const int cols);
+void printReversedRowMatrix(const double* mat, const int rows, const int cols);
 
 
-void getSDDMatrix(double* mat, const unsigned int rows, const int min_range, const int max_range);
-void gaussSeidel(const double* A, const double* b, double* x, const unsigned int n, const double tol, const unsigned int maxIt, int &exitCode);
-void pdGaussSeidel(const double* A, const double* b, double* x, const unsigned int n, const double tol, const unsigned int maxIt, int &exitCode);
+void getRandomMatrix(double* mat, const int rows, const int cols, const int min_range, const int max_range);
+void getRandomMatrix(int* mat, const int rows, const int cols, const int lower, const int upper);
+void getRandomMatrix(double** mat, const int rows, const int cols, const int min_range, const int max_range);
+void getRandomMatrix(int** mat, const int rows, const int cols, const int lower, const int upper);
 
-double pNorm(double* vec, unsigned int size, double p);
-double infNorm(double* vec, unsigned int size);
+
+void getSDDMatrix(double* mat, const int rows, const int min_range, const int max_range);
+void gaussSeidel(const double* A, const double* b, double* x, const int n, const double tol, const int maxIt, int &exitCode);
+void pdGaussSeidel(const double* A, const double* b, double* x, const int n, const double tol, const int maxIt, int &exitCode);
+
+double pNorm(double* vec, int size, double p);
+double infNorm(double* vec, int size);
 
 void swapRows(double** A, int* perm, int i, int k, int& permSign);
 int factorLU(double** A, int* perm, const int n, const double tol);
