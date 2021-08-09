@@ -9,6 +9,7 @@ void printMatrix(const int* mat, const int rows, const int cols);
 void printMatrix(const double* mat, const int rows, const int cols);
 void printMatrix(int** mat, const int rows, const int cols);
 void printMatrix(double** mat, const int rows, const int cols);
+void printNonZeroElements(const double* mat, const int rows, const int cols, const double tol);
 
 void printReversedRowMatrix(const int* mat, const int rows, const int cols);
 void printReversedRowMatrix(const double* mat, const int rows, const int cols);

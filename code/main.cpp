@@ -87,7 +87,7 @@ int main(int arg, char* argv[]) {
 
 
     // // Numerical data
-    int N = 50;
+    int N = 5;
     int nx = N;      // Number of nodes in x axis
     int ny = N;      // Number of nodes in y axis
     const double phi0 = 1;      // Initial value to fill phi vector for linear system resolution
@@ -143,25 +143,21 @@ int main(int arg, char* argv[]) {
 
     assembleMatrix(nx, ny, A, AA);
 
+    printNonZeroElements(AA, n, n, TOL);
+
+
     // Permutation vector
-    int* perm = (int*) malloc(n * sizeof(int*));
-    factorLU(AA, perm, n, TOL);
-    solveLUP(AA, b, phi2, perm, n);
+    // int* perm = (int*) malloc(n * sizeof(int*));
+    // factorLU(AA, perm, n, TOL);
+    // solveLUP(AA, b, phi2, perm, n);
 
 
-    double maxDiff = 0;
-    for(int i = 0; i < n; i++)
-        maxDiff = std::max(maxDiff, std::abs(phi[i] - phi2[i]));
-    printf("maxDiff : %.5e\n", maxDiff);
+    // const char* filename = "output/output.dat";
+    // printToFile(m, phi, filename, 5);
+    // plotSolution(filename);
 
-    // </NEW>
-
-    const char* filename = "output/output.dat";
-    printToFile(m, phi, filename, 5);
-    plotSolution(filename);
-
-    printf("phi = \n");
-    printMatrix(phi, nx, ny);
+    // printf("phi = \n");
+    // printMatrix(phi, nx, ny);
 
 
     // Free memory allocated
@@ -619,6 +615,7 @@ const double* phi_boundary, const double* v, const double rho, const double gamm
     }
     printf("\tMaximum difference: %.5e\n\n", maxDiff);
 }
+
 
 void computeDiscretizationCoefficientsDiagonalCase(const int nx, const int ny, const double* nodeX, const double* nodeY,
 const double* distX, const double* distY, const double* faceX, const double* faceY, const double* surfX, const double* surfY, const double* vol,

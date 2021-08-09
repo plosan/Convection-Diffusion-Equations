@@ -88,6 +88,18 @@ void printMatrix(int** mat, const int rows, const int cols) {
     }
 }
 
+void printNonZeroElements(const double* mat, const int rows, const int cols, const double tol) {
+    for(int i = 0; i < rows; i++) {
+        for(int j = 0; j < cols; j++) {
+            if(std::abs(mat[i*cols+j]) < tol)
+                printf("%2s", "");
+            else
+                printf("%2d", 1);
+        }
+        printf("\n");
+    }
+}
+
 void printReversedRowMatrix(const int* mat, const int rows, const int cols) {
     /*
     printReversedRowMatrix: prints a double array with rows in reversed order, that is, from last row to first.
