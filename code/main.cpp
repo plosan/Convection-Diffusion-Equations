@@ -43,9 +43,9 @@ double (*vx)(double,double), double (*vy)(double, double), double* A, double* b,
 
 void checkSystemMatrix(const unsigned int nx, const unsigned int ny, const double tol, const double* A);
 
-void solve(const unsigned int nx, const unsigned int ny, const double* A, const double* b, double* phi, int method);
+void solveSystem(const unsigned int nx, const unsigned int ny, const double* A, const double* b, double* phi, int method);
 
-void solveGS(const unsigned int nx, const unsigned int ny, const double tol, const unsigned int maxIt, const double* A, const double* b, double* phi);
+void solveSystemGS(const unsigned int nx, const unsigned int ny, const double tol, const unsigned int maxIt, const double* A, const double* b, double* phi);
 
 void printToFile(const Mesh m, const double* phi, const char* filename, const int precision);
 
@@ -131,7 +131,7 @@ int main(int arg, char* argv[]) {
     std::fill_n(phi, nx*ny, phi0);
 
     printf("Solving linear system...\n");
-    solveGS(nx, ny, TOL, MAXIT, A, b, phi);
+    solveSystemGS(nx, ny, TOL, MAXIT, A, b, phi);
 
 
     double* phi2 = (double*) malloc(nx * ny * sizeof(double*));
@@ -355,53 +355,17 @@ void checkSystemMatrix(const unsigned int nx, const unsigned int ny, const doubl
     printf("\n");
 }
 
-void solve(const unsigned int nx, const unsigned int ny, const double* A, const double* b, double* phi, int method) {
+void solveSystem(const unsigned int nx, const unsigned int ny, const double* A, const double* b, double* phi, int method) {
     if(method == 0) // Solve using Gauss-Seidel
-        solveGS(nx, ny, TOL, MAXIT, A, b, phi);
+        solveSystemGS(nx, ny, TOL, MAXIT, A, b, phi);
     else {          // Solve using LUP factorization
 
-        // int n = nx * ny;
-        // double* AA = (double*) malloc(n * n * sizeof(double*));
-        // assembleMatrix(nx, ny, A, AA);
-        // int* perm = (int*) malloc(n * sizeof(int*));
-        // printf("\tLU factor...\n");
-        // factorLU(AA, perm, n, TOL);
-        // printf("\tLU solve...\n");
-        // solveLUP(AA, b, phi, perm, n);
-
-        int n = nx * ny;
-        double** AA = (double**) malloc(n * sizeof(double*));
-        for(int i = 0; i < n; i++) {
-            AA[i] = (double*) malloc(n * sizeof(double*));
-            for(int j = 0; j < n; j++)
-                AA[i][j] = 0;
-        }
-
-        assembleMatrix(nx, ny, A, AA);
-        int* perm = (int*) malloc(n * sizeof(int*));
-        factorLU(AA, perm, n, TOL);
-        solveLUP(AA, b, phi, perm, n);
-
-        double maxDiff = 0;
-        for(int i = 0; i < n; i++) {
-            double sum = 0;
-            for(int j = 0; j < n; j++)
-                sum += AA[i][j] * phi[j];
-            maxDiff = std::max(maxDiff, std::abs(sum - b[i]));
-        }
-        // for(int i = 0; i < n; i++) {
-        //     double sum = 0;
-        //     for(int j = 0; j < n; j++)
-        //         sum += AA[i*n+j] * phi[j];
-        //     maxDiff = std::max(maxDiff, std::abs(sum - b[i]));
-        // }
-        printf("\tmaxDiff = %.5e\n", maxDiff);
     }
 }
 
-void solveGS(const unsigned int nx, const unsigned int ny, const double tol, const unsigned int maxIt, const double* A, const double* b, double* phi) {
+void solveSystemGS(const unsigned int nx, const unsigned int ny, const double tol, const unsigned int maxIt, const double* A, const double* b, double* phi) {
     /*
-    solveGS: solves the linear system resulting from a 2D convection-diffusion problem in a domain discretized with a cartesian mesh using
+    solveSystemGS: solves the linear system resulting from a 2D convection-diffusion problem in a domain discretized with a cartesian mesh using
     Gauss-Seidel algorithm. It has two criterion to stop the iteration:
         - Let phi* and phi be two consecutive vectors of the sequence produced by Gauss-Seidel algorithm. If the infinity norm of phi-phi* is less
         than tol, then the algorithm stops.
@@ -454,6 +418,10 @@ void solveGS(const unsigned int nx, const unsigned int ny, const double tol, con
         it++;                           // Increase iteration counter
     }
     printf("\tIterations: %d\n\n", it);
+}
+
+void solveSystemLUP() {
+    
 }
 
 void printToFile(const Mesh m, const double* phi, const char* filename, const int precision) {
@@ -511,7 +479,7 @@ void plotSolution(const char* filename) {
 }
 
 void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* A, double** AA) {
-    printf("Assembling matrix to check linear system solution...\n\n");
+    printf("Assembling (nx*ny) x 5 (vector) matrix to (nx*ny) x (nx*ny) (vector) matrix...\n\n");
     if(AA) {
         // // Lower row
         for(unsigned int i = 0; i < nx; i++) {
@@ -551,7 +519,7 @@ void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* 
 }
 
 void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* A, double* AA) {
-    printf("Assembling matrix to check linear system solution...\n\n");
+    printf("Assembling (nx*ny) x 5 (vector) matrix to (nx*ny) x (nx*ny) (square) matrix...\n\n");
     if(AA) {
         int n = nx * ny;
         // // Lower row
@@ -586,7 +554,7 @@ void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* 
             AA[node*n+node]    = A[5*node+4]; // aP coefficient
         }
     } else {
-        printf("AA not allocated\n");
+        printf("Matrix AA not allocated\n");
     }
 }
 
