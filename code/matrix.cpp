@@ -415,7 +415,7 @@ int factorLU(double** A, int* perm, const int n, const double tol) {
     return permSign;
 }
 
-void solveLUP(double** A, double* b, double* x, int* perm, const int n) {
+void solveLUP(double** A, const double* b, double* x, int* perm, const int n) {
     /*
     solveLUP: solves the linear system given by matrix A and vector b. Matrix A has to be already in its LU form, that is to say, L below the
     diagonal and U on the diagonal and above.
@@ -541,7 +541,7 @@ int factorLU(double* A, int* perm, const int n, const double tol) {
     return permSign;
 }
 
-void solveLUP(double* A, double* b, double* x, int* perm, const int n) {
+void solveLUP(const double* A, const double* b, double* x, int* perm, const int n) {
     /*
     solveLUP: solves the linear system given by matrix A and vector b. Matrix A has to be already in its LU form, that is to say, L below the
     diagonal and U on the diagonal and above. In addition, matrix A  (in its LU form) is given in vector form.

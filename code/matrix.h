@@ -29,10 +29,10 @@ double infNorm(double* vec, unsigned int size);
 
 void swapRows(double** A, int* perm, int i, int k, int& permSign);
 int factorLU(double** A, int* perm, const int n, const double tol);
-void solveLUP(double** A, double* b, double* x, int* perm, const int n);
+void solveLUP(double** A, const double* b, double* x, int* perm, const int n);
 
 void swapRows(double* A, const int n, int* perm, int i, int k, int& permSign);
 int factorLU(double* A, int* perm, const int n, const double tol);
-void solveLUP(double* A, double* b, double* x, int* perm, const int n);
+void solveLUP(const double* A, const double* b, double* x, int* perm, const int n);
 
 #endif //CDE_MATRIX_H_

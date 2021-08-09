@@ -16,6 +16,9 @@
 #define V0 1
 #define ALPHA 0.25*M_PI
 
+#define TOL 1e-12
+#define MAXIT 1000000
+
 double vxDiagonal(double x, double y) {
     // return V0*cos(ALPHA);
     return cos(0.25*M_PI);
@@ -40,13 +43,17 @@ double (*vx)(double,double), double (*vy)(double, double), double* A, double* b,
 
 void checkSystemMatrix(const unsigned int nx, const unsigned int ny, const double tol, const double* A);
 
-void solveSystem(const unsigned int nx, const unsigned int ny, const double tol, const unsigned int maxIt, const double* A, const double* b, double* phi);
+void solve(const unsigned int nx, const unsigned int ny, const double* A, const double* b, double* phi, int method);
+
+void solveGS(const unsigned int nx, const unsigned int ny, const double tol, const unsigned int maxIt, const double* A, const double* b, double* phi);
 
 void printToFile(const Mesh m, const double* phi, const char* filename, const int precision);
 
 void plotSolution(const char* filename);
 
-void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* A, double** A_mat);
+void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* A, double** AA);
+
+void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* A, double* AA);
 
 double computeSolutionDifference(const unsigned int nx, const unsigned int ny, const double* A, const double* b, const double* phi);
 
@@ -80,7 +87,7 @@ int main(int arg, char* argv[]) {
 
 
     // // Numerical data
-    unsigned int N = 100;
+    unsigned int N = 4;
     unsigned int nx = N;      // Number of nodes in x axis
     unsigned int ny = N;      // Number of nodes in y axis
     const double phi0 = 1;      // Initial value to fill phi vector for linear system resolution
@@ -100,7 +107,7 @@ int main(int arg, char* argv[]) {
 
     double* A = (double*) malloc(5 * nx * ny * sizeof(double*));
     double* b = (double*) malloc(nx * ny * sizeof(double*));
-    int scheme = 1;
+    int scheme = 0;
     if(!A) {
         printf("Not A\n");
         return -2;
@@ -119,20 +126,35 @@ int main(int arg, char* argv[]) {
 
     checkSystemMatrix(nx, ny, tol, A);
 
-    printf("A = \n");
-    printMatrix(A, nx*ny, 5);
-
-    printf("prop = \n");
-    printMatrix(prop, 2, 1);
-
+    // <NEW>
     double* phi = (double*) malloc(nx * ny * sizeof(double*));
     std::fill_n(phi, nx*ny, phi0);
 
-
     printf("Solving linear system...\n");
-    solveSystem(nx, ny, tol, maxIt, A, b, phi);
-    double checkSol = computeSolutionDifference(nx, ny, A, b, phi);
-    printf("checkSol : %.5e\n\n\n", checkSol);
+    solveGS(nx, ny, TOL, MAXIT, A, b, phi);
+
+
+    double* phi2 = (double*) malloc(nx * ny * sizeof(double*));
+    std::fill_n(phi2, nx*ny, 0);
+
+    int n = nx * ny;
+    double* AA = (double*) malloc(n * n * sizeof(double*));
+    std::fill_n(AA, n*n, 0);
+
+    assembleMatrix(nx, ny, A, AA);
+
+    // Permutation vector
+    int* perm = (int*) malloc(n * sizeof(int*));
+    factorLU(AA, perm, n, TOL);
+    solveLUP(AA, b, phi2, perm, n);
+
+
+    double maxDiff = 0;
+    for(int i = 0; i < n; i++)
+        maxDiff = std::max(maxDiff, std::abs(phi[i] - phi2[i]));
+    printf("maxDiff : %.5e\n", maxDiff);
+
+    // </NEW>
 
     const char* filename = "output/output.dat";
     printToFile(m, phi, filename, 5);
@@ -333,13 +355,53 @@ void checkSystemMatrix(const unsigned int nx, const unsigned int ny, const doubl
     printf("\n");
 }
 
-void solve(const unsigned int nx, const unsigned int ny, const double* A, const double* b, double* phi) {
+void solve(const unsigned int nx, const unsigned int ny, const double* A, const double* b, double* phi, int method) {
+    if(method == 0) // Solve using Gauss-Seidel
+        solveGS(nx, ny, TOL, MAXIT, A, b, phi);
+    else {          // Solve using LUP factorization
 
+        // int n = nx * ny;
+        // double* AA = (double*) malloc(n * n * sizeof(double*));
+        // assembleMatrix(nx, ny, A, AA);
+        // int* perm = (int*) malloc(n * sizeof(int*));
+        // printf("\tLU factor...\n");
+        // factorLU(AA, perm, n, TOL);
+        // printf("\tLU solve...\n");
+        // solveLUP(AA, b, phi, perm, n);
+
+        int n = nx * ny;
+        double** AA = (double**) malloc(n * sizeof(double*));
+        for(int i = 0; i < n; i++) {
+            AA[i] = (double*) malloc(n * sizeof(double*));
+            for(int j = 0; j < n; j++)
+                AA[i][j] = 0;
+        }
+
+        assembleMatrix(nx, ny, A, AA);
+        int* perm = (int*) malloc(n * sizeof(int*));
+        factorLU(AA, perm, n, TOL);
+        solveLUP(AA, b, phi, perm, n);
+
+        double maxDiff = 0;
+        for(int i = 0; i < n; i++) {
+            double sum = 0;
+            for(int j = 0; j < n; j++)
+                sum += AA[i][j] * phi[j];
+            maxDiff = std::max(maxDiff, std::abs(sum - b[i]));
+        }
+        // for(int i = 0; i < n; i++) {
+        //     double sum = 0;
+        //     for(int j = 0; j < n; j++)
+        //         sum += AA[i*n+j] * phi[j];
+        //     maxDiff = std::max(maxDiff, std::abs(sum - b[i]));
+        // }
+        printf("\tmaxDiff = %.5e\n", maxDiff);
+    }
 }
 
-void solveSystem(const unsigned int nx, const unsigned int ny, const double tol, const unsigned int maxIt, const double* A, const double* b, double* phi) {
+void solveGS(const unsigned int nx, const unsigned int ny, const double tol, const unsigned int maxIt, const double* A, const double* b, double* phi) {
     /*
-    solveSystem: solves the linear system resulting from a 2D convection-diffusion problem in a domain discretized with a cartesian mesh using
+    solveGS: solves the linear system resulting from a 2D convection-diffusion problem in a domain discretized with a cartesian mesh using
     Gauss-Seidel algorithm. It has two criterion to stop the iteration:
         - Let phi* and phi be two consecutive vectors of the sequence produced by Gauss-Seidel algorithm. If the infinity norm of phi-phi* is less
         than tol, then the algorithm stops.
@@ -448,43 +510,83 @@ void plotSolution(const char* filename) {
         fprintf(gnupipe, "%s\n", GnuCommands[i]);
 }
 
-void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* A, double** A_mat) {
+void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* A, double** AA) {
     printf("Assembling matrix to check linear system solution...\n\n");
-    if(A_mat) {
+    if(AA) {
         // // Lower row
         for(unsigned int i = 0; i < nx; i++) {
             int node = i;
-            A_mat[node][node+nx] = A[5*node+3]; // aN coefficient
-            A_mat[node][node] = A[5*node+4];    // aP coefficient
+            AA[node][node+nx] = -A[5*node+3]; // aN coefficient
+            AA[node][node] = A[5*node+4];    // aP coefficient
         }
         // // Central rows
         for(unsigned int j = 1; j < ny-1; j++) {
             // First node
             int node = j * nx;
-            A_mat[node][node+1] = A[5*node+2];  // aE coefficient
-            A_mat[node][node] = A[5*node+4];    // aP coefficient
+            AA[node][node+1] = -A[5*node+2];  // aE coefficient
+            AA[node][node] = A[5*node+4];    // aP coefficient
             // Central nodes
             for(unsigned int i = 1; i < nx-1; i++) {
                 node = j * nx + i;
-                A_mat[node][node-nx] = A[5*node];   // aS coefficient
-                A_mat[node][node-1]  = A[5*node+1]; // aW coefficient
-                A_mat[node][node+1]  = A[5*node+2]; // aE coefficient
-                A_mat[node][node+nx] = A[5*node+3]; // aN coefficient
-                A_mat[node][node]    = A[5*node+4]; // aP coefficient
+                AA[node][node-nx] = -A[5*node];   // aS coefficient
+                AA[node][node-1]  = -A[5*node+1]; // aW coefficient
+                AA[node][node+1]  = -A[5*node+2]; // aE coefficient
+                AA[node][node+nx] = -A[5*node+3]; // aN coefficient
+                AA[node][node]    = A[5*node+4]; // aP coefficient
             }
             // Last node
             node = j * nx + nx - 1;
-            A_mat[node][node-1] = A[5*node+1];  // aW coefficient
-            A_mat[node][node]   = A[5*node+4];  // aP coefficient
+            AA[node][node-1] = -A[5*node+1];  // aW coefficient
+            AA[node][node]   = A[5*node+4];  // aP coefficient
         }
         // // Upper row
         for(unsigned int i = 0; i < nx; i++) {
             int node = (ny - 1) * nx + i;
-            A_mat[node][node-nx] = A[5*node];   // aS coefficient
-            A_mat[node][node]    = A[5*node+4]; // aP coefficient
+            AA[node][node-nx] = -A[5*node];   // aS coefficient
+            AA[node][node]    = A[5*node+4]; // aP coefficient
         }
     } else {
-        printf("A_mat not allocated\n");
+        printf("AA not allocated\n");
+    }
+}
+
+void assembleMatrix(const unsigned int nx, const unsigned int ny, const double* A, double* AA) {
+    printf("Assembling matrix to check linear system solution...\n\n");
+    if(AA) {
+        int n = nx * ny;
+        // // Lower row
+        for(unsigned int i = 0; i < nx; i++) {
+            AA[i*n+i]    = A[5*i+4];    // aP coefficient
+            AA[i*n+i+nx] = -A[5*i+3];    // aN coefficient
+        }
+        // // Central rows
+        for(unsigned int j = 1; j < ny-1; j++) {
+            // First node
+            int node = j * nx;
+            AA[node*n+node] = A[5*node+4];    // aP coefficient
+            AA[node*n+node+1] = -A[5*node+2];  // aE coefficient
+            // Central nodes
+            for(unsigned int i = 1; i < nx-1; i++) {
+                node = j * nx + i;
+                AA[node*n+node-nx] = -A[5*node];   // aS coefficient
+                AA[node*n+node-1]  = -A[5*node+1]; // aW coefficient
+                AA[node*n+node+1]  = -A[5*node+2]; // aE coefficient
+                AA[node*n+node+nx] = -A[5*node+3]; // aN coefficient
+                AA[node*n+node]    = A[5*node+4]; // aP coefficient
+            }
+            // Last node
+            node = j * nx + nx - 1;
+            AA[node*n+node-1] = -A[5*node+1];  // aW coefficient
+            AA[node*n+node]   = A[5*node+4];  // aP coefficient
+        }
+        // // Upper row
+        for(unsigned int i = 0; i < nx; i++) {
+            int node = (ny - 1) * nx + i;
+            AA[node*n+node-nx] = -A[5*node];   // aS coefficient
+            AA[node*n+node]    = A[5*node+4]; // aP coefficient
+        }
+    } else {
+        printf("AA not allocated\n");
     }
 }
 
