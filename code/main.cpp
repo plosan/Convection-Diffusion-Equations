@@ -19,23 +19,25 @@
 #define TOL 1e-12
 #define MAXIT 1000000
 
+#define PHI_LOW 19.9
+#define PHI_HIGH 20.1
 
-
-
+// Build mesh functions
 
 // Computation of internal nodes discretization coefficients
 void computeSteadyStateDiscretizationCoefficientsInternalNodes(const Mesh m, const double* prop,
 double (*vx)(double,double), double (*vy)(double, double), double (*source)(double, double), double* A, double* b, const int scheme);
 
-
 // Diagonal case functions
 void computeDiscCoefsBoundaryNodesDiagonal(const Mesh m, const double* phi_boundary, double* A, double* b);
+void computeDiscCoefsBoundaryNodesDiagonal(const Mesh m, const double phi_low, const double phi_high, double* A, double* b);
+void computeDiscCoefsBoundaryNodesDiagonal(const Mesh m, double* A, double* b);
 double vxDiagonal(const double, const double);
 double vyDiagonal(const double, const double);
 double sourceDiagonal(const double, const double);
 
 // Smith-Hutton case functions
-void computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(const Mesh m, const double* phi_boundary, double* A, double* b);
+void computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(const Mesh m, double* A, double* b);
 double vxSmithHutton(const double x, const double y);
 double vySmithHutton(const double x, const double y);
 double sourceSmithHutton(const double, const double);
@@ -52,49 +54,50 @@ void assembleMatrix(const int nx, const int ny, const double* A, double* AA);
 
 // Print results functions
 void printToFile(const Mesh m, const double* phi, const char* filename, const int precision);
-void plotSolution(const char* filename);
+void plotSolution(const Mesh m, const char* filename);
 
 // Check solution functions
 double computeSolutionDifference(const int nx, const int ny, const double* A, const double* b, const double* phi);
-void verification(const Mesh m, const double* phi);
+void verification(const Mesh m, const double* prop, double (*vx)(double,double), double (*vy)(double, double), double (*source)(double, double), const double* phi);
 
 int main(int arg, char* argv[]) {
 
     // // Physical data
-    // Sizes
-    double x0 = 0;  // Lower left corner x coordinate for rectangular domain    [m]
-    double y0 = 0;  // Lower left corner y coordinate for rectangular domain    [m]
-    double L = 1;   // Domain size in x and y axis                              [m]
-    double lz = 1;  // Domain size in z axis                                    [m]
-
-    // Boundary conditions
-    const double phi_low = -20;      // Minimum value for phi
-    const double phi_high = 20;     // Maximum value for phi
+    // Diagonal case
+    // double L = 1;   // Domain size in x and y axis                              [m]
+    // double x0 = 0;  // Lower left corner x coordinate for rectangular domain    [m]
+    // double y0 = 0;  // Lower left corner y coordinate for rectangular domain    [m]
+    // double lx = L;  // Domain size in x axis                                    [m]
+    // double ly = L;  // Domain size in y axis                                    [m]
+    // double lz = 1;  // Domain size in z axis                                    [m]
+    // Smith-Hutton case
+    double L = 1;       // Domain size in x and y axis                              [m]
+    double x0 = -L;     // Lower left corner x coordinate for rectangular domain    [m]
+    double y0 = 0;      // Lower left corner y coordinate for rectangular domain    [m]
+    double lx = 2*L;    // Domain size in x axis                                    [m]
+    double ly = L;      // Domain size in y axis                                    [m]
+    double lz = 1;      // Domain size in z axis                                    [m]
 
     // Thermophysical properties for water at 20 ºC
-    const double lambda = 0.5861;       // Thermal conductivity                         [W/(k*m)]
-    const double cv = 4183;             // Specific heat at constant volume (pressure)  [J/(kg*K)]
-    const double rho = 998.2;           // Density                                      [kg/m^3]
-    const double gamma = 1e-9*lambda / cv;   // Diffusion coefficient
+    // const double lambda = 0.5861;       // Thermal conductivity                         [W/(k*m)]
+    // const double cv = 4183;             // Specific heat at constant volume (pressure)  [J/(kg*K)]
+    const double rho = 1000;           // Density                                      [kg/m^3]
+    const double gamma = rho/100;   // Diffusion coefficient
     double* prop = (double*) malloc(2 * sizeof(double*));
     prop[0] = rho;
     prop[1] = gamma;
 
 
     // // Numerical data
-    int N = 20;
+    int N = 100;
     int nx = N;      // Number of nodes in x axis
     int ny = N;      // Number of nodes in y axis
     const double phi0 = 1;      // Initial value to fill phi vector for linear system resolution
 
-    double* phi_boundary = (double*) malloc(2 * sizeof(double*));
-    phi_boundary[0] = phi_low;
-    phi_boundary[1] = phi_high;
-
-
     Mesh m;
     printf("Building uniform cartesian mesh...\n\n");
-    m.buildUniformMesh(x0, y0, L, L, lz, nx, ny);
+    m.buildUniformMesh(x0, y0, lx, ly, lz, nx, ny);
+
     if(!m.isBuilt()) {
         printf("\tError. Could not build mesh\n");
         return -2;
@@ -113,43 +116,30 @@ int main(int arg, char* argv[]) {
     }
 
 
-    printf("Computing internal nodes discretization coefficients...\n\n");
     computeSteadyStateDiscretizationCoefficientsInternalNodes(m, prop, vxDiagonal, vyDiagonal, sourceDiagonal, A, b, scheme);
+    computeDiscCoefsBoundaryNodesDiagonal(m, PHI_LOW, PHI_HIGH, A, b);
 
-    printf("Computing boundary nodes discretization coefficients for the diagonal case...\n\n");
-    computeDiscCoefsBoundaryNodesDiagonal(m, phi_boundary, A, b);
+    // computeSteadyStateDiscretizationCoefficientsInternalNodes(m, prop, vxSmithHutton, vySmithHutton, sourceSmithHutton, A, b, scheme);
+    // computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(m, A, b);
 
     checkSystemMatrix(nx, ny, TOL, A);
 
-    // <NEW>
-    double* phi1 = (double*) malloc(nx * ny * sizeof(double*));
-    std::fill_n(phi1, nx*ny, phi0);
+    double* phi = (double*) malloc(nx * ny * sizeof(double*));
+    std::fill_n(phi, nx*ny, phi0);
 
-    solveSystem(nx, ny, A, b, phi1, 0);
-    // solveSystemGS(nx, ny, TOL, MAXIT, A, b, phi1);
+    solveSystem(nx, ny, A, b, phi, 0);
 
-    double* phi2 = (double*) malloc(nx * ny * sizeof(double*));
-    std::fill_n(phi2, nx*ny, 0);
-
-    solveSystem(nx, ny, A, b, phi2, 1);
-
-    double maxDiff = 0;
-    for(int i = 0; i < nx*ny; i++)
-        maxDiff = std::max(maxDiff, std::abs(phi1[i] - phi2[i]));
-    printf("maxDiff : %.5e\n", maxDiff);
-
+    verification(m, prop, vxDiagonal, vyDiagonal, sourceDiagonal, phi);
 
     const char* filename = "output/output.dat";
-    printToFile(m, phi1,  filename, 5);
-    plotSolution(filename);
+    printToFile(m, phi,  filename, 5);
+    plotSolution(m, filename);
 
     // Free memory allocated
     free(prop);
-    free(phi_boundary);
     free(A);
     free(b);
-    free(phi1);
-    free(phi2);
+    free(phi);
 
     return 1;
 }
@@ -177,6 +167,7 @@ double (*vx)(double,double), double (*vy)(double, double), double (*source)(doub
         - A         Linear system matrix. Rows: nx*ny, Columns: 5                            [double*]
         - b         Vector of indenpendent terms. Rows: nx*ny, Columns: 1                    [double*]
     */
+    printf("Computing internal nodes discretization coefficients...\n\n");
 
     // Initialize matrix of discretization coefficients (A) and vector of independent terms (b) to zero
     std::fill_n(A, 5*m.getNX()*m.getNY(), 0);
@@ -267,7 +258,7 @@ void computeDiscCoefsBoundaryNodesDiagonal(const Mesh m, const double* phi_bound
         - A                 Linear system matrix. Rows: nx*ny, Columns: 5                                   [double*]
         - b                 Vector of indenpendent terms. Rows: nx*ny, Columns: 1                           [double*]
     */
-    // printf("Computing boundary nodes discretization coefficients for the diagonal case...\n\n");
+    printf("Computing boundary nodes discretization coefficients for the diagonal case...\n\n");
     // Lower row nodes: 0 <= i <= nx-1; j=0
     for(int i = 0; i < m.getNX(); i++) {
         A[5*i+4] = 1;
@@ -290,6 +281,86 @@ void computeDiscCoefsBoundaryNodesDiagonal(const Mesh m, const double* phi_bound
         int node = (m.getNY() - 1) * m.getNX() + i;
         A[5*node+4] = 1;
         b[node] = phi_boundary[1];
+    }
+}
+
+void computeDiscCoefsBoundaryNodesDiagonal(const Mesh m, const double phi_low, const double phi_high, double* A, double* b) {
+    /*
+    computeDiscCoefsBoundaryNodesDiagonal: computes the discretization coefficients for the boundary nodes in the diagonal case
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - m                 Mesh object                                                                     [const Mesh]
+        - phi_low           Minimum value of phi on the boundary                                            [const double]
+        - phi_high          Maximum value of phi on the boundary                                            [const double]
+        - A                 Linear system matrix set to zero. Rows: nx*ny, Columns: 5                       [double*]
+        - b                 Vector of indenpendent terms set to zero. Rows: nx*ny, Columns: 1               [double*]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - A                 Linear system matrix. Rows: nx*ny, Columns: 5                                   [double*]
+        - b                 Vector of indenpendent terms. Rows: nx*ny, Columns: 1                           [double*]
+    */
+    printf("Computing boundary nodes discretization coefficients for the diagonal case...\n\n");
+    // Lower row nodes: 0 <= i <= nx-1; j=0
+    for(int i = 0; i < m.getNX(); i++) {
+        A[5*i+4] = 1;
+        b[i] = phi_low;
+    }
+    // Right column nodes: i = nx-1; 1 <= j <= ny-1
+    for(int j = 1; j < m.getNY(); j++) {
+        int node = (j + 1) * m.getNX() - 1;
+        A[5*node+4] = 1;
+        b[node] = phi_low;
+    }
+    // Left column nodes: i = 0; 1 <= j <= ny-1
+    for(int j = 1; j < m.getNY(); j++) {
+        int node = j * m.getNX();
+        A[5*node+4] = 1;
+        b[node] = phi_high;
+    }
+    // Upper row nodes: 1 <= i <= nx-2, j = ny-1
+    for(int i = 1; i < m.getNX()-1; i++) {
+        int node = (m.getNY() - 1) * m.getNX() + i;
+        A[5*node+4] = 1;
+        b[node] = phi_high;
+    }
+}
+
+void computeDiscCoefsBoundaryNodesDiagonal(const Mesh m, double* A, double* b) {
+    /*
+    computeDiscCoefsBoundaryNodesDiagonal: computes the discretization coefficients for the boundary nodes in the diagonal case
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - m                 Mesh object                                                                     [const Mesh]
+        - A                 Linear system matrix set to zero. Rows: nx*ny, Columns: 5                       [double*]
+        - b                 Vector of indenpendent terms set to zero. Rows: nx*ny, Columns: 1               [double*]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - A                 Linear system matrix. Rows: nx*ny, Columns: 5                                   [double*]
+        - b                 Vector of indenpendent terms. Rows: nx*ny, Columns: 1                           [double*]
+    */
+    printf("Computing boundary nodes discretization coefficients for the diagonal case...\n\n");
+    // Lower row nodes: 0 <= i <= nx-1; j=0
+    for(int i = 0; i < m.getNX(); i++) {
+        A[5*i+4] = 1;
+        b[i] = PHI_LOW;
+    }
+    // Right column nodes: i = nx-1; 1 <= j <= ny-1
+    for(int j = 1; j < m.getNY(); j++) {
+        int node = (j + 1) * m.getNX() - 1;
+        A[5*node+4] = 1;
+        b[node] = PHI_LOW;
+    }
+    // Left column nodes: i = 0; 1 <= j <= ny-1
+    for(int j = 1; j < m.getNY(); j++) {
+        int node = j * m.getNX();
+        A[5*node+4] = 1;
+        b[node] = PHI_HIGH;
+    }
+    // Upper row nodes: 1 <= i <= nx-2, j = ny-1
+    for(int i = 1; i < m.getNX()-1; i++) {
+        int node = (m.getNY() - 1) * m.getNX() + i;
+        A[5*node+4] = 1;
+        b[node] = PHI_HIGH;
     }
 }
 
@@ -338,8 +409,41 @@ double sourceDiagonal(const double x, const double y) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // SMITH-HUTTON CASE FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(const Mesh m, const double* phi_boundary, double* A, double* b) {
+void computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(const Mesh m, double* A, double* b) {
+    /*
+    */
+    printf("Computing boundary nodes discretization coefficients for Smith-Hutton case...\n\n");
+    // Lower row nodes: 0 <= i <= nx-1; j=0
+    // Lower boundary: [-L, 0]
+    for(int i = 0; i < m.getNX() && m.atNodeX(i) <= 0; i++) {
+        A[5*i+4] = 1;
+        b[i] = 1 + tanh(10*(2*m.atNodeX(i)+1));
+    }
 
+    // Lower boundary: (0,L]
+    for(int i = m.getNX()-1; i >= 0 && m.atNodeX(i) > 0; --i) {
+        A[5*i+3] = -1;
+        A[5*i+4] = 1;
+    }
+
+    // Left and right boudnaries
+    for(int j = 1; j < m.getNY(); j++) {
+        // Left boundary
+        int node = j*m.getNX();
+        A[5*node+4] = 1;
+        b[node] = 1 - tanh(10);
+        // Right boundary
+        node = (j+1)*m.getNX() - 1;
+        A[5*node+4] = 1;
+        b[node] = 1 - tanh(10);
+    }
+
+    // Top boundary
+    for(int i = 1; i < m.getNX()-1; i++) {
+        int node = (m.getNY()-1)*m.getNX() + i;
+        A[5*node+4] = 1;
+        b[node] = 1 - tanh(10);
+    }
 }
 
 double vxSmithHutton(const double x, const double y) {
@@ -684,7 +788,7 @@ void printToFile(const Mesh m, const double* phi, const char* filename, const in
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Outputs: the file where the solution has been written.
     */
-    printf("Printing the solution to file...\n");
+    printf("Printing the solution to file '%s'...\n", filename);
     std::ofstream file;
     file.open(filename);
     if(file.is_open()) {
@@ -701,35 +805,78 @@ void printToFile(const Mesh m, const double* phi, const char* filename, const in
     printf("\tClosing file...\n\n");
 }
 
-void plotSolution(const char* filename) {
+void plotSolution(const Mesh m, const char* filename) {
     /*
     plotSolution: plots phi vs (x,y) in a temperature map using gnuplot.
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Inputs:
+        - m                 Mesh of the problem                                                 [const Mesh]
         - filename          Name of the file where the solution has been previously written     [const char*]
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Outputs: temperature map of phi. Prior to running the program,
         - the command "export DISPLAY=:0 gnuplot" must be executed (only needed before the first execution)
         - Xming server must be running
     */
+    // Set xrange command
+    char xrange[50];
+    sprintf(xrange, "set xrange [%.5f : %.5f]", m.atNodeX(0), m.atNodeX(m.getNX()-1));
+
+    // Set yrange command
+    char yrange[50];
+    sprintf(yrange, "set yrange [%.5f : %.5f]", m.atNodeY(0), m.atNodeY(m.getNY()-1));
 
     // Plotting command, uses filename parameter
     char plotCommand[30+strlen(filename)];
     sprintf(plotCommand, "plot '%s' with image", filename);
-    // Commands sent to gnuplot
-    const char* GnuCommands[] = {"set xrange [0:1]", "set yrange [0:1]", "set size ratio 1", "set palette rgb 33,13,10", plotCommand};
 
+    // Commands sent to gnuplot
+    const char* GnuCommands[] = {xrange, yrange, "set size ratio 1", "set palette rgb 33,13,10", plotCommand};
+
+    // Send commands to gnuplot
     FILE *gnupipe = NULL;
     gnupipe = popen("gnuplot -persistent", "w");
-    for(int i = 0; i < 5; i++)
+    printf("Plotting the solution in gnuplot...\n");
+    for(int i = 0; i < 5; i++) {
+        printf("\t%s\n", GnuCommands[i]);
         fprintf(gnupipe, "%s\n", GnuCommands[i]);
+    }
+    printf("\n");
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CHECK SOLUTION FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void verification(const Mesh m, const double* phi) {
+void verification(const Mesh m, const double* prop, double (*vx)(double,double), double (*vy)(double, double), double (*source)(double, double), const double* phi) {
     printf("Verificating solution...\n");
+
+    double stepX = (m.atNodeX(m.getNX()-1) - m.atNodeX(0))/(m.getNX()-1);
+    double stepY = (m.atNodeY(m.getNY()-1) - m.atNodeY(0))/(m.getNY()-1);
+
+    double maxDiff = 0;
+    for(int j = 1; j < m.getNY()-1; j++) {
+        for(int i = 1; i < m.getNX()-1; i++) {
+
+            int node = j * m.getNX() + i;
+
+            double phi_x = (phi[node+1] - phi[node-1])/(2 * stepX);
+            double phi_y = (phi[node+m.getNX()] - phi[node-m.getNX()])/(2 * stepY);
+
+            double phi_xx = (phi[node+1] - 2*phi[node] + phi[node-1])/(stepX*stepX);
+            double phi_yy = (phi[node+m.getNX()] - 2*phi[node] + phi[node-m.getNX()])/(stepY*stepY);
+
+
+            double x = m.atNodeX(i);
+            double y = m.atNodeY(j);
+
+            double LHS = (prop[0]/prop[1])*((*vx)(x,y)*phi_x + (*vy)(x,y)*phi_y);
+            double RHS = phi_xx + phi_yy;
+
+            printf("(%3d,%3d) %15.5f %15.5f %15.5f %15.5f\n", i, j, phi_x, phi_y, phi_xx, phi_yy);
+
+            maxDiff = std::max(maxDiff, std::abs(LHS - RHS));
+        }
+    }
+    printf("\tmaxDiff : %.5f\n", maxDiff);
 
 }
 
