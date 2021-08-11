@@ -63,20 +63,21 @@ void verification(const Mesh m, const double* prop, double (*vx)(double,double),
 int main(int arg, char* argv[]) {
 
     // // Physical data
-    // Diagonal case
-    // double L = 1;   // Domain size in x and y axis                              [m]
-    // double x0 = 0;  // Lower left corner x coordinate for rectangular domain    [m]
-    // double y0 = 0;  // Lower left corner y coordinate for rectangular domain    [m]
-    // double lx = L;  // Domain size in x axis                                    [m]
-    // double ly = L;  // Domain size in y axis                                    [m]
-    // double lz = 1;  // Domain size in z axis                                    [m]
-    // Smith-Hutton case
-    double L = 1;       // Domain size in x and y axis                              [m]
-    double x0 = -L;     // Lower left corner x coordinate for rectangular domain    [m]
-    double y0 = 0;      // Lower left corner y coordinate for rectangular domain    [m]
-    double lx = 2*L;    // Domain size in x axis                                    [m]
-    double ly = L;      // Domain size in y axis                                    [m]
-    double lz = 1;      // Domain size in z axis                                    [m]
+    // // Diagonal case
+    double L = 1;   // Domain size in x and y axis                              [m]
+    double x0 = 0;  // Lower left corner x coordinate for rectangular domain    [m]
+    double y0 = 0;  // Lower left corner y coordinate for rectangular domain    [m]
+    double lx = L;  // Domain size in x axis                                    [m]
+    double ly = L;  // Domain size in y axis                                    [m]
+    double lz = 1;  // Domain size in z axis                                    [m]
+
+    // // Smith-Hutton case
+    // double L = 1;       // Domain size in x and y axis                              [m]
+    // double x0 = -L;     // Lower left corner x coordinate for rectangular domain    [m]
+    // double y0 = 0;      // Lower left corner y coordinate for rectangular domain    [m]
+    // double lx = 2*L;    // Domain size in x axis                                    [m]
+    // double ly = L;      // Domain size in y axis                                    [m]
+    // double lz = 1;      // Domain size in z axis                                    [m]
 
     // Thermophysical properties for water at 20 ºC
     // const double lambda = 0.5861;       // Thermal conductivity                         [W/(k*m)]
@@ -89,7 +90,7 @@ int main(int arg, char* argv[]) {
 
 
     // // Numerical data
-    int N = 100;
+    int N = 20;
     int nx = N;      // Number of nodes in x axis
     int ny = N;      // Number of nodes in y axis
     const double phi0 = 1;      // Initial value to fill phi vector for linear system resolution
@@ -106,14 +107,6 @@ int main(int arg, char* argv[]) {
     double* A = (double*) malloc(5 * nx * ny * sizeof(double*));
     double* b = (double*) malloc(nx * ny * sizeof(double*));
     int scheme = 0;
-    if(!A) {
-        printf("Not A\n");
-        return -2;
-    }
-    if(!b) {
-        printf("Not b\n");
-        return -2;
-    }
 
 
     computeSteadyStateDiscretizationCoefficientsInternalNodes(m, prop, vxDiagonal, vyDiagonal, sourceDiagonal, A, b, scheme);
@@ -127,9 +120,7 @@ int main(int arg, char* argv[]) {
     double* phi = (double*) malloc(nx * ny * sizeof(double*));
     std::fill_n(phi, nx*ny, phi0);
 
-    solveSystem(nx, ny, A, b, phi, 0);
-
-    verification(m, prop, vxDiagonal, vyDiagonal, sourceDiagonal, phi);
+    solveSystem(nx, ny, A, b, phi, 1);
 
     const char* filename = "output/output.dat";
     printToFile(m, phi,  filename, 5);
