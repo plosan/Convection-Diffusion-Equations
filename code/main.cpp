@@ -28,6 +28,12 @@
 void computeSteadyStateDiscretizationCoefficientsInternalNodes(const Mesh m, const double* prop,
 double (*vx)(double,double), double (*vy)(double, double), double (*source)(double, double), double* A, double* b, const int scheme);
 
+// HRS schemes
+void computeDiscretizationCoefficientsInternalNodes(const Mesh m, const double rho, const double gamma,
+double (*vx)(double,double), double (*vy)(double, double), double (*source)(double, double), double* A, double* b);
+
+void gaussSeidelIteration(const int nx, const int ny, const double* A, const double* b, double* phi);
+
 // Diagonal case functions
 void computeDiscCoefsBoundaryNodesDiagonal(const Mesh m, const double* phi_boundary, double* A, double* b);
 void computeDiscCoefsBoundaryNodesDiagonal(const Mesh m, const double phi_low, const double phi_high, double* A, double* b);
@@ -90,7 +96,7 @@ int main(int arg, char* argv[]) {
 
 
     // // Numerical data
-    int N = 20;
+    int N = 100;
     int nx = N;      // Number of nodes in x axis
     int ny = N;      // Number of nodes in y axis
     const double phi0 = 1;      // Initial value to fill phi vector for linear system resolution
@@ -120,7 +126,7 @@ int main(int arg, char* argv[]) {
     double* phi = (double*) malloc(nx * ny * sizeof(double*));
     std::fill_n(phi, nx*ny, phi0);
 
-    solveSystem(nx, ny, A, b, phi, 1);
+    solveSystem(nx, ny, A, b, phi, 0);
 
     const char* filename = "output/output.dat";
     printToFile(m, phi,  filename, 5);
@@ -135,8 +141,135 @@ int main(int arg, char* argv[]) {
     return 1;
 }
 
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// COMPUTATION OF INTERNAL NODES DISCRETIZATION coefficients
+// HRS SCHEMES
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// void computeDiscretizationCoefficientsInternalNodes(const Mesh m, const double rho, const double gamma,
+// double (*vx)(double,double), double (*vy)(double, double), double (*source)(double, double), double* A, double* b) {
+//
+//     std::fill_n(A, 5*m.getNX()*m.getNY(), 0);
+//     std::fill_n(b, m.getNX()*m.getNY(), 0);
+//
+//     for(int j = 1; j < m.getNY()-1; j++) {
+//         for(int i = 1; i < m.getNX()-1; i++) {
+//             int node = j * m.getNX() + i;
+//             double x = m.atNodeX(i);
+//             double y = m.atNodeY(j);
+//             // South node
+//             double D = gamma * m.atSurfY(i) / m.atDistY(j-1);
+//             double mf = -rho * (*vy)(x, m.atFaceY(j)) * m.atSurfY(i);
+//             A[5*node] = D + 0.5*(mf + std::abs(mf));
+//             // West node
+//             D = gamma * m.atSurfX(j) / m.atDistX(i-1);
+//             mf = -rho * (*vx)(m.atFaceX(i), y) * m.atSurfX(j);
+//             A[5*node+1] = D + 0.5*(mf + std::abs(mf));
+//             // East node
+//             D = gamma * m.atSurfX(j) / m.atDistX(i);
+//             mf = rho * (*vx)(m.atFaceX(i+1), y) * m.atSurfX(j);
+//             A[5*node+2] = D - 0.5*(mf - std::abs(mf));
+//             // North node
+//             D = gamma * m.atSurfY(i) / m.atDistY(j);
+//             mf = rho * (*vy)(x, m.atFaceY(j+1)) * m.atSurfY(i);
+//             A[5*node+3] = D - 0.5*(mf - std::abs(mf));
+//             // Central node
+//             A[5*node+4] = A[5*node] + A[5*node+1] + A[5*node+2] + A[5*node+3] - (*source)(x,y) * m.atVol(i,j);
+//         }
+//     }
+// }
+//
+// void computeDiscretizationCoefficientsBoundaryNodes(const Mesh m, const double phi_low, const double phi_high, double* A, double* b) {
+//     // Lower row
+//     for(int i = 0; i < m.getNX(); i++) {
+//         A[5*i+4] = 1;
+//         b[i] = phi_low;
+//     }
+//     // Right column
+//     for(int j = 1; j < m.getNY(); j++) {
+//         int node = (j + 1) * m.getNX() + -1;
+//         A[5*node+4] = 1;
+//         b[node] = phi_low;
+//     }
+//     // Left column
+//     for(int j = 1; j < m.getNY(); j++) {
+//         int node = j * m.getNX();
+//         A[5*node+4] = 1;
+//         b[node] = phi_high;
+//     }
+//     // Upper row
+//     for(int i = 1; i < m.getNX()-1; i++) {
+//         int node = (m.getNY() - 1) * m.getNX() + i;
+//         A[5*node+4] = 1;
+//         b[node] = phi_high;
+//     }
+// }
+//
+//
+// void gaussSeidelIteration(const int nx, const int ny, const double* A, const double* b, double* phi, double& maxDiff) {
+//     maxDiff = 0;
+//     // Lower row
+//     for(int i = 0; i < nx; i++) {
+//         double aux = phi[i];
+//         phi[i] = (b[i] + A[5*i+3] * phi[i]) / A[5*i+4];
+//         maxDiff = std::max(maxDiff, std::abs(aux - phi[i]));
+//     }
+//
+//     // Mid rows
+//     for(int j = 1; j < ny-1; j++) {
+//         for(int i = 0; i < nx; i++) {
+//             int node = j * nx + i;
+//             double aux = phi[node];
+//             phi[node] = (b[node] + A[5*node] * phi[node-nx] + A[5*node+1] * phi[node-1] + A[5*node+2] * phi[node+1] + A[5*node+3] * phi[node+nx]) / A[5*node+4];
+//             maxDiff = std::max(maxDiff, std::abs(aux - phi[node]));
+//         }
+//     }
+//
+//     // Upper row
+//     for(int i = 0; i < nx; i++) {
+//         int node = (ny - 1) * nx + i;                                       // Node whose phi is being computed
+//         double aux = phi[node];                                             // Previous value of phi[node]
+//         phi[node] = (b[node] + A[5*node] * phi[node-nx]) / A[5*node+4];     // Compute new value
+//         maxDiff = std::max(maxDiff, std::abs(aux - phi[node]));             // Update infinity norm
+//     }
+//
+//     // printf("Solving linear system...\n");
+//     int it = 0;        // Current iteration
+//     bool convergence = false;   // Boolean variable to tell whether there is convergence or not. False: no convergence, True: convergence
+//     // Gauss-Seidel iteration
+//     while(it < maxIt && !convergence) {
+//         double maxDiff = -1;    // Infinity norm of the difference phi-phi*
+//         // Lower row nodes
+//         for(int i = 0; i < nx; i++) {
+//             int node = i;                                                       // Node whose phi is being computed
+//             double aux = phi[node];                                             // Previous value of phi[node]
+//             phi[node] = (b[node] + A[5*node+3] * phi[node+nx]) / A[5*node+4];   // Compute new value
+//             maxDiff = std::max(maxDiff, std::abs(aux - phi[node]));             // Update infinity norm
+//         }
+//         // Central rows nodes
+//         for(int j = 1; j < ny-1; j++) {
+//             for(int i = 0; i < nx; i++) {
+//                 int node = j * nx + i;                                          // Node whose phi is being computed
+//                 double aux = phi[node];                                         // Previous value of phi[node]
+//                 phi[node] = (b[node] + A[5*node] * phi[node-nx] + A[5*node+1] * phi[node-1] + A[5*node+2] * phi[node+1] + A[5*node+3] * phi[node+nx]) / A[5*node+4];    // Compute new value
+//                 maxDiff = std::max(maxDiff, std::abs(aux - phi[node]));         // Update infinity norm
+//             }
+//         }
+//         // Upper row nodes
+//         for(int i = 0; i < nx; i++) {
+//             int node = (ny - 1) * nx + i;                                       // Node whose phi is being computed
+//             double aux = phi[node];                                             // Previous value of phi[node]
+//             phi[node] = (b[node] + A[5*node] * phi[node-nx]) / A[5*node+4];     // Compute new value
+//             maxDiff = std::max(maxDiff, std::abs(aux - phi[node]));             // Update infinity norm
+//         }
+//         // Final checks of the current iteration
+//         convergence = (maxDiff < tol);  // Convergence condition
+//         it++;                           // Increase iteration counter
+//     }
+//     printf("\tIterations: %d\n\n", it);
+// }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// COMPUTATION OF INTERNAL NODES DISCRETIZATION COEFFICIENTS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void computeSteadyStateDiscretizationCoefficientsInternalNodes(const Mesh m, const double* prop,
 double (*vx)(double,double), double (*vy)(double, double), double (*source)(double, double), double* A, double* b, const int scheme) {
