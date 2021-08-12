@@ -13,14 +13,14 @@
 #include "meshC.h"
 #include "Mesh.h"
 
-#define V0 1
+#define V0 10
 #define ALPHA 0.25*M_PI
 
 #define TOL 1e-12
 #define MAXIT 1000000
 
-#define PHI_LOW 19.9
-#define PHI_HIGH 20.1
+#define PHI_LOW 350.15
+#define PHI_HIGH 273.15
 
 // Build mesh functions
 
@@ -70,7 +70,7 @@ int main(int arg, char* argv[]) {
 
     // // Physical data
     // // Diagonal case
-    double L = 1;   // Domain size in x and y axis                              [m]
+    double L = 0.1;   // Domain size in x and y axis                              [m]
     double x0 = 0;  // Lower left corner x coordinate for rectangular domain    [m]
     double y0 = 0;  // Lower left corner y coordinate for rectangular domain    [m]
     double lx = L;  // Domain size in x axis                                    [m]
@@ -96,7 +96,7 @@ int main(int arg, char* argv[]) {
 
 
     // // Numerical data
-    int N = 100;
+    int N = 200;
     int nx = N;      // Number of nodes in x axis
     int ny = N;      // Number of nodes in y axis
     const double phi0 = 1;      // Initial value to fill phi vector for linear system resolution
@@ -954,13 +954,14 @@ void plotSolution(const Mesh m, const char* filename) {
     sprintf(plotCommand, "plot '%s' with image", filename);
 
     // Commands sent to gnuplot
-    const char* GnuCommands[] = {xrange, yrange, "set size ratio 1", "set palette rgb 33,13,10", plotCommand};
+    // const char* GnuCommands[] = {xrange, yrange, "set size ratio 1", "set palette rgb 33,13,10", plotCommand};
+    const char* GnuCommands[] = {xrange, yrange, "set size ratio 1", plotCommand};
 
     // Send commands to gnuplot
     FILE *gnupipe = NULL;
     gnupipe = popen("gnuplot -persistent", "w");
     printf("Plotting the solution in gnuplot...\n");
-    for(int i = 0; i < 5; i++) {
+    for(int i = 0; i < 4; i++) {
         printf("\t%s\n", GnuCommands[i]);
         fprintf(gnupipe, "%s\n", GnuCommands[i]);
     }
