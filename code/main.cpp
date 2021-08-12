@@ -19,20 +19,22 @@
 #define TOL 1e-12
 #define MAXIT 1000000
 
-#define PHI_LOW 350.15
-#define PHI_HIGH 273.15
+#define PHI_LOW 273.15
+#define PHI_HIGH 350.15
 
 // Build mesh functions
 
 // Computation of internal nodes discretization coefficients
-void computeSteadyStateDiscretizationCoefficientsInternalNodes(const Mesh m, const double* prop,
-double (*vx)(double,double), double (*vy)(double, double), double (*source)(double, double), double* A, double* b, const int scheme);
+double schemeUDS(const double P);
+double schemeCDS(const double P);
+double schemeHybrid(const double P);
+double schemePowerlaw(const double P);
+double schemeEDS(const double P);
 
-// HRS schemes
-void computeDiscretizationCoefficientsInternalNodes(const Mesh m, const double rho, const double gamma,
-double (*vx)(double,double), double (*vy)(double, double), double (*source)(double, double), double* A, double* b);
+void computeSteadyStateDiscretizationCoefficientsInternalNodes(const Mesh m, const double rho, const double gamma,
+double (*vx)(double,double), double (*vy)(double, double), double (*sourceP)(double, double),
+double (*sourceC)(double, double), double (*scheme)(double), double* A, double* b);
 
-void gaussSeidelIteration(const int nx, const int ny, const double* A, const double* b, double* phi);
 
 // Diagonal case functions
 void computeDiscCoefsBoundaryNodesDiagonal(const Mesh m, const double* phi_boundary, double* A, double* b);
@@ -40,13 +42,15 @@ void computeDiscCoefsBoundaryNodesDiagonal(const Mesh m, const double phi_low, c
 void computeDiscCoefsBoundaryNodesDiagonal(const Mesh m, double* A, double* b);
 double vxDiagonal(const double, const double);
 double vyDiagonal(const double, const double);
-double sourceDiagonal(const double, const double);
+double sourcePDiagonal(const double, const double);
+double sourceCDiagonal(const double, const double);
 
 // Smith-Hutton case functions
 void computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(const Mesh m, double* A, double* b);
 double vxSmithHutton(const double x, const double y);
 double vySmithHutton(const double x, const double y);
-double sourceSmithHutton(const double, const double);
+double sourcePSmithHutton(const double, const double);
+double sourceCSmithHutton(const double, const double);
 
 // Pre-solving check functions
 void checkSystemMatrix(const int nx, const int ny, const double tol, const double* A);
@@ -69,7 +73,7 @@ void verification(const Mesh m, const double* prop, double (*vx)(double,double),
 int main(int arg, char* argv[]) {
 
     // // Physical data
-    // // Diagonal case
+    // Diagonal case
     double L = 0.1;   // Domain size in x and y axis                              [m]
     double x0 = 0;  // Lower left corner x coordinate for rectangular domain    [m]
     double y0 = 0;  // Lower left corner y coordinate for rectangular domain    [m]
@@ -115,10 +119,11 @@ int main(int arg, char* argv[]) {
     int scheme = 0;
 
 
-    computeSteadyStateDiscretizationCoefficientsInternalNodes(m, prop, vxDiagonal, vyDiagonal, sourceDiagonal, A, b, scheme);
+    computeSteadyStateDiscretizationCoefficientsInternalNodes(m, rho, gamma, vxDiagonal, vyDiagonal, sourcePDiagonal, sourceCDiagonal, schemeUDS, A, b);
     computeDiscCoefsBoundaryNodesDiagonal(m, PHI_LOW, PHI_HIGH, A, b);
 
-    // computeSteadyStateDiscretizationCoefficientsInternalNodes(m, prop, vxSmithHutton, vySmithHutton, sourceSmithHutton, A, b, scheme);
+
+    // computeSteadyStateDiscretizationCoefficientsInternalNodes(m, rho, gamma, vxSmithHutton, vySmithHutton, sourcePSmithHutton, sourceCSmithHutton, schemePowerlaw, A, b);
     // computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(m, A, b);
 
     checkSystemMatrix(nx, ny, TOL, A);
@@ -128,7 +133,7 @@ int main(int arg, char* argv[]) {
 
     solveSystem(nx, ny, A, b, phi, 0);
 
-    const char* filename = "output/output.dat";
+    const char* filename = "output/outputDiagonal.dat";
     printToFile(m, phi,  filename, 5);
     plotSolution(m, filename);
 
@@ -141,138 +146,32 @@ int main(int arg, char* argv[]) {
     return 1;
 }
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// HRS SCHEMES
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// void computeDiscretizationCoefficientsInternalNodes(const Mesh m, const double rho, const double gamma,
-// double (*vx)(double,double), double (*vy)(double, double), double (*source)(double, double), double* A, double* b) {
-//
-//     std::fill_n(A, 5*m.getNX()*m.getNY(), 0);
-//     std::fill_n(b, m.getNX()*m.getNY(), 0);
-//
-//     for(int j = 1; j < m.getNY()-1; j++) {
-//         for(int i = 1; i < m.getNX()-1; i++) {
-//             int node = j * m.getNX() + i;
-//             double x = m.atNodeX(i);
-//             double y = m.atNodeY(j);
-//             // South node
-//             double D = gamma * m.atSurfY(i) / m.atDistY(j-1);
-//             double mf = -rho * (*vy)(x, m.atFaceY(j)) * m.atSurfY(i);
-//             A[5*node] = D + 0.5*(mf + std::abs(mf));
-//             // West node
-//             D = gamma * m.atSurfX(j) / m.atDistX(i-1);
-//             mf = -rho * (*vx)(m.atFaceX(i), y) * m.atSurfX(j);
-//             A[5*node+1] = D + 0.5*(mf + std::abs(mf));
-//             // East node
-//             D = gamma * m.atSurfX(j) / m.atDistX(i);
-//             mf = rho * (*vx)(m.atFaceX(i+1), y) * m.atSurfX(j);
-//             A[5*node+2] = D - 0.5*(mf - std::abs(mf));
-//             // North node
-//             D = gamma * m.atSurfY(i) / m.atDistY(j);
-//             mf = rho * (*vy)(x, m.atFaceY(j+1)) * m.atSurfY(i);
-//             A[5*node+3] = D - 0.5*(mf - std::abs(mf));
-//             // Central node
-//             A[5*node+4] = A[5*node] + A[5*node+1] + A[5*node+2] + A[5*node+3] - (*source)(x,y) * m.atVol(i,j);
-//         }
-//     }
-// }
-//
-// void computeDiscretizationCoefficientsBoundaryNodes(const Mesh m, const double phi_low, const double phi_high, double* A, double* b) {
-//     // Lower row
-//     for(int i = 0; i < m.getNX(); i++) {
-//         A[5*i+4] = 1;
-//         b[i] = phi_low;
-//     }
-//     // Right column
-//     for(int j = 1; j < m.getNY(); j++) {
-//         int node = (j + 1) * m.getNX() + -1;
-//         A[5*node+4] = 1;
-//         b[node] = phi_low;
-//     }
-//     // Left column
-//     for(int j = 1; j < m.getNY(); j++) {
-//         int node = j * m.getNX();
-//         A[5*node+4] = 1;
-//         b[node] = phi_high;
-//     }
-//     // Upper row
-//     for(int i = 1; i < m.getNX()-1; i++) {
-//         int node = (m.getNY() - 1) * m.getNX() + i;
-//         A[5*node+4] = 1;
-//         b[node] = phi_high;
-//     }
-// }
-//
-//
-// void gaussSeidelIteration(const int nx, const int ny, const double* A, const double* b, double* phi, double& maxDiff) {
-//     maxDiff = 0;
-//     // Lower row
-//     for(int i = 0; i < nx; i++) {
-//         double aux = phi[i];
-//         phi[i] = (b[i] + A[5*i+3] * phi[i]) / A[5*i+4];
-//         maxDiff = std::max(maxDiff, std::abs(aux - phi[i]));
-//     }
-//
-//     // Mid rows
-//     for(int j = 1; j < ny-1; j++) {
-//         for(int i = 0; i < nx; i++) {
-//             int node = j * nx + i;
-//             double aux = phi[node];
-//             phi[node] = (b[node] + A[5*node] * phi[node-nx] + A[5*node+1] * phi[node-1] + A[5*node+2] * phi[node+1] + A[5*node+3] * phi[node+nx]) / A[5*node+4];
-//             maxDiff = std::max(maxDiff, std::abs(aux - phi[node]));
-//         }
-//     }
-//
-//     // Upper row
-//     for(int i = 0; i < nx; i++) {
-//         int node = (ny - 1) * nx + i;                                       // Node whose phi is being computed
-//         double aux = phi[node];                                             // Previous value of phi[node]
-//         phi[node] = (b[node] + A[5*node] * phi[node-nx]) / A[5*node+4];     // Compute new value
-//         maxDiff = std::max(maxDiff, std::abs(aux - phi[node]));             // Update infinity norm
-//     }
-//
-//     // printf("Solving linear system...\n");
-//     int it = 0;        // Current iteration
-//     bool convergence = false;   // Boolean variable to tell whether there is convergence or not. False: no convergence, True: convergence
-//     // Gauss-Seidel iteration
-//     while(it < maxIt && !convergence) {
-//         double maxDiff = -1;    // Infinity norm of the difference phi-phi*
-//         // Lower row nodes
-//         for(int i = 0; i < nx; i++) {
-//             int node = i;                                                       // Node whose phi is being computed
-//             double aux = phi[node];                                             // Previous value of phi[node]
-//             phi[node] = (b[node] + A[5*node+3] * phi[node+nx]) / A[5*node+4];   // Compute new value
-//             maxDiff = std::max(maxDiff, std::abs(aux - phi[node]));             // Update infinity norm
-//         }
-//         // Central rows nodes
-//         for(int j = 1; j < ny-1; j++) {
-//             for(int i = 0; i < nx; i++) {
-//                 int node = j * nx + i;                                          // Node whose phi is being computed
-//                 double aux = phi[node];                                         // Previous value of phi[node]
-//                 phi[node] = (b[node] + A[5*node] * phi[node-nx] + A[5*node+1] * phi[node-1] + A[5*node+2] * phi[node+1] + A[5*node+3] * phi[node+nx]) / A[5*node+4];    // Compute new value
-//                 maxDiff = std::max(maxDiff, std::abs(aux - phi[node]));         // Update infinity norm
-//             }
-//         }
-//         // Upper row nodes
-//         for(int i = 0; i < nx; i++) {
-//             int node = (ny - 1) * nx + i;                                       // Node whose phi is being computed
-//             double aux = phi[node];                                             // Previous value of phi[node]
-//             phi[node] = (b[node] + A[5*node] * phi[node-nx]) / A[5*node+4];     // Compute new value
-//             maxDiff = std::max(maxDiff, std::abs(aux - phi[node]));             // Update infinity norm
-//         }
-//         // Final checks of the current iteration
-//         convergence = (maxDiff < tol);  // Convergence condition
-//         it++;                           // Increase iteration counter
-//     }
-//     printf("\tIterations: %d\n\n", it);
-// }
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // COMPUTATION OF INTERNAL NODES DISCRETIZATION COEFFICIENTS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void computeSteadyStateDiscretizationCoefficientsInternalNodes(const Mesh m, const double* prop,
-double (*vx)(double,double), double (*vy)(double, double), double (*source)(double, double), double* A, double* b, const int scheme) {
+double schemeUDS(const double P) {
+    return 1;
+}
+
+double schemeCDS(const double P) {
+    return 1 - 0.5 * std::abs(P);
+}
+
+double schemeHybrid(const double P) {
+    return std::max(0.0, 1 - 0.5 * std::abs(P));
+}
+
+double schemePowerlaw(const double P) {
+    return std::max(0.0, std::pow(1 - 0.1*std::abs(P), 5));
+}
+
+double schemeEDS(const double P) {
+    return std::abs(P)/(std::exp(std::abs(P)) - 1);
+}
+
+void computeSteadyStateDiscretizationCoefficientsInternalNodes(const Mesh m, const double rho, const double gamma,
+double (*vx)(double,double), double (*vy)(double, double), double (*sourceP)(double, double),
+double (*sourceC)(double, double), double (*scheme)(double), double* A, double* b) {
     /*
     computeSteadyStateDiscretizationCoefficientsInternalNodes: computes the discretization coefficients for the internal nodes in a steady state
     convection diffusion problem in a 2D cartesian mesh.
@@ -298,69 +197,35 @@ double (*vx)(double,double), double (*vy)(double, double), double (*source)(doub
     std::fill_n(b, m.getNX()*m.getNY(), 0);
 
     // Internal nodes
-    if(scheme == 0) { // Upwind-Difference Scheme
-        for(int j = 1; j < m.getNY()-1; j++) {
-            for(int i = 1; i < m.getNX()-1; i++) {
-                int node = j * m.getNX() + i;
-                double x = m.atNodeX(i);
-                double y = m.atNodeY(j);
-                // South node
-                double mf = -prop[0] * (*vy)(x,y) * m.atSurfY(i);
-                double C = (std::abs(mf) != 0 ? (mf + std::abs(mf))/(2*mf) : 0);
-                double D = prop[1] * m.atSurfY(i) / m.atDistY(j-1);
-                A[5*node] = D - mf * C;
-                // West node
-                mf = -prop[0] * (*vx)(x,y) * m.atSurfX(j);
-                C = (std::abs(mf) != 0 ? (mf + std::abs(mf))/(2*mf) : 0);
-                D = prop[1] * m.atSurfX(j) / m.atDistX(i-1);
-                A[5*node+1] = D - mf * C;
-                // East node
-                mf = prop[0] * (*vx)(x,y) * m.atSurfX(j);
-                C = (std::abs(mf) != 0 ? (mf - std::abs(mf))/(2*mf) : 0);
-                D = prop[1] * m.atSurfX(j) / m.atDistX(i);
-                A[5*node+2] = D - mf * C;
-                // North node
-                mf = prop[0] * (*vy)(x,y) * m.atSurfY(i);
-                C = (std::abs(mf) != 0 ? (mf - std::abs(mf))/(2*mf) : 0);
-                D = prop[1] * m.atSurfY(i) / m.atDistY(j);
-                A[5*node+3] = D - mf * C;
-                // Central node
-                A[5*node+4] = A[5*node] + A[5*node+1] + A[5*node+2] + A[5*node+3] - (*source)(x,y) * m.atVol(i,j);
-                // Independent term
-                b[node] = (*source)(x,y) * m.atVol(i,j);
-            }
-        }
-    } else {
-        for(int j = 1; j < m.getNY()-1; j++) {
-            for(int i = 1; i < m.getNX()-1; i++) {
-                int node = j * m.getNX() + i;
-                double x = m.atNodeX(i);
-                double y = m.atNodeY(j);
-                // South node
-                double mf = -prop[0] * (*vy)(x,y) * m.atSurfY(i);
-                double C = m.atDistNFY(2*j) / m.atDistY(j-1);
-                double D = prop[1] * m.atSurfY(i) / m.atDistY(j-1);
-                A[5*node] = D - mf * C;
-                // West node
-                mf = -prop[0] * (*vx)(x,y) * m.atSurfX(j);
-                C = m.atDistNFX(2*i) / m.atDistX(i-1);
-                D = prop[1] * m.atSurfX(j) / m.atDistX(i-1);
-                A[5*node+1] = D - mf * C;
-                // East node
-                mf = prop[0] * (*vx)(x,y) * m.atSurfX(j);
-                C = m.atDistNFX(2*i+1) / m.atDistX(i);
-                D = prop[1] * m.atSurfX(j) / m.atDistX(i);
-                A[5*node+2] = D - mf * C;
-                // North node
-                mf = prop[0] * (*vy)(x,y) * m.atSurfY(i);
-                C = m.atDistNFY(2*j+1) / m.atDistY(j);
-                D = prop[1] * m.atSurfY(i) / m.atDistY(j);
-                A[5*node+3] = D - mf * C;
-                // Central node
-                A[5*node+4] = A[5*node] + A[5*node+1] + A[5*node+2] + A[5*node+3] - (*source)(x,y) * m.atVol(i,j);
-                // Independent term
-                b[node] = (*source)(x,y) * m.atVol(i,j);
-            }
+    for(int j = 1; j < m.getNY()-1; j++) {
+        for(int i = 1; i < m.getNX()-1; i++) {
+            int node = j * m.getNX() + i;
+            double x = m.atNodeX(i);
+            double y = m.atNodeY(j);
+            // South node
+            double D = gamma * m.atSurfY(i) / m.atDistY(j-1);
+            double F = rho * (*vy)(x, m.atFaceY(j)) * m.atSurfY(i);
+            double P = F / D;
+            A[5*node] = D * (*scheme)(P) + std::max(F, 0.0);
+            // West node
+            D = gamma * m.atSurfX(j) / m.atDistX(i-1);
+            F = rho * (*vx)(m.atFaceX(i), y) * m.atSurfX(j);
+            P = F / D;
+            A[5*node+1] = D * (*scheme)(P) + std::max(F, 0.0);
+            // East node
+            D = gamma * m.atSurfX(j) / m.atDistX(i);
+            F = rho * (*vx)(m.atFaceX(i+1), y) * m.atSurfX(j);
+            P = F / D;
+            A[5*node+2] = D * (*scheme)(P) + std::max(-F, 0.0);
+            // North node
+            D = gamma * m.atSurfY(i) / m.atDistY(j);
+            F = rho * (*vy)(x, m.atFaceY(j+1)) * m.atSurfY(i);
+            P = F / D;
+            A[5*node+3] = D * (*scheme)(P) + std::max(-F, 0.0);
+            // Central node
+            A[5*node+4] = A[5*node] + A[5*node+1] + A[5*node+2] + A[5*node+3] - (*sourceP)(x,y) * m.atVol(i,j);
+            // Independent term
+            b[node] = (*sourceC)(x,y) * m.atVol(i,j);
         }
     }
 }
@@ -516,9 +381,9 @@ double vyDiagonal(const double x, const double y) {
     return V0*sin(ALPHA);
 }
 
-double sourceDiagonal(const double x, const double y) {
+double sourcePDiagonal(const double x, const double y) {
     /*
-    sourceDiagonal: computes the SP coefficient of the source term for the diagonal case at the point (x,y)
+    sourcePDiagonal: computes the SP coefficient of the source term for the diagonal case at the point (x,y)
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Inputs:
         - x         x coordinate    [const double]
@@ -526,6 +391,20 @@ double sourceDiagonal(const double x, const double y) {
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Outputs:
         - source    SP coefficient of the source term for the diagonal case at the point (x,y)  [double]
+    */
+    return 0;
+}
+
+double sourceCDiagonal(const double x, const double y) {
+    /*
+    sourcePDiagonal: computes the SC coefficient of the source term for the diagonal case at the point (x,y)
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - x         x coordinate    [const double]
+        - y         y coordinate    [const double]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - source    SC coefficient of the source term for the diagonal case at the point (x,y)  [double]
     */
     return 0;
 }
@@ -598,9 +477,9 @@ double vySmithHutton(const double x, const double y) {
     return -2*x*(1 - y*y);
 }
 
-double sourceSmithHutton(const double, const double) {
+double sourcePSmithHutton(const double, const double) {
     /*
-    sourceSmithHutton: computes the SP coefficient of the source term for the Smith-Hutton case at the point (x,y)
+    sourcePSmithHutton: computes the SP coefficient of the source term for the Smith-Hutton case at the point (x,y)
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Inputs:
         - x         x coordinate    [const double]
@@ -608,6 +487,20 @@ double sourceSmithHutton(const double, const double) {
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Outputs:
         - source    SP coefficient of the source term for the Smith-Hutton case at the point (x,y)  [double]
+    */
+    return 0;
+}
+
+double sourceCSmithHutton(const double, const double) {
+    /*
+    sourceCSmithHutton: computes the SC coefficient of the source term for the Smith-Hutton case at the point (x,y)
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - x         x coordinate    [const double]
+        - y         y coordinate    [const double]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - source    SC coefficient of the source term for the Smith-Hutton case at the point (x,y)  [double]
     */
     return 0;
 }
@@ -954,14 +847,13 @@ void plotSolution(const Mesh m, const char* filename) {
     sprintf(plotCommand, "plot '%s' with image", filename);
 
     // Commands sent to gnuplot
-    // const char* GnuCommands[] = {xrange, yrange, "set size ratio 1", "set palette rgb 33,13,10", plotCommand};
-    const char* GnuCommands[] = {xrange, yrange, "set size ratio 1", plotCommand};
+    const char* GnuCommands[] = {xrange, yrange, "set size ratio 1", "set palette rgb 33,13,10", plotCommand};
 
     // Send commands to gnuplot
     FILE *gnupipe = NULL;
     gnupipe = popen("gnuplot -persistent", "w");
     printf("Plotting the solution in gnuplot...\n");
-    for(int i = 0; i < 4; i++) {
+    for(int i = 0; i < 5; i++) {
         printf("\t%s\n", GnuCommands[i]);
         fprintf(gnupipe, "%s\n", GnuCommands[i]);
     }
@@ -996,7 +888,7 @@ void verification(const Mesh m, const double* prop, double (*vx)(double,double),
             double LHS = (prop[0]/prop[1])*((*vx)(x,y)*phi_x + (*vy)(x,y)*phi_y);
             double RHS = phi_xx + phi_yy;
 
-            printf("(%3d,%3d) %15.5f %15.5f %15.5f %15.5f\n", i, j, phi_x, phi_y, phi_xx, phi_yy);
+            // printf("(%3d,%3d) %15.5f %15.5f %15.5f %15.5f\n", i, j, phi_x, phi_y, phi_xx, phi_yy);
 
             maxDiff = std::max(maxDiff, std::abs(LHS - RHS));
         }

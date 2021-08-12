@@ -105,7 +105,10 @@ int main(void) {
 
     srand(time(NULL));
 
-    testLUP2(10, 200, 10);
+    double x = 5.5;
+    double y = 2.3;
+    printf("x^y = %.5f\n", std::pow(x, y));
+    printf("e^2 = %.5f\n", std::exp(2));
 
     return 0;
 }
