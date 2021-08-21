@@ -842,12 +842,16 @@ void plotSolution(const Mesh m, const char* filename) {
     char yrange[50];
     sprintf(yrange, "set yrange [%.5f : %.5f]", m.atNodeY(0), m.atNodeY(m.getNY()-1));
 
+    // Set size ratio command
+    char sizeratio[50];
+    sprintf(sizeratio, "set size ratio %.5f", (m.atNodeY(m.getNY()-1)-m.atNodeY(0))/(m.atNodeX(m.getNX()-1) - m.atNodeX(0)));
+
     // Plotting command, uses filename parameter
     char plotCommand[30+strlen(filename)];
     sprintf(plotCommand, "plot '%s' with image", filename);
 
     // Commands sent to gnuplot
-    const char* GnuCommands[] = {xrange, yrange, "set size ratio 1", "set palette rgb 33,13,10", plotCommand};
+    const char* GnuCommands[] = {xrange, yrange, sizeratio, "set palette rgb 33,13,10", plotCommand};
 
     // Send commands to gnuplot
     FILE *gnupipe = NULL;
