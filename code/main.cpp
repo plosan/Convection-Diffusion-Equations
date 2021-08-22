@@ -162,7 +162,7 @@ int solveSmithHuttonCase(const double L, const double lz, const int N, const dou
     }
 
     // Compute discretization coefficients
-    computeSteadyStateDiscretizationCoefficientsInternalNodes(m, rho, gamma, vxSmithHutton, vySmithHutton, sourcePSmithHutton, sourceCSmithHutton, SCHEME_UDS, A, b);
+    computeSteadyStateDiscretizationCoefficientsInternalNodes(m, rho, gamma, vxSmithHutton, vySmithHutton, sourcePSmithHutton, sourceCSmithHutton, SCHEME_POWERLAW, A, b);
     computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(m, A, b);
 
     // Allocate memory for the linear system solution
@@ -181,7 +181,7 @@ int solveSmithHuttonCase(const double L, const double lz, const int N, const dou
     for(int k = 0; k < 11; k++) {
         double p = (double)(0.1*k);
         int i = 0.5*(p+1)*(m.getNX()-1);
-        printf("%10d%10.2f%10.5f\n", i, p, phi[i]);
+        printf("%10d%10.2f%10.3f\n", i, p, phi[i]);
     }
 
     // Free memory allocated
@@ -486,7 +486,7 @@ void computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(const Mesh m,
 
     // Lower boundary: (0,L]
     for(int i = m.getNX()-1; i >= 0 && m.atNodeX(i) > 0; --i) {
-        A[5*i+3] = -1;
+        A[5*i+3] = 1;
         A[5*i+4] = 1;
     }
 
