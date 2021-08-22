@@ -4,6 +4,8 @@
 #include <cmath>
 #include <cfloat>
 #include <cstring>
+#include <fstream>
+#include <sstream>
 
 #include "Mesh.h"
 #include "matrix.h"
@@ -101,14 +103,104 @@ void testLUP2(int min_n, int max_n, int max_m) {
     }
 }
 
-int main(void) {
+struct ProblemInput {
+    int type;
+    int N;
+    double L;
+    double lz;
+    double x0;
+    double y0;
+    double rho;
+    double gamma;
+    double phi_low;
+    double phi_high;
+};
+
+int parseProblemInput(const char* filename, ProblemInput &p) {
+
+    std::ifstream file;
+    file.open(filename);
+
+    printf("filename: %s\n", filename);
+    if(!file.is_open()) {
+        printf("Error. Could not open the file %s\n", filename);
+        return -1;
+    }
+
+    // Parse case
+    std::string line;
+    getline(file, line);
+
+    std::istringstream iss(line);
+    std::string word;
+    iss >> word;
+    std::string caseDiagonal("diagonal");
+    std::string caseSmithHutton("smith-hutton");
+    if(caseDiagonal.compare(word) == 0)
+        p.type = 1;
+    else if(caseSmithHutton.compare(word) == 0)
+        p.type = 2;
+    else {
+        printf("Error. Case provided (%s) is not valid.\n", word);
+        return -1;
+    }
+
+    file >> p.N;
+    if(p.N < 2) {
+        printf("Error. Number of control volumes provided (%d) must be at least 2.\n", p.N);
+        return -1;
+    }
+    if(p.type == 2 && p.N % 2 == 0) {
+        printf("Warning. Number of control volumes provided (%d) for the Smith-Hutton case has been increased in one.\n", p.N);
+        p.N++;
+    }
+
+    file >> p.L;
+    file >> p.lz;
+    file >> p.x0;
+    file >> p.y0;
+
+    file >> p.rho;
+    if(p.rho <= 0) {
+        printf("Error. The density provided (%.5e) must be positive.\n", p.rho);
+        return -1;
+    }
+
+    file >> p.gamma;
+    if(p.gamma <= 0) {
+        printf("Error. The diffusion coefficient provided (%.5e) must be positive.\n", p.gamma);
+        return -1;
+    }
+
+    if(p.type == 1) {
+        file >> p.phi_low;
+        file >> p.phi_high;
+    }
+
+    file.close();
+    return 0;
+}
+
+
+int main(int argc, char* argv[]) {
 
     srand(time(NULL));
 
-    double x = 5.5;
-    double y = 2.3;
-    printf("x^y = %.5f\n", std::pow(x, y));
-    printf("e^2 = %.5f\n", std::exp(2));
+    printf("argc : %d\n", argc);
+
+    printf("%5s%5s%s\n", "i", "", "argv[i]");
+    for(int i = 0; i < argc; i++)
+        printf("%5d%5s%s\n", i, "", argv[i]);
+
+    if(argc < 2) {
+        return -1;
+    }
+
+    ProblemInput p;
+
+    parseProblemInput(argv[1], p);
+
+
 
     return 0;
 }
