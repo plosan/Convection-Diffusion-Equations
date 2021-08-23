@@ -22,8 +22,6 @@
 #define SCHEME_HYBRID 3
 #define SCHEME_POWERLAW 4
 
-// Build mesh functions
-
 // Computation of internal nodes discretization coefficients
 double schemeUDS(const double P);
 double schemeCDS(const double P);
@@ -40,21 +38,6 @@ double (*vx)(double,double), double (*vy)(double, double), double (*sourceP)(dou
 double (*sourceC)(double, double), int scheme, double* A, double* b);
 
 // Diagonal case functions
-// void solveDiagonalCase(Mesh &m) {
-//
-//     // Diagonal case
-//     double L = 0.1;   // Domain size in x and y axis                              [m]
-//     double x0 = 0;  // Lower left corner x coordinate for rectangular domain    [m]
-//     double y0 = 0;  // Lower left corner y coordinate for rectangular domain    [m]
-//     double lx = L;  // Domain size in x axis                                    [m]
-//     double ly = L;  // Domain size in y axis                                    [m]
-//     double lz = 1;  // Domain size in z axis
-//
-//     printf("Building uniform cartesian mesh...\n\n");
-//     m.buildUniformMesh(x0, y0, lx, ly, lz, nx, ny);
-//
-// }
-
 void computeDiscCoefsBoundaryNodesDiagonal(const Mesh m, const double phi_low, const double phi_high, double* A, double* b);
 double vxDiagonal(const double, const double);
 double vyDiagonal(const double, const double);
@@ -62,7 +45,6 @@ double sourcePDiagonal(const double, const double);
 double sourceCDiagonal(const double, const double);
 
 // Smith-Hutton case functions
-void solveSmithHuttonCase();
 void computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(const Mesh m, double* A, double* b);
 double vxSmithHutton(const double x, const double y);
 double vySmithHutton(const double x, const double y);
@@ -84,8 +66,7 @@ void printToFile(const Mesh m, const double* phi, const char* filename, const in
 void plotSolution(const Mesh m, const char* filename);
 
 // Check solution functions
-double computeSolutionDifference(const int nx, const int ny, const double* A, const double* b, const double* phi);
-void verification(const Mesh m, const double* prop, double (*vx)(double,double), double (*vy)(double, double), double (*source)(double, double), const double* phi);
+double checkLinearSystemSolution(const int nx, const int ny, const double* A, const double* b, const double* phi);
 
 int solveDiagonalCase(const double L, const double lz, const int N, const double rho, const double gamma, const double phi_low, const double phi_high) {
     // Build mesh
@@ -206,13 +187,9 @@ int main(int argc, char* argv[]) {
     const double rho = 1000;        // Density                  [kg/m^3]
     const double gamma = rho/1000000;   // Diffusion coefficient
 
-    // Boundary conditions for diagonal case
-    // const double phi_low = 273.15;
-    // const double phi_high = 353.15;
+    solveDiagonalCase(L, lz, N, rho, gamma, 0, 1);
 
-    // solveDiagonalCase(L, lz, N, rho, gamma, phi_low, phi_high);
-
-    solveSmithHuttonCase(L, lz, N, rho, gamma);
+    // solveSmithHuttonCase(L, lz, N, rho, gamma);
 
     return 1;
 }
@@ -928,43 +905,9 @@ void plotSolution(const Mesh m, const char* filename) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CHECK SOLUTION FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void verification(const Mesh m, const double* prop, double (*vx)(double,double), double (*vy)(double, double), double (*source)(double, double), const double* phi) {
-    printf("Verificating solution...\n");
-
-    double stepX = (m.atNodeX(m.getNX()-1) - m.atNodeX(0))/(m.getNX()-1);
-    double stepY = (m.atNodeY(m.getNY()-1) - m.atNodeY(0))/(m.getNY()-1);
-
-    double maxDiff = 0;
-    for(int j = 1; j < m.getNY()-1; j++) {
-        for(int i = 1; i < m.getNX()-1; i++) {
-
-            int node = j * m.getNX() + i;
-
-            double phi_x = (phi[node+1] - phi[node-1])/(2 * stepX);
-            double phi_y = (phi[node+m.getNX()] - phi[node-m.getNX()])/(2 * stepY);
-
-            double phi_xx = (phi[node+1] - 2*phi[node] + phi[node-1])/(stepX*stepX);
-            double phi_yy = (phi[node+m.getNX()] - 2*phi[node] + phi[node-m.getNX()])/(stepY*stepY);
-
-
-            double x = m.atNodeX(i);
-            double y = m.atNodeY(j);
-
-            double LHS = (prop[0]/prop[1])*((*vx)(x,y)*phi_x + (*vy)(x,y)*phi_y);
-            double RHS = phi_xx + phi_yy;
-
-            // printf("(%3d,%3d) %15.5f %15.5f %15.5f %15.5f\n", i, j, phi_x, phi_y, phi_xx, phi_yy);
-
-            maxDiff = std::max(maxDiff, std::abs(LHS - RHS));
-        }
-    }
-    printf("\tmaxDiff : %.5f\n", maxDiff);
-
-}
-
-double computeSolutionDifference(const int nx, const int ny, const double* A, const double* b, const double* phi) {
+double checkLinearSystemSolution(const int nx, const int ny, const double* A, const double* b, const double* phi) {
     /*
-    computeSolutionDifference: checks the solution of the linear system resulting from the 2D convection-diffusion equations in a cartesian mesh. If _A is
+    checkLinearSystemSolution: checks the solution of the linear system resulting from the 2D convection-diffusion equations in a cartesian mesh. If _A is
     the linear system matrix, the function returns the infinity norm of _A * phi - b.
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Inputs:
