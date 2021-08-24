@@ -104,7 +104,11 @@ int solveDiagonalCase(const double L, const double lz, const int N, const double
     std::fill_n(phi, m.getNX()*m.getNY(), 1);
     solveSystem(m.getNX(), m.getNY(), A, b, phi, 0);
 
-    const char* filename = "output/outputDiagonal.dat";
+    const char* filename = "output/diagonal.dat";
+
+    // char filename[100];
+    // sprintf(filename, "../gnuplot/output/outputDiagonal_N%d_Pe%.1e.dat", m.getNX(), rho/gamma);
+
     printToFile(m, phi, filename, 5);
     plotSolution(m, filename);
 
@@ -155,15 +159,21 @@ int solveSmithHuttonCase(const double L, const double lz, const int N, const dou
     std::fill_n(phi, m.getNX()*m.getNY(), 1);
     solveSystem(m.getNX(), m.getNY(), A, b, phi, 0);
 
-    const char* filename = "output/outputSmithHutton.dat";
+    const char* filename = "output/smith_hutton.dat";
     printToFile(m, phi, filename, 5);
     plotSolution(m, filename);
 
-    for(int k = 0; k < 11; k++) {
-        double p = (double)(0.1*k);
-        int i = 0.5*(p+1)*(m.getNX()-1);
-        printf("%10d%10.2f%10.3f\n", i, p, phi[i]);
-    }
+    // char filename[150];
+    // sprintf(filename, "../gnuplot/output/smith_hutton_N%d_Pe%.1e.dat", m.getNX(), rho/gamma);
+
+    printToFile(m, phi, filename, 5);
+    plotSolution(m, filename);
+
+    // for(int k = 0; k < 11; k++) {
+    //     double p = (double)(0.1*k);
+    //     int i = 0.5*(p+1)*(m.getNX()-1);
+    //     printf("%10d%10.2f%10.3f\n", i, p, phi[i]);
+    // }
 
     // Free memory allocated
     free(A);
@@ -185,11 +195,11 @@ int main(int argc, char* argv[]) {
 
     // Thermophysical properties
     const double rho = 1000;        // Density                  [kg/m^3]
-    const double gamma = rho/1000000;   // Diffusion coefficient
+    const double gamma = rho/1000;   // Diffusion coefficient
 
-    solveDiagonalCase(L, lz, N, rho, gamma, 0, 1);
+    // solveDiagonalCase(L, lz, N, rho, gamma, 0, 1);
 
-    // solveSmithHuttonCase(L, lz, N, rho, gamma);
+    solveSmithHuttonCase(L, lz, N, rho, gamma);
 
     return 1;
 }
