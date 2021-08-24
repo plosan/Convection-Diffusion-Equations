@@ -1,7 +1,7 @@
 
 \subsection{Continuity equation}
 
-For the purposes of this project, where no nuclear nor relativistic effects are considered, mass is a magnitude preserved over time. Let $\cv{} \subset \real^m$ be a bounded control volume, which may depend on time, and let $\rho = \rho(\vb{x}, t)$ be the mass density defined over $\cv{}$ for each time $t \in I$. It can be assumed, without loss of generality, that $\cvt$ is open for each $t \in I$. The mass enclosed by $\cv{}$ at time $t$ is
+For the purposes of this project, where no nuclear nor relativistic effects are considered, mass is a property preserved over time. Let $\cv{} \subset \real^m$ be a bounded control volume, which may depend on time, and let $\rho = \rho(\vb{x}, t)$ be the mass density defined over $\cv{}$ for each time $t \in I$. It can be assumed, without loss of generality, that $\cvt$ is open for each $t \in I$. The mass enclosed by $\cv{}$ at time $t$ is
 \begin{equation}
 	m(t) = \int_\cvt \rho(\vb{x}, t) \dd{\vb{x}} = \int_\cvt \rho \dd{\vb{x}}
 \end{equation}
@@ -34,7 +34,7 @@ and it is still true if it is divided by the volume of $B(\vb{x}_0, r_0)$,
 	\frac{1}{\abs{B(\vb{x}_0, r_0)}}
 	\int_{B(\vb{x}_0, r_0)} \left\{ \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right\} \dd{\vb{x}} = 0
 \end{equation}
-When $r_0 \to 0$, $\abs{B(\vb{x}_0, r_0)} \to 0$, hence applying Lebesgue's Differentiation Theorem \colorbox{red}{apendice},
+When $r_0 \to 0$, $\abs{B(\vb{x}_0, r_0)} \to 0$, hence applying Lebesgue's Differentiation Theorem (Theorem \ref{eq:lebesgue_differentiation_lemma}),
 \begin{equation}
 	\lim_{r_0 \to 0}
 	\frac{1}{\abs{B(\vb{x}_0, r_0)}}
