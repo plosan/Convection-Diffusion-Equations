@@ -12,19 +12,19 @@ The main result needed to derive the conservation laws of the subsequent subsect
 \end{theorem}
 
 \noindent
-Reynolds transport theorem allows us to compute the left--hand side of \eqref{eq:leibniz_rule} but in the more general context where $f$ is integrated over a bounded smooth control volume $\cv{}(t) \subset \real^m$ which depends upon time. 
+Reynolds transport theorem allows us to compute the left--hand side of \eqref{eq:leibniz_rule} but in the more general context where $f$ is integrated over a bounded smooth control volume $\cv{}(t) \subset \real^n$ which depends upon time. 
 
 \begin{theorem}[Reynolds transport theorem \cite{kundu2008fluid}]
-	Let $U \subset \real^m$ be a compact set and let $\cv{}(t)$ be a control volume depending on time such that it is smooth and $\cv{}(t) \subset U$ for all $t \in I = [0, T]$ with $T > 0$. Let $\cs{}(t) = \partial \cv{}(t)$ be the boundary of $\cv{}(t)$ and let $F \in \mathcal{C}^1(U \times I, \real)$ be a scalar field. Then for all $t \in I$,
+	Let $U \subset \real^n$ be a compact set and let $\cv{}(t)$ be a control volume depending on time such that it is smooth and $\cv{}(t) \subset U$ for all $t \in I = [0, T]$ with $T > 0$. Let $\cs{}(t) = \partial \cv{}(t)$ be the boundary of $\cv{}(t)$ and let $F \in \mathcal{C}^1(U \times I, \real)$ be a scalar field. Then for all $t \in I$,
 	\begin{equation} \label{eq:reynolds_transport_theorem}
 		\frac{\dd}{\dd{t}} \int_\cvt F(\vb{x}, t) \dd{\vb{x}} = 
 		\int_\cvt \frac{\partial F}{\partial t} (\vb{x}, t) \dd{\vb{x}} + 
 		\int_\cst F(\vb{x}, t) \vb{b} \vdot \vb{n} \dd{S}
 	\end{equation}
-	where $\vb{b} \colon \cs{}(t) \rightarrow \real^m$ is the local velocity of the control surface.
+	where $\vb{b} \colon \cs{}(t) \rightarrow \real^n$ is the local velocity of the control surface.
 \end{theorem}
 \begin{proof}
-	The moving control volume $\cv{}(t)$ can be seen as the image of an initial region $\cv{}(0)$ by a family of smooth maps $\xi \colon U \times I \subset \real^m \times \real \rightarrow \real^m$, that is to say, $\cv{}(t) = \xi(\cv{}(0),t)$ for all $t \in I$. Moreover, by fixing one time $t$, the mapping $\xi(\cdot, t) \colon \vb{}(0) \rightarrow \vb{}(t)$ can be assumed to be a diffeomorphism. Since $F$ is continuous, we can apply the Change of Variables Theorem taking $\vb{x} = \xi(\vb{x}_0,t)$,
+	The moving control volume $\cv{}(t)$ can be seen as the image of an initial region $\cv{}(0)$ by a family of smooth maps $\xi \colon U \times I \subset \real^n \times \real \rightarrow \real^n$, that is to say, $\cv{}(t) = \xi(\cv{}(0),t)$ for all $t \in I$. Moreover, by fixing one time $t$, the mapping $\xi(\cdot, t) \colon \vb{}(0) \rightarrow \vb{}(t)$ can be assumed to be a diffeomorphism. Since $F$ is continuous, we can apply the Change of Variables Theorem taking $\vb{x} = \xi(\vb{x}_0,t)$,
 	\begin{equation*}
 		\int_\cvt F(\vb{x},t) \dd{\vb{x}} = 
 		\int_{\cv{}(0)} F(\xi(\vb{x}_0,t), t) \abs{\det(\frac{\partial \xi}{\partial \vb{x}_0} (\vb{x}_0, t))} \dd{\vb{x}_0}
