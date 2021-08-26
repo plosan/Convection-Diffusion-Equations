@@ -1,5 +1,5 @@
 
-\subsection{Reynolds transport theorem}
+\subsection{Reynolds Transport Theorem}
 
 The main result needed to derive the conservation laws of the subsequent subsections, namely, mass, momentum, energy and species conservation, is Reynolds transport theorem. This theorem is a generalization to higher dimensions of Leibniz integral rule:
 
@@ -12,10 +12,25 @@ The main result needed to derive the conservation laws of the subsequent subsect
 \end{theorem}
 
 \noindent
-Reynolds transport theorem allows us to compute the left--hand side of \eqref{eq:leibniz_rule} but in the more general context where $f$ is integrated over a bounded smooth control volume $\cv{}(t) \subset \real^n$ which depends upon time. 
+Reynolds Transport Theorem allows us to compute the left--hand side of \eqref{eq:leibniz_rule} but in the more general context where $f$ is integrated on a control volume $\cv{} \subset \real^n$ which may depend on time. 
 
-\begin{theorem}[Reynolds transport theorem \cite{kundu2008fluid}]
-	Let $U \subset \real^n$ be a compact set and let $\cv{}(t)$ be a control volume depending on time such that it is smooth and $\cv{}(t) \subset U$ for all $t \in I = [0, T]$ with $T > 0$. Let $\cs{}(t) = \partial \cv{}(t)$ be the boundary of $\cv{}(t)$ and let $F \in \mathcal{C}^1(U \times I, \real)$ be a scalar field. Then for all $t \in I$,
+Now we introduce some notation and requirements on the sets we will be working on. If $\vb{x} \in \real^n$ and $R > 0$, we will denote by $B(\vb{x}, R) = \{ \vb{y} \in \real^n \mid \norm{\vb{x} - \vb{y}} < R \}$ the open ball centered at $\vb{x}$ of radius $R$. If $\Omega$ is a subset of $\real^n$, $\partial \Omega \subset \real^n$ will denote its boundary and $\overline{\Omega} \subset \real^n$ its closure. Hereinafter, if $\cv{} \subset \real^n$ is a control volume, we will assume it satisfies the following:
+\begin{enumerate}[label={(\roman*)}, topsep=0pt]
+	\item $\cv{}$ is an open set of $\real^n$, \ie for all $\vb{x} \in \cv{}$ there exists $R > 0$ such that $B(\vb{x}, R) \subset \cv{}$. \label{item:control_volume_condition_1}
+	\item $\cv{}$ is bounded, that is to say, there exist $\vb{x}_0 \in \real^n$ and $R > 0$ such that $\cv{} \subset B(\vb{x}_0, R)$. \label{item:control_volume_condition_2}
+	\item $\cv{}$ is a $\mathcal{C}^1$--domain. This implies that for every point $\vb{x} \in \partial \cv{}$ there exists a system of coordinates $(y_1, \ldots, y_{n-1}, y_n) \equiv (\vb{y}', y_n)$ with origin at $\vb{x}$, a ball $B(\vb{x}, R)$ and a function $\varphi$ defined in an open subset $\mathcal{N} \subset \real^{n-1}$ containing $\vb{y}' = \vb{0}'$, such that \cite{salsa2009chap1}: \label{item:control_volume_condition_3}
+	\begin{enumerate}[topsep=0pt]
+		\item $\varphi(\vb{0'}) = 0$ and $\varphi \in \mathcal{C}^1(\mathcal{N}, \real)$ ($\varphi$ is a $\mathcal{C}^1$ function from $\mathcal{N}$ to $\real$),
+		\item $\partial \cv{} \cap B(\vb{x}, R) = \{ (\vb{y'}, y_n) \mid y_n = \varphi(\vb{y'}), \, \vb{y'} \in \mathcal{N} \}$,
+		\item $\cv{} \cap B(\vb{x}, R) = \{ (\vb{y'}, y_n) \mid y_n > \varphi(\vb{y'}), \, \vb{y'} \in \mathcal{N} \}$.
+	\end{enumerate} 
+\end{enumerate}
+Condition \ref{item:control_volume_condition_1} will be useful to cast an integral equation into a differential equation using Lebesgue's differentiation lemma. Condition \ref{item:control_volume_condition_2} prevents the integral of a continuous function defined on $\overline{\mathcal{V}}$ from becoming infinite. Moreover, an unbounded control volume, that is to say, a subset of $\real^n$ that extends indefinitely, makes no physical sense. Condition \ref{item:control_volume_condition_3}, which is more technical, will allow us to apply vector calculus theorems.
+
+Now we state and prove Reynolds Transport Theorem:
+
+\begin{theorem}[Reynolds Transport Theorem \cite{kundu2008fluid}]
+	Let $U \subset \real^n$ be a compact set (\ie $U$ is closed and bounded) and let $\cv{}(t)$ be a control volume depending on time such that $\cv{} \subset U$ for all $t \in I = [0, T]$ with $T > 0$. Let $\cs{}(t) = \partial \cv{}(t)$ be the boundary of $\cv{}(t)$ and let $F \in \mathcal{C}^1(U \times I, \real)$ be a scalar field. Then for all $t \in I$,
 	\begin{equation} \label{eq:reynolds_transport_theorem}
 		\frac{\dd}{\dd{t}} \int_\cvt F(\vb{x}, t) \dd{\vb{x}} = 
 		\int_\cvt \frac{\partial F}{\partial t} (\vb{x}, t) \dd{\vb{x}} + 
@@ -24,7 +39,7 @@ Reynolds transport theorem allows us to compute the left--hand side of \eqref{eq
 	where $\vb{b} \colon \cs{}(t) \rightarrow \real^n$ is the local velocity of the control surface.
 \end{theorem}
 \begin{proof}
-	The moving control volume $\cv{}(t)$ can be seen as the image of an initial region $\cv{}(0)$ by a family of smooth maps $\xi \colon U \times I \subset \real^n \times \real \rightarrow \real^n$, that is to say, $\cv{}(t) = \xi(\cv{}(0),t)$ for all $t \in I$. Moreover, by fixing one time $t$, the mapping $\xi(\cdot, t) \colon \vb{}(0) \rightarrow \vb{}(t)$ can be assumed to be a diffeomorphism. Since $F$ is continuous, we can apply the Change of Variables Theorem taking $\vb{x} = \xi(\vb{x}_0,t)$,
+	The moving control volume $\cv{}(t)$ can be seen as the image of an initial region $\cv{}(0)$ by a family of $\mathcal{C}^1$ maps $\xi \colon U \times I \subset \real^n \times \real \rightarrow \real^n$, that is to say, $\cv{}(t) = \xi(\cv{}(0),t)$ for all $t \in I$. Furthermore, by fixing one time $t$, the mapping $\xi(\cdot, t) \colon \cv{}(0) \rightarrow \cv{}(t)$ can be assumed to be a diffeomorphism. Since $F$ is continuous, we can apply the Change of Variables Theorem taking $\vb{x} = \xi(\vb{x}_0,t)$,
 	\begin{equation*}
 		\int_\cvt F(\vb{x},t) \dd{\vb{x}} = 
 		\int_{\cv{}(0)} F(\xi(\vb{x}_0,t), t) \abs{\det(\frac{\partial \xi}{\partial \vb{x}_0} (\vb{x}_0, t))} \dd{\vb{x}_0}
@@ -74,7 +89,7 @@ Reynolds transport theorem allows us to compute the left--hand side of \eqref{eq
 		\int_\cvt 
 		\left\{ \frac{\partial F}{\partial t}  + \div(F \vb{b}) \right\} (\vb{x}, t) \dd{\vb{x}}
 	\end{equation*}
-	For a fixed $\vb{x}_0 \in \cv{}(0)$, $\xi(\vb{x}_0, \cdot)$ is a function of time giving how $\vb{x}_0$ moves, hence $\xi_t(\vb{x}_0, t)$ is the instantaneous velocity of $\vb{x}_0$. To end, an application of divergence theorem yields the final formula
+	For a fixed $\vb{x}_0 \in \cv{}(0)$, $\xi(\vb{x}_0, \cdot)$ is a function of time giving how $\vb{x}_0$ moves, hence $\xi_t(\vb{x}_0, t)$ is the instantaneous velocity of $\vb{x}_0$. To end, an application of divergence theorem yields the final formula:
 	\begin{equation*}
 		\frac{\dd}{\dd{t}} \int_\cvt F(\vb{x}, t) \dd{\vb{x}} = 
 		\int_\cvt \frac{\partial F}{\partial t} (\vb{x}, t) \dd{\vb{x}} +
@@ -82,7 +97,7 @@ Reynolds transport theorem allows us to compute the left--hand side of \eqref{eq
 	\end{equation*}
 \end{proof}
 
-In an intuitive manner, Reynolds tranport theorem quantifies how a quantity over a control volume varies when the control volume itself depends on time due to transport phenomena, diffusion, etc. 
+Intuitively, Reynolds Transport Theorem quantifies how a quantity over a control volume varies when the control volume itself depends on time due to transport phenomena.
 
 
 

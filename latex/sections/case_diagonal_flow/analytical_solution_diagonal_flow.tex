@@ -1,7 +1,9 @@
 
 \subsection{Analytical solution}
 
-Peclet's number is defined as the ratio between \colorbox{red}{transport and heat difussion}, $\mathrm{Pe} = \rho u L / \Gamma$. Whenever $\mathrm{Pe} \to +\infty$, it implies $\Gamma \to 0$ since infinite values for the density, velocity or characteristic length make no physical sense. Therefore the difussion coefficient tends to $0$, which means the Laplacian term is negligible. Under this physical intuition, dividing the PDE from \eqref{eq:diagonal_case_cauchy_problem} results in the following Cauchy problem:
+\subsubsection{Analytical solution for \texorpdfstring{$\mathrm{Pe} = \infty$}{infinite Péclet's number}}
+
+Péclet's number is defined as the ratio between \colorbox{red}{transport and heat difussion}, $\mathrm{Pe} = \rho u L / \Gamma$. Whenever $\mathrm{Pe} \to +\infty$, it implies $\Gamma \to 0$ since infinite values for the density, velocity or characteristic length make no physical sense. Therefore the difussion coefficient tends to $0$, which means the Laplacian term is negligible. Under this physical intuition, dividing the PDE from \eqref{eq:diagonal_case_cauchy_problem} results in the following Cauchy problem:
 \begin{equation} \label{eq:diagonal_case_cauchy_problem_infinite_peclet}
 	\left\{
 	\begin{aligned}
@@ -17,3 +19,7 @@ Peclet's number is defined as the ratio between \colorbox{red}{transport and hea
 The PDE from \eqref{eq:diagonal_case_cauchy_problem_infinite_peclet} is known as the transport equation, which is a first order linear PDE. In our case it has constant coefficients, making it easier to solve analitically. So as to find the analytical solution to \eqref{eq:diagonal_case_cauchy_problem_infinite_peclet}, we will follow a geometric approach as it is more intuitive. 
 
 by dividing the PDE from \eqref{eq:diagonal_case_cauchy_problem} by 
+
+\subsubsection{Analytical solution for \texorpdfstring{$\mathrm{Pe} = 0$}{zero Péclet's number}}
+
+\subsubsection{General problem}

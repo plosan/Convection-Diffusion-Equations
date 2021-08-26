@@ -1,7 +1,7 @@
 
 \subsection{Statement}
 
-The diagonal flow case is a steady state problem which takes places in a square domain $\Omega = (0,L) \times (0,L) \subset \real^2$ where $L > 0$ is a fixed length. In it the steady state general convection--diffusion equation with no source term, constant density and constant diffusion coefficient is considered. Under these hypothesis equation \eqref{eq:cde_general_convection_diffusion_equation} is simplified to
+The diagonal flow case takes places in the domain $\Omega = (0,L) \times (0,L) \subset \real^2$ where $L > 0$ is a constant length. In $\Omega$ the steady state general convection--diffusion equation with no source term, constant density and constant diffusion coefficient is considered. Under these hypothesis equation \eqref{eq:cde_general_convection_diffusion_equation} is simplified to
 \begin{equation} \label{eq:diagcase_statement_pde1}
 	\frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} = \Delta{\phi}
 \end{equation}
@@ -14,19 +14,19 @@ The velocity field is $\vb{v} = v_0 \cos(\alpha) \vb{i} + v_0 \sin(\alpha) \vb{j
 \begin{align}
 	\frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} &= 
 	\frac{\rho}{\Gamma} 
-	\left( v_0 \cos(\alpha) \pdv{\phi}{x} + v_0 \sin(\alpha) \pdv{\phi}{y} \right) = 
-	\frac{\rho v_0 \cos(\alpha)}{\Gamma} \left( \pdv{\phi}{x} + \pdv{\phi}{y} \right) \\
+	\left\{ v_0 \cos(\alpha) \pdv{\phi}{x} + v_0 \sin(\alpha) \pdv{\phi}{y} \right\} = 
+	\frac{\rho v_0 \cos(\alpha)}{\Gamma} \left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\} \\
 	&= 
 	\underbrace{\frac{\cos(\alpha)}{L}}_{\beta} 
 	\underbrace{\frac{\rho v_0 L}{\Gamma}}_{\mathrm{Pe}} 
-	\left( \pdv{\phi}{x} + \pdv{\phi}{y} \right) = 
-	\beta \mathrm{Pe} \left( \pdv{\phi}{x} + \pdv{\phi}{y} \right)
+	\left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\} = 
+	\beta \, \mathrm{Pe} \left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\}
 \end{align}
 The resulting Cauchy problem is
 \begin{equation} \label{eq:diagonal_case_cauchy_problem}
 	\left\{
 	\begin{aligned}
-		&\Delta \phi - \beta \mathrm{Pe} \left( \pdv{\phi}{x} + \pdv{\phi}{y} \right) = 0 &
+		&\Delta \phi - \beta \, \mathrm{Pe} \left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\} = 0 &
 		&\text{in } \Omega = (0,L) \times (0,L) \\
 		&\phi = \phi_\text{low} &
 		&\text{on } [0,L) \times \{ 0 \} \cup \{ L \} \times [0,L) \\
@@ -70,7 +70,7 @@ and is summarized in figure \ref{fig:diagonal_case_cauchy_problem}.
 		\path[-latex] (bbc) edge[bend right] node [left] {} (bb);
 		% PDE
 		\node[] at ({0.5*\L},{0.5*\L}) 
-		{$\Delta{\phi} - \beta \mathrm{Pe} \left( \pdv{\phi}{x} + \pdv{\phi}{x} \right) = 0$};
+		{$\Delta{\phi} - \beta \mathrm{Pe} \left\{ \pdv{\phi}{x} + \pdv{\phi}{x} \right\} = 0$};
 	\end{tikzpicture}
 	\caption{Cauchy problem for the diagonal flow case.}
 	\label{fig:diagonal_case_cauchy_problem}

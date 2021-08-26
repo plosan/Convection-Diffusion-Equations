@@ -265,13 +265,13 @@ Since the initial value problem \eqref{eq:eds_ivp} is a second order linear ODE 
 	\phi_P +
 	\frac{e^{\frac{\rho u}{\Gamma} (x - x_P)} - 1}{e^{\frac{\rho u}{\Gamma} d_{PE}} - 1} (\phi_E - \phi_P)
 \end{equation}
-Péclet's number for heat transfer is defined as the following ratio,
+Péclet's number for is defined as the ratio between of strengths of convection and diffusion \cite{patankar2008numerical},
 \begin{equation}
 	\mathrm{Pe} = 
 	\frac{\text{convection transport}}{\text{heat transport}} = 
-	\frac{\rho u L}{\lambda / c_p}
+	\frac{\rho u L}{\Gamma}
 \end{equation}
-where $L$ is a characteristic length of the problem. Since $\lambda / c_p$ is the diffusion coefficient in equation \eqref{eq:cde_energy_equation}, it can be substituted by the diffusion coefficient $\Gamma$ of the generalized convection--diffusion equation, providing a new definition for Péclet's number 
+where $L$ is a characteristic length of the problem. Since $\Gamma = \lambda / c_p$ is the diffusion coefficient in equation \eqref{eq:cde_energy_equation}, it can be substituted by the diffusion coefficient $\Gamma$ of the generalized convection--diffusion equation, providing a new definition for Péclet's number 
 \begin{equation}
 	\mathrm{Pe} = 
 	\frac{\rho u L}{\Gamma}
