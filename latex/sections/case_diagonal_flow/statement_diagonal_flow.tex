@@ -7,8 +7,8 @@ The diagonal flow case takes places in the domain $\Omega = (0,L) \times (0,L) \
 \end{equation}
 The following boundary conditions are prescribed:
 \begin{itemize}[topsep=0pt]
-	\item $\phi = \phi_\text{low}$ on $[0,L) \times \{ 0 \} \cup \{ L \} \times [0,L)$.
-	\item $\phi = \phi_\text{high}$ on $\{ 0 \} \times (0,L] \cup (0,L] \times \{ L \}$.
+	\item $\phi = \phi_\text{low}$ on $C_1 = [0,L) \times \{ 0 \} \cup \{ L \} \times [0,L)$.
+	\item $\phi = \phi_\text{high}$ on $C_2 = \{ 0 \} \times (0,L] \cup (0,L] \times \{ L \}$.
 \end{itemize}
 The velocity field is $\vb{v} = v_0 \cos(\alpha) \vb{i} + v_0 \sin(\alpha) \vb{j}$, with $v_0 > 0$ constant and $\alpha = \pi / 4$. Therefore the left--hand side of \eqref{eq:diagcase_statement_pde1} is
 \begin{align}
@@ -29,9 +29,9 @@ The resulting Cauchy problem is
 		&\Delta \phi - \beta \, \mathrm{Pe} \left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\} = 0 &
 		&\text{in } \Omega = (0,L) \times (0,L) \\
 		&\phi = \phi_\text{low} &
-		&\text{on } [0,L) \times \{ 0 \} \cup \{ L \} \times [0,L) \\
+		&\text{on } C_1 = [0,L) \times \{ 0 \} \cup \{ L \} \times [0,L) \\
 		&\phi = \phi_\text{high} &
-		&\text{on } \{ 0 \} \times (0,L] \cup (0,L] \times \{ L \}
+		&\text{on } C_2 = \{ 0 \} \times (0,L] \cup (0,L] \times \{ L \}
 	\end{aligned}
 	\right.
 \end{equation}
@@ -75,5 +75,8 @@ and is summarized in figure \ref{fig:diagonal_case_cauchy_problem}.
 	\caption{Cauchy problem for the diagonal flow case.}
 	\label{fig:diagonal_case_cauchy_problem}
 \end{figure}
+
+\noindent
+Notice that $C_1, \ C_2 \subset \real^2$ constitute a partition of the boundary of $\Omega$, that is to say, $C_1 \cap C_2 = \emptyset$ and $C_1 \cup C_2 = \partial \Omega$. This fact will be useful to find the solution to \eqref{eq:diagonal_case_cauchy_problem} in some particular cases.
 
 
