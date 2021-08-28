@@ -1,42 +1,45 @@
 
 \subsection{Statement}
 
-The diagonal flow case takes places in the domain $\Omega = (0,L) \times (0,L) \subset \real^2$ where $L > 0$ is a constant length. In $\Omega$ the steady state general convection--diffusion equation with no source term, constant density and constant diffusion coefficient is considered. Under these hypothesis equation \eqref{eq:cde_general_convection_diffusion_equation} is simplified to
+The diagonal flow case takes places in the domain $\Omega = (0,L) \times (0,L) \subset \real^2$ where $L > 0$ is a constant length. In $\Omega$ the steady state general convection--diffusion equation with no source term, constant density and constant diffusion coefficient is considered. Under these hypothesis equation \eqref{eq:cde_general_convection_diffusion_equation} is
 \begin{equation} \label{eq:diagcase_statement_pde1}
 	\frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} = \Delta{\phi}
 \end{equation}
-The following boundary conditions are prescribed:
+The following Dirichlet boundary conditions are prescribed:
 \begin{itemize}[topsep=0pt]
 	\item $\phi = \phi_\text{low}$ on $C_1 = [0,L) \times \{ 0 \} \cup \{ L \} \times [0,L)$.
 	\item $\phi = \phi_\text{high}$ on $C_2 = \{ 0 \} \times (0,L] \cup (0,L] \times \{ L \}$.
 \end{itemize}
-The velocity field is $\vb{v} = v_0 \cos(\alpha) \vb{i} + v_0 \sin(\alpha) \vb{j}$, with $v_0 > 0$ constant and $\alpha = \pi / 4$. Therefore the left--hand side of \eqref{eq:diagcase_statement_pde1} is
+Notice that $C_1, \ C_2 \subset \real^2$ constitute a partition of the boundary of $\Omega$. In order to encode the boundary conditions more easily, we define the function $g \colon \Omega \rightarrow \real$ in the following way:
+\begin{equation}
+	g(x,y) =
+	\left\{
+	\begin{aligned}
+		&\phi_\text{low} 	& &\text{if } (x,y) \in C_1 \\
+		&\phi_\text{high} 	& &\text{if } (x,y) \in C_2 \\
+	\end{aligned}
+	\right.
+\end{equation}
+The velocity field is $\vb{v} = v_0 \cos(\alpha) \vb{i} + v_0 \sin(\alpha) \vb{j}$ with $v_0 > 0$ constant and $\alpha = \pi / 4$, whence
 \begin{align}
-	\frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} &= 
-	\frac{\rho}{\Gamma} 
-	\left\{ v_0 \cos(\alpha) \pdv{\phi}{x} + v_0 \sin(\alpha) \pdv{\phi}{y} \right\} = 
-	\frac{\rho v_0 \cos(\alpha)}{\Gamma} \left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\} \\
-	&= 
+	\frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} = 
+	\frac{\rho v_0 \cos(\alpha)}{\Gamma} \left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\} = 
 	\underbrace{\frac{\cos(\alpha)}{L}}_{\beta} 
 	\underbrace{\frac{\rho v_0 L}{\Gamma}}_{\mathrm{Pe}} 
 	\left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\} = 
 	\beta \, \mathrm{Pe} \left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\}
 \end{align}
-The resulting Cauchy problem is
+The resulting Cauchy problem is gathered in \eqref{eq:diagonal_case_cauchy_problem} and summarized in figure \ref{fig:diagonal_case_cauchy_problem}.
 \begin{equation} \label{eq:diagonal_case_cauchy_problem}
 	\left\{
 	\begin{aligned}
 		&\Delta \phi - \beta \, \mathrm{Pe} \left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\} = 0 &
-		&\text{in } \Omega = (0,L) \times (0,L) \\
-		&\phi = \phi_\text{low} &
-		&\text{on } C_1 = [0,L) \times \{ 0 \} \cup \{ L \} \times [0,L) \\
-		&\phi = \phi_\text{high} &
-		&\text{on } C_2 = \{ 0 \} \times (0,L] \cup (0,L] \times \{ L \}
+		&\text{in } \Omega \\
+		&\phi = g &
+		&\text{on } \partial \Omega
 	\end{aligned}
 	\right.
 \end{equation}
-and is summarized in figure \ref{fig:diagonal_case_cauchy_problem}.
-
 \begin{figure}[h]
 	\centering
 	\begin{tikzpicture}
@@ -58,7 +61,7 @@ and is summarized in figure \ref{fig:diagonal_case_cauchy_problem}.
 		\path[-latex] (rbc) edge[bend left] node [left] {} (rb);
 		% Top boundary condition
 		\node[inner sep=0pt] at ({0.5*\L},\L) (tb) {};
-		\node[] at ({0.5*\L+1},{\L+1}) (tbc) {$\phi = \phi_\text{low}$};
+		\node[] at ({0.5*\L+1},{\L+1}) (tbc) {$\phi = \phi_\text{high}$};
 		\path[-latex] (tbc) edge[bend right] node [left] {} (tb);
 		% Left boundary condition
 		\node[inner sep=0pt] at (0,{0.5*\L}) (lb) {};
@@ -66,17 +69,17 @@ and is summarized in figure \ref{fig:diagonal_case_cauchy_problem}.
 		\path[-latex] (lbc) edge[bend left] node [left] {} (lb);
 		% Bottom boundary condition
 		\node[inner sep=0pt] at ({0.5*\L},0) (bb) {};
-		\node[] at ({0.5*\L-1},-1) (bbc) {$\phi = \phi_\text{high}$};
+		\node[] at ({0.5*\L-1},-1) (bbc) {$\phi = \phi_\text{low}$};
 		\path[-latex] (bbc) edge[bend right] node [left] {} (bb);
 		% PDE
 		\node[] at ({0.5*\L},{0.5*\L}) 
-		{$\Delta{\phi} - \beta \mathrm{Pe} \left\{ \pdv{\phi}{x} + \pdv{\phi}{x} \right\} = 0$};
+		{$\Delta{\phi} - \beta \, \mathrm{Pe} \left\{ \pdv{\phi}{x} + \pdv{\phi}{x} \right\} = 0$};
 	\end{tikzpicture}
 	\caption{Cauchy problem for the diagonal flow case.}
 	\label{fig:diagonal_case_cauchy_problem}
 \end{figure}
 
 \noindent
-Notice that $C_1, \ C_2 \subset \real^2$ constitute a partition of the boundary of $\Omega$, that is to say, $C_1 \cap C_2 = \emptyset$ and $C_1 \cup C_2 = \partial \Omega$. This fact will be useful to find the solution to \eqref{eq:diagonal_case_cauchy_problem} in some particular cases.
+
 
 
