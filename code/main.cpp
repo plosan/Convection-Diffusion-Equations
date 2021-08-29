@@ -38,6 +38,7 @@ double (*vx)(double,double), double (*vy)(double, double), double (*sourceP)(dou
 double (*sourceC)(double, double), int scheme, double* A, double* b);
 
 // Diagonal case functions
+int solveDiagonalCase(const double L, const double lz, const int N, const double rho, const double gamma, const double phi_low, const double phi_high);
 void computeDiscCoefsBoundaryNodesDiagonal(const Mesh m, const double phi_low, const double phi_high, double* A, double* b);
 double vxDiagonal(const double, const double);
 double vyDiagonal(const double, const double);
@@ -45,6 +46,7 @@ double sourcePDiagonal(const double, const double);
 double sourceCDiagonal(const double, const double);
 
 // Smith-Hutton case functions
+int solveSmithHuttonCase(const double L, const double lz, const int N, const double rho, const double gamma);
 void computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(const Mesh m, double* A, double* b);
 double vxSmithHutton(const double x, const double y);
 double vySmithHutton(const double x, const double y);
@@ -64,125 +66,10 @@ void assembleMatrix(const int nx, const int ny, const double* A, double* AA);
 // Print results functions
 void printToFile(const Mesh m, const double* phi, const char* filename, const int precision);
 void plotSolution(const Mesh m, const char* filename);
+void printVelocityField(const Mesh m, double (*vx)(double, double), double (*vy)(double, double), const char* filename, const int precision);
 
 // Check solution functions
 double checkLinearSystemSolution(const int nx, const int ny, const double* A, const double* b, const double* phi);
-
-int solveDiagonalCase(const double L, const double lz, const int N, const double rho, const double gamma, const double phi_low, const double phi_high) {
-    // Build mesh
-    printf("Building uniform cartesian mesh...\n\n");
-    Mesh m;
-    m.buildUniformMesh(0, 0, L, L, lz, N, N);
-    if(!m.isBuilt()) {
-        printf("\tError. Could not build mesh\n");
-        return -2;
-    }
-
-    // Allocate memory
-    double* A = (double*) malloc(5 * m.getNX() * m.getNY() * sizeof(double*));
-    if(!A) {
-        printf("Error. Could not allocate memory for the linear system matrix.\n");
-        return -2;
-    }
-
-    double* b = (double*) malloc(m.getNX() * m.getNY() * sizeof(double*));
-    if(!b) {
-        printf("Error. Could not allocate memory for the linear system vector.\n");
-        return -2;
-    }
-
-    // Compute discretization coefficients
-    computeSteadyStateDiscretizationCoefficientsInternalNodes(m, rho, gamma, vxDiagonal, vyDiagonal, sourcePDiagonal, sourceCDiagonal, SCHEME_UDS, A, b);
-    computeDiscCoefsBoundaryNodesDiagonal(m, phi_low, phi_high, A, b);
-
-    // Allocate memory for the linear system solution
-    double* phi = (double*) malloc(m.getNX() * m.getNY() * sizeof(double*));
-    if(!phi) {
-        printf("Error. Could not allocate memory for the linear system solution vector.\n");
-        return -2;
-    }
-    std::fill_n(phi, m.getNX()*m.getNY(), 1);
-    solveSystem(m.getNX(), m.getNY(), A, b, phi, 0);
-
-    const char* filename = "output/diagonal.dat";
-
-    // char filename[100];
-    // sprintf(filename, "../gnuplot/output/outputDiagonal_N%d_Pe%.1e.dat", m.getNX(), rho/gamma);
-
-    printToFile(m, phi, filename, 5);
-    plotSolution(m, filename);
-
-    // Free memory allocated
-    free(A);
-    free(b);
-    free(phi);
-    return 1;
-}
-
-int solveSmithHuttonCase(const double L, const double lz, const int N, const double rho, const double gamma) {
-
-    // Build mesh
-    const int nx = (N % 2 == 1 ? N : N+1);
-    const int ny = 0.5*(nx + 1);
-
-    printf("Building uniform cartesian mesh...\n\n");
-    Mesh m;
-    m.buildUniformMesh(-L, 0, 2*L, L, lz, nx, ny);
-    if(!m.isBuilt()) {
-        printf("\tError. Could not build mesh\n");
-        return -2;
-    }
-
-    // Allocate memory
-    double* A = (double*) malloc(5 * m.getNX() * m.getNY() * sizeof(double*));
-    if(!A) {
-        printf("Error. Could not allocate memory for the linear system matrix.\n");
-        return -2;
-    }
-
-    double* b = (double*) malloc(m.getNX() * m.getNY() * sizeof(double*));
-    if(!b) {
-        printf("Error. Could not allocate memory for the linear system vector.\n");
-        return -2;
-    }
-
-    // Compute discretization coefficients
-    computeSteadyStateDiscretizationCoefficientsInternalNodes(m, rho, gamma, vxSmithHutton, vySmithHutton, sourcePSmithHutton, sourceCSmithHutton, SCHEME_POWERLAW, A, b);
-    computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(m, A, b);
-
-    // Allocate memory for the linear system solution
-    double* phi = (double*) malloc(m.getNX() * m.getNY() * sizeof(double*));
-    if(!phi) {
-        printf("Error. Could not allocate memory for the linear system solution vector.\n");
-        return -2;
-    }
-    std::fill_n(phi, m.getNX()*m.getNY(), 1);
-    solveSystem(m.getNX(), m.getNY(), A, b, phi, 0);
-
-    const char* filename = "output/smith_hutton.dat";
-    printToFile(m, phi, filename, 5);
-    plotSolution(m, filename);
-
-    // char filename[150];
-    // sprintf(filename, "../gnuplot/output/smith_hutton_N%d_Pe%.1e.dat", m.getNX(), rho/gamma);
-
-    printToFile(m, phi, filename, 5);
-    plotSolution(m, filename);
-
-    // for(int k = 0; k < 11; k++) {
-    //     double p = (double)(0.1*k);
-    //     int i = 0.5*(p+1)*(m.getNX()-1);
-    //     printf("%10d%10.2f%10.3f\n", i, p, phi[i]);
-    // }
-
-    // Free memory allocated
-    free(A);
-    free(b);
-    free(phi);
-    return 1;
-}
-
-
 
 int main(int argc, char* argv[]) {
 
@@ -197,9 +84,67 @@ int main(int argc, char* argv[]) {
     const double rho = 1000;        // Density                  [kg/m^3]
     const double gamma = rho/1000;   // Diffusion coefficient
 
+    // printf("Building uniform cartesian mesh...\n\n");
+    // Mesh m;
+    // m.buildUniformMesh(0, 0, L, L, lz, N, N);
+    // if(!m.isBuilt()) {
+    //     printf("\tError. Could not build mesh\n");
+    //     return -2;
+    // }
+
+    const int nx = (N % 2 == 1 ? N : N+1);
+    const int ny = 0.5*(nx + 1);
+
+    printf("Building uniform cartesian mesh...\n\n");
+    Mesh m;
+    m.buildUniformMesh(-L, 0, 2*L, L, lz, nx, ny);
+    if(!m.isBuilt()) {
+        printf("\tError. Could not build mesh\n");
+        return -2;
+    }
+
+    const char* filename_mod = "output/smith_hutton_velocity_mod.dat";
+
+    std::ofstream file;
+    file.open(filename_mod);
+    if(file.is_open()) {
+        for(int j = 0; j < m.getNY(); j++) {
+            for(int i = 0; i < m.getNX(); i++) {
+                double x = m.atNodeX(i);
+                double y = m.atNodeY(j);
+                double velX = vxSmithHutton(x,y);
+                double velY = vySmithHutton(x,y);
+                double vel = std::sqrt(velX*velX + velY*velY);
+                file << x << " " << y << " " << vel << std::endl;
+            }
+            file << std::endl;
+        }
+    } else
+        printf("Error. Could not open file.\n");
+    file.close();
+
+
+    const char* filename_vec = "output/smith_hutton_velocity_vec.dat";
+    file.open(filename_vec);
+    if(file.is_open()) {
+        for(int j = 0; j < m.getNY(); j++) {
+            for(int i = 0; i < m.getNX(); i++) {
+                double x = m.atNodeX(i);
+                double y = m.atNodeY(j);
+                double velX = vxSmithHutton(x,y);
+                double velY = vySmithHutton(x,y);
+                double vel = std::sqrt(velX*velX + velY*velY);
+                file << x << " " << y << " " << vel << " " << velX << " " << velY << std::endl;
+            }
+            file << std::endl;
+        }
+    } else
+        printf("Error. Could not open file.\n");
+    file.close();
+
     // solveDiagonalCase(L, lz, N, rho, gamma, 0, 1);
 
-    solveSmithHuttonCase(L, lz, N, rho, gamma);
+    // solveSmithHuttonCase(L, lz, N, rho, gamma);
 
     return 1;
 }
@@ -360,6 +305,57 @@ double (*sourceC)(double, double), int schemeCode, double* A, double* b) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // DIAGONAL CASE FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int solveDiagonalCase(const double L, const double lz, const int N, const double rho, const double gamma, const double phi_low, const double phi_high) {
+    // Build mesh
+    printf("Building uniform cartesian mesh...\n\n");
+    Mesh m;
+    m.buildUniformMesh(0, 0, L, L, lz, N, N);
+    if(!m.isBuilt()) {
+        printf("\tError. Could not build mesh\n");
+        return -2;
+    }
+
+    // Allocate memory
+    double* A = (double*) malloc(5 * m.getNX() * m.getNY() * sizeof(double*));
+    if(!A) {
+        printf("Error. Could not allocate memory for the linear system matrix.\n");
+        return -2;
+    }
+
+    double* b = (double*) malloc(m.getNX() * m.getNY() * sizeof(double*));
+    if(!b) {
+        printf("Error. Could not allocate memory for the linear system vector.\n");
+        return -2;
+    }
+
+    // Compute discretization coefficients
+    computeSteadyStateDiscretizationCoefficientsInternalNodes(m, rho, gamma, vxDiagonal, vyDiagonal, sourcePDiagonal, sourceCDiagonal, SCHEME_UDS, A, b);
+    computeDiscCoefsBoundaryNodesDiagonal(m, phi_low, phi_high, A, b);
+
+    // Allocate memory for the linear system solution
+    double* phi = (double*) malloc(m.getNX() * m.getNY() * sizeof(double*));
+    if(!phi) {
+        printf("Error. Could not allocate memory for the linear system solution vector.\n");
+        return -2;
+    }
+    std::fill_n(phi, m.getNX()*m.getNY(), 1);
+    solveSystem(m.getNX(), m.getNY(), A, b, phi, 0);
+
+    const char* filename = "output/diagonal.dat";
+
+    // char filename[100];
+    // sprintf(filename, "../gnuplot/output/outputDiagonal_N%d_Pe%.1e.dat", m.getNX(), rho/gamma);
+
+    printToFile(m, phi, filename, 5);
+    plotSolution(m, filename);
+
+    // Free memory allocated
+    free(A);
+    free(b);
+    free(phi);
+    return 1;
+}
+
 void computeDiscCoefsBoundaryNodesDiagonal(const Mesh m, const double phi_low, const double phi_high, double* A, double* b) {
     /*
     computeDiscCoefsBoundaryNodesDiagonal: computes the discretization coefficients for the boundary nodes in the diagonal case
@@ -460,6 +456,63 @@ double sourceCDiagonal(const double x, const double y) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // SMITH-HUTTON CASE FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int solveSmithHuttonCase(const double L, const double lz, const int N, const double rho, const double gamma) {
+
+    // Build mesh
+    const int nx = (N % 2 == 1 ? N : N+1);
+    const int ny = 0.5*(nx + 1);
+
+    printf("Building uniform cartesian mesh...\n\n");
+    Mesh m;
+    m.buildUniformMesh(-L, 0, 2*L, L, lz, nx, ny);
+    if(!m.isBuilt()) {
+        printf("\tError. Could not build mesh\n");
+        return -2;
+    }
+
+    // Allocate memory
+    double* A = (double*) malloc(5 * m.getNX() * m.getNY() * sizeof(double*));
+    if(!A) {
+        printf("Error. Could not allocate memory for the linear system matrix.\n");
+        return -2;
+    }
+
+    double* b = (double*) malloc(m.getNX() * m.getNY() * sizeof(double*));
+    if(!b) {
+        printf("Error. Could not allocate memory for the linear system vector.\n");
+        return -2;
+    }
+
+    // Compute discretization coefficients
+    computeSteadyStateDiscretizationCoefficientsInternalNodes(m, rho, gamma, vxSmithHutton, vySmithHutton, sourcePSmithHutton, sourceCSmithHutton, SCHEME_POWERLAW, A, b);
+    computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(m, A, b);
+
+    // Allocate memory for the linear system solution
+    double* phi = (double*) malloc(m.getNX() * m.getNY() * sizeof(double*));
+    if(!phi) {
+        printf("Error. Could not allocate memory for the linear system solution vector.\n");
+        return -2;
+    }
+    std::fill_n(phi, m.getNX()*m.getNY(), 1);
+    solveSystem(m.getNX(), m.getNY(), A, b, phi, 0);
+
+    const char* filename = "output/smith_hutton.dat";
+    printToFile(m, phi, filename, 5);
+    plotSolution(m, filename);
+
+    // char filename[150];
+    // sprintf(filename, "../gnuplot/output/smith_hutton_N%d_Pe%.1e.dat", m.getNX(), rho/gamma);
+
+    printToFile(m, phi, filename, 5);
+    plotSolution(m, filename);
+
+    // Free memory allocated
+    free(A);
+    free(b);
+    free(phi);
+    return 1;
+}
+
 void computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(const Mesh m, double* A, double* b) {
     /*
     */
@@ -910,6 +963,45 @@ void plotSolution(const Mesh m, const char* filename) {
         fprintf(gnupipe, "%s\n", GnuCommands[i]);
     }
     printf("\n");
+}
+
+void printVelocityField(const Mesh m, double (*vx)(double, double), double (*vy)(double, double), const char* filename, const int precision) {
+    printf("Printing the velocity field solution to file '%s'...\n", filename);
+    std::ofstream file;
+    file.open(filename);
+    if(file.is_open()) {
+        printf("\tWriting to file...\n");
+        file << std::setprecision(precision) << std::fixed;
+        for(int j = 0; j < m.getNY(); j++) {
+            for(int i = 0; i < m.getNX(); i++) {
+                double x = m.atNodeX(i);
+                double y = m.atNodeY(j);
+                double velx = vx(x,y);
+                double vely = vy(x,y);
+                double vel = std::sqrt(velx*velx + vely*vely);
+                // file << x << " " << y << " " << vel << " " << vx(x,y) << " " << vy(x,y) << std::endl;
+                file << x << " " << y << " " << vel << std::endl;
+            }
+            file << std::endl;
+        }
+        file << std::endl;
+
+        for(int j = 0; j < m.getNY(); j++) {
+            for(int i = 0; i < m.getNX(); i++) {
+                double x = m.atNodeX(i);
+                double y = m.atNodeY(j);
+                double velx = vx(x,y);
+                double vely = vy(x,y);
+                double vel = std::sqrt(velx*velx + vely*vely);
+                file << x << " " << y << " " << vel << " " << vx(x,y) << " " << vy(x,y) << std::endl;
+                // file << x << " " << y << " " << vel << std::endl;
+            }
+            file << std::endl;
+        }
+    } else
+        printf("\tCould not open file\n");
+    file.close();
+    printf("\tClosing file...\n\n");
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
