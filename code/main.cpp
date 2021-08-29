@@ -66,7 +66,7 @@ void assembleMatrix(const int nx, const int ny, const double* A, double* AA);
 // Print results functions
 void printToFile(const Mesh m, const double* phi, const char* filename, const int precision);
 void plotSolution(const Mesh m, const char* filename);
-void printVelocityField(const Mesh m, double (*vx)(double, double), double (*vy)(double, double), const char* filename, const int precision);
+void printVelocityField(const Mesh m, double (*vx)(double, double), double (*vy)(double, double), const char* filename_mod, const char* filename_vec, const int precision);
 
 // Check solution functions
 double checkLinearSystemSolution(const int nx, const int ny, const double* A, const double* b, const double* phi);
@@ -82,67 +82,9 @@ int main(int argc, char* argv[]) {
 
     // Thermophysical properties
     const double rho = 1000;        // Density                  [kg/m^3]
-    const double gamma = rho/1000;   // Diffusion coefficient
+    const double gamma = 1e9*rho;   // Diffusion coefficient
 
-    // printf("Building uniform cartesian mesh...\n\n");
-    // Mesh m;
-    // m.buildUniformMesh(0, 0, L, L, lz, N, N);
-    // if(!m.isBuilt()) {
-    //     printf("\tError. Could not build mesh\n");
-    //     return -2;
-    // }
-
-    const int nx = (N % 2 == 1 ? N : N+1);
-    const int ny = 0.5*(nx + 1);
-
-    printf("Building uniform cartesian mesh...\n\n");
-    Mesh m;
-    m.buildUniformMesh(-L, 0, 2*L, L, lz, nx, ny);
-    if(!m.isBuilt()) {
-        printf("\tError. Could not build mesh\n");
-        return -2;
-    }
-
-    const char* filename_mod = "output/smith_hutton_velocity_mod.dat";
-
-    std::ofstream file;
-    file.open(filename_mod);
-    if(file.is_open()) {
-        for(int j = 0; j < m.getNY(); j++) {
-            for(int i = 0; i < m.getNX(); i++) {
-                double x = m.atNodeX(i);
-                double y = m.atNodeY(j);
-                double velX = vxSmithHutton(x,y);
-                double velY = vySmithHutton(x,y);
-                double vel = std::sqrt(velX*velX + velY*velY);
-                file << x << " " << y << " " << vel << std::endl;
-            }
-            file << std::endl;
-        }
-    } else
-        printf("Error. Could not open file.\n");
-    file.close();
-
-
-    const char* filename_vec = "output/smith_hutton_velocity_vec.dat";
-    file.open(filename_vec);
-    if(file.is_open()) {
-        for(int j = 0; j < m.getNY(); j++) {
-            for(int i = 0; i < m.getNX(); i++) {
-                double x = m.atNodeX(i);
-                double y = m.atNodeY(j);
-                double velX = vxSmithHutton(x,y);
-                double velY = vySmithHutton(x,y);
-                double vel = std::sqrt(velX*velX + velY*velY);
-                file << x << " " << y << " " << vel << " " << velX << " " << velY << std::endl;
-            }
-            file << std::endl;
-        }
-    } else
-        printf("Error. Could not open file.\n");
-    file.close();
-
-    // solveDiagonalCase(L, lz, N, rho, gamma, 0, 1);
+    solveDiagonalCase(L, lz, N, rho, gamma, 0, 1);
 
     // solveSmithHuttonCase(L, lz, N, rho, gamma);
 
@@ -341,10 +283,10 @@ int solveDiagonalCase(const double L, const double lz, const int N, const double
     std::fill_n(phi, m.getNX()*m.getNY(), 1);
     solveSystem(m.getNX(), m.getNY(), A, b, phi, 0);
 
-    const char* filename = "output/diagonal.dat";
+    // const char* filename = "output/diagonal.dat";
 
-    // char filename[100];
-    // sprintf(filename, "../gnuplot/output/outputDiagonal_N%d_Pe%.1e.dat", m.getNX(), rho/gamma);
+    char filename[100];
+    sprintf(filename, "output/diagonal_N%d_Pe%.1e.dat", m.getNX(), rho/gamma);
 
     printToFile(m, phi, filename, 5);
     plotSolution(m, filename);
@@ -408,7 +350,7 @@ double vxDiagonal(const double x, const double y) {
     Outputs:
         - vx    x component of the velocity for the diagonal case at point (x,y)    [double]
     */
-    return 10*cos(0.25*M_PI);
+    return 1*cos(0.25*M_PI);
 }
 
 double vyDiagonal(const double x, const double y) {
@@ -422,7 +364,7 @@ double vyDiagonal(const double x, const double y) {
     Outputs:
         - vy    y component of the velocity for the diagonal case at point (x,y)    [double]
     */
-    return 10*sin(0.25*M_PI);
+    return 1*sin(0.25*M_PI);
 }
 
 double sourcePDiagonal(const double x, const double y) {
@@ -965,12 +907,52 @@ void plotSolution(const Mesh m, const char* filename) {
     printf("\n");
 }
 
-void printVelocityField(const Mesh m, double (*vx)(double, double), double (*vy)(double, double), const char* filename, const int precision) {
-    printf("Printing the velocity field solution to file '%s'...\n", filename);
+
+void printVelocityField(const Mesh m, double (*vx)(double, double), double (*vy)(double, double), const char* filename_mod, const char* filename_vec, const int precision) {
+    /*
+    printVelocityField: prints the velocity field to a file. filename_mod contains the norm of the velocity field at each point. filename_vec contains
+    the norm and the components of the velocity field at each point.
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - m                 Mesh of the problem                                                                         [const Mesh]
+        - filename          Name of the file where the solution has been previously written                             [const char*]
+        - *vx               Function that gives the velocity in the x axis provided the (x,y) coordinates               [returns double, needs (double,double)]
+        - *vy               Function that gives the velocity in the y axis provided the (x,y) coordinates               [returns double, needs (double,double)]
+        - filename_mod      File where the norm of the velocity field at each point is printed.                         [const char*]
+        - filename_vecd     File where the norm and the components of the velocity field at each point are printed.     [const char*]
+        - precision         Number of decimal places to which doubles are printed.                                      [const int]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - filename_mod      File where the norm of the velocity field at each point is printed.                         [const char*]
+        - filename_vecd     File where the norm and the components of the velocity field at each point are printed.     [const char*]
+    */
+    // Print the (x,y) coordinates and the norm of the velocity field at (x,y)
+    printf("Printing the velocity field norm...\n");
     std::ofstream file;
-    file.open(filename);
+    file.open(filename_mod);
     if(file.is_open()) {
-        printf("\tWriting to file...\n");
+        printf("\tWriting to file '%s'...\n", filename_mod);
+        file << std::setprecision(precision) << std::fixed;
+        for(int j = 0; j < m.getNY(); j++) {
+            for(int i = 0; i < m.getNX(); i++) {
+                double x = m.atNodeX(i);
+                double y = m.atNodeY(j);
+                double vel = std::sqrt(vx(x,y)*vx(x,y) + vy(x,y)*vy(x,y));
+                file << x << " " << y << " " << vel << std::endl;
+            }
+            file << std::endl;
+        }
+        file << std::endl;
+    } else
+        printf("\tCould not open file '%s'...\n", filename_mod);
+    printf("\tClosing file...\n\n");
+    file.close();
+
+    // Print the (x,y) coordinates, the norm and the components of the velocity field at (x,y)
+    printf("Printing the velocity field norm and components...\n");
+    file.open(filename_vec);
+    if(file.is_open()) {
+        printf("\tWriting to file '%s'...\n", filename_vec);
         file << std::setprecision(precision) << std::fixed;
         for(int j = 0; j < m.getNY(); j++) {
             for(int i = 0; i < m.getNX(); i++) {
@@ -979,30 +961,16 @@ void printVelocityField(const Mesh m, double (*vx)(double, double), double (*vy)
                 double velx = vx(x,y);
                 double vely = vy(x,y);
                 double vel = std::sqrt(velx*velx + vely*vely);
-                // file << x << " " << y << " " << vel << " " << vx(x,y) << " " << vy(x,y) << std::endl;
-                file << x << " " << y << " " << vel << std::endl;
-            }
-            file << std::endl;
-        }
-        file << std::endl;
-
-        for(int j = 0; j < m.getNY(); j++) {
-            for(int i = 0; i < m.getNX(); i++) {
-                double x = m.atNodeX(i);
-                double y = m.atNodeY(j);
-                double velx = vx(x,y);
-                double vely = vy(x,y);
-                double vel = std::sqrt(velx*velx + vely*vely);
-                file << x << " " << y << " " << vel << " " << vx(x,y) << " " << vy(x,y) << std::endl;
-                // file << x << " " << y << " " << vel << std::endl;
+                file << x << " " << y << " " << vel << " " << velx << " " << vely << std::endl;
             }
             file << std::endl;
         }
     } else
-        printf("\tCould not open file\n");
-    file.close();
+        printf("\tCould not open file '%s'...\n", filename_vec);
     printf("\tClosing file...\n\n");
+    file.close();
 }
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CHECK SOLUTION FUNCTIONS

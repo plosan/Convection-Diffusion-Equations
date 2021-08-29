@@ -1,6 +1,6 @@
 set terminal wxt
 
-plot "input/diagonal_N200_Pe1.0e-06.dat" with image
+plot "input/diagonal_N200_Pe1.0e-09.dat" with image
 set xrange [0:1]
 set yrange [0:1]
 set size ratio 1
@@ -17,13 +17,13 @@ set cblabel ("$\\phi$")
 set cbtics format "%.1f"
 
 unset key
-set title ("\\textbf{Diagonal flow} $(\\mathrm{Pe} = 10^{-6})$")
+set title ("\\textbf{Diagonal case} $(\\mathrm{Pe} = 10^{-9})$")
 set palette rgb 33,13,10
 
 replot
 
 set terminal epslatex color colortext size 8cm,8cm
 set rmargin 2
-set output "figures/case_diagonal_flow/diagonal_N200_Pe1.0e-06.tex"
+set output "figures/case_diagonal_flow/diagonal_N200_Pe1.0e-09.tex"
 replot
 set output

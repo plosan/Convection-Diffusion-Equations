@@ -17,7 +17,7 @@ set cblabel ("$\\phi$")
 set cbtics format "%.1f"
 
 unset key
-set title ("\\textbf{Diagonal flow} $(\\mathrm{Pe} = 1)$")
+set title ("\\textbf{Diagonal case} $(\\mathrm{Pe} = 1)$")
 set palette rgb 33,13,10
 
 replot

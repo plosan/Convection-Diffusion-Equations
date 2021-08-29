@@ -1,0 +1,88 @@
+
+\section{Ordinary Differential Equations}
+
+In this section we present the Picard--Lindelöf theorem which aids on proving the existence and uniqueness of solution to initial value problems involving ordinary differential equations (ODEs) initial value problems. We begin with the definition of a Lipschitz function:
+
+\begin{definition}
+	A function $f \colon \Omega \subset \real^n \rightarrow \real^m$ is said to be Lipschitz or Lipschitz continuous if there exists a constant $L$ such that
+	\begin{equation}
+		\norm{f(\vb{x}) - f(\vb{y})} \leq L \norm{\vb{x} - \vb{y}}
+	\end{equation}
+	for every $\vb{x}, \vb{y} \in \Omega$. The constant $L$ is called the Lipschitz constant of $f$ \cite{salsa2009chap1}.
+\end{definition}
+
+It can be easily proven that every Lipschitz function on $\Omega$ is also a continuous function in the usual sense on $\Omega$. The converse is not true in general, and depends on the properties of $\Omega$. The Lipschitz continuity is actually a very restrictive condition, since it imposes that the function can grow at most as a linear function. 
+
+\begin{definition}
+	Let $(E, \norm{\cdot}_E)$ and $(F, \norm{\cdot}_F)$ be two finite dimensional normed vector spaces and let $A \colon E \rightarrow F$ be a linear mapping between them. The norm of $A$ is defined to be
+	\begin{equation}
+		\norm{A}
+		\coloneqq
+		\sup{\left\{ \norm{A x}_F \mid x \in E, \ \norm{x}_E \leq 1 \right\}}
+	\end{equation}
+\end{definition}
+
+\noindent
+It is a well known fact that $\norm{A}$ is finite. In some cases, proving that a function is Lipschitz continuous is a laborious task. In these situations we have the following theorems:
+
+\begin{theorem}[Corollary of the mean value theorem \cite{mazon2008calculo}] \label{teo:corollary_mean_value_theorem}
+	Let $\Omega \subset \real^n$ an open set and let $f \colon \Omega \subset \real^n \to \real^m$ a differentiable function on $\Omega$. Let $\vb{x}, \vb{y} \in \Omega$ such that the segment $\overline{\vb{x}\vb{y}} = \{ \lambda \vb{x} + (1 - \lambda) \vb{y} \mid \lambda \in [0, 1] \}$ is contained in $\Omega$. Then the following inequality holds:
+	\begin{equation}
+		\norm{f(\vb{x}) - f(\vb{y})} \leq \sup_{\vb{z} \in 
+		\overline{\vb{x}\vb{y}}} \norm{D f(\vb{z})} \norm{\vb{x} - \vb{y}}
+	\end{equation}
+\end{theorem}
+\begin{proof}
+	See \cite{mazon2008calculo}, page 78.
+\end{proof}
+
+\begin{theorem}
+	Let $\Omega \subset \real^n$ a compact convex set and let $f \equiv (f_1, \ldots, f_m) \colon \Omega \subset \real^n \to \real^m$ a $\mathcal{C}^1(\Omega)$ function. Then $f$ is Lipschitz in $\Omega$.
+\end{theorem}
+\begin{proof}
+	The differential of $D f$, given by
+	\begin{equation}
+		D f = 
+		\begin{pmatrix}
+			\pdv{f_1}{x_1} & \cdots & \pdv{f_1}{x_n} \\[6pt]
+			\vdots & \ddots & \vdots \\[6pt]
+			\pdv{f_m}{x_1} & \cdots & \pdv{f_m}{x_n} \\
+		\end{pmatrix}
+	\end{equation}
+	is a linear mapping $D f \colon \real^n \rightarrow \real^m$. Since $f$ is $\mathcal{C}^1(\Omega)$ function, the partial derivatives $\pdv{f_1}{x_1}, \ldots, \pdv{f_m}{x_n}$ are continuous functions on $\Omega$. Moreover, the norm of the differential depends continuously on the partial derivatives $\pdv{f_1}{x_1}, \ldots, \pdv{f_m}{x_n}$ and on $\vb{z}$. As a consequence, $\norm{D f}$ is a continuous function on $\Omega$. By Weierstrass theorem, $\norm{D f}$ reaches a maximum $M$ on $\Omega$. Applying theorem \ref{teo:corollary_mean_value_theorem} we have 
+	\begin{equation}
+		\norm{f(\vb{x}) - f(\vb{y})} \leq \sup_{\vb{z} \in 
+		\overline{\vb{x}\vb{y}}} \norm{D f(\vb{z})} \norm{\vb{x} - \vb{y}} \leq
+		M \norm{\vb{x} - \vb{y}}
+	\end{equation}
+	for all $\vb{x}, \vb{y} \in \Omega$, hence $f$ is Lipschitz on $\overline{\Omega}$.
+\end{proof}
+
+%Let $(E, \norm{\cdot}_E)$ and $(F, \norm{\cdot}_F)$ be two finite dimensional normed vector spaces and let $A \colon E \rightarrow F$ be a linear mapping between them. It is a well known fact that $A$ is continuous and its norm, defined by
+%\begin{equation}
+%	\norm{A} \colon \sup_{\substack{x \in E} \\ \norm{x}_E \leq 1} \norm{A x}_F 
+%\end{equation}
+%is finite. 
+%
+%
+%Since the differential of $f$ is a linear mapping between two finite dimensional vector spaces, $D f \colon \real^n \rightarrow \real^m$, its norm which is defined by
+
+Finally we can state the Picard--Lindelöf theorem. Let $U$ be an open subset of $\real^{n+1}$ and let $f \in C(U, \real)$, $(t_0, \vb{x_0}) \in U$. Consider the following IVP:
+\begin{equation} \label{eq:appendix_ode_ivp}
+	\left\{
+	\begin{aligned}
+		&\dot{\vb{x}}(t) = f(t, \vb{x}) \\
+		&\vb{x}(t_0) = \vb{x_0}
+	\end{aligned}
+	\right.
+\end{equation}
+The Picard--Lindelöf theorem gives us the existence and uniqueness of solution for \eqref{eq:appendix_ode_ivp}.
+
+\begin{theorem}[Picard--Lindelöf \cite{teschl2012odes}] \label{teo:picard_lindelof}
+	Suppose $f \in \mathcal{C}(U, \real^n)$, where $U$ is an open subset of $\real^{n+1}$, and $(t_0, \vb{x_0}) \in U$. If $f$ is locally Lipschitz continuous in the second argument, uniformly with respect to the first, then there exists a unique local solution $vb{x}(t) \in \mathcal{C}^1(I)$ of the initial value problem \eqref{eq:appendix_ode_ivp}, where $I$ is some interval around $t_0$. 
+	
+	More specifically, if $V = [t_0, t_0 + T] \times \overline{B(\vb{x_0}, \delta)} \subset U$ and $M$ denotes the maximum of $\abs{f}$ on $V$, then the solution exists at least for $t \in [t_0, t_0 + T_0]$ and remains in $\overline{B(\vb{x_0}, \delta)}$ where $T_0 = \min{\left\{ T, \frac{\delta}{M} \right\}}$. The analogous result holds for the interval $[t_0 - T, t_0]$.
+\end{theorem}
+\begin{proof}
+	See \cite{teschl2012odes}, page 38.
+\end{proof}

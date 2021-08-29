@@ -1,0 +1,24 @@
+
+\subsection{Velocity field}
+
+The velocity field for the Smith-Hutton case, given by $\vb{v} = 2 y (1 - x^2) \vb{i} - 2 x (1 - y^2) \vb{j}$ verifies the incompressibility condition since $\div{\vb{v}} = 0$. The stream function associated to $\vb{v}$ is $\psi(x,y) = -(1-x^2)(1-y^2)$. Recall that the streamlines are defined to be the curves $C \subset \Omega$ tangent to the vector field $\vb{v}$ at each point. If the streamlines are given by $h \colon I \subset \real \to \Omega$, $t \mapsto h(t) = (x(t), y(t))$, these satisfy
+\begin{equation}
+	\left\{
+	\begin{aligned}
+		\dot{x} &= 2 y (1 - x^2) \\
+		\dot{y} &= - 2 x (1 - y^2)
+	\end{aligned}
+	\right.
+\end{equation}
+Define $f \colon \Omega \rightarrow \real^2$ by $f(x,y) = (2y(1 - x^2), -2x(1 - y^2))$. Since the stream lines must fill $\Omega$
+
+
+For the purpose of visualization, the velocity field norm and direction is shown in figure \ref{fig:smith_hutton_velocity_field}.
+\begin{figure}[h]
+	\centering
+	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+02.tex}}
+	\input{figures/case_smith_hutton/smith_hutton_velocity_field.tex}
+	\captionsetup{width=0.75\textwidth}
+	\caption{Velocity field for the Smith--Hutton case. Vectors are normalized and then scaled down by a factor of $\sqrt{2}/30$.}
+	\label{fig:smith_hutton_velocity_field}
+\end{figure}

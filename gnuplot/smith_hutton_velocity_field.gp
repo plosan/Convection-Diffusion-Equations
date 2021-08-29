@@ -8,6 +8,7 @@ set xtics axis
 set xtics format "%.1f"
 set xlabel ("$x \\ (\\mathrm{m})$")
 
+set ytics border out nomirror
 set ylabel ("$y \\ (\\mathrm{m})$")
 
 set cblabel ("$\\norm{\\vb{v}} \\ (\\mathrm{m} / \\mathrm{s})$")
@@ -17,7 +18,7 @@ unset key
 set title ("\\textbf{Smith--Hutton case -- Velocity field}")
 set palette rgb 33,13,10
 
-plot "input/smith_hutton_velocity_mod.dat" with image, "input/smith_hutton_velocity_vec.dat" using 1:2:($4/25):($5/25) every 10:10 with vectors lc -1 filled
+plot "input/smith_hutton_velocity_mod.dat" with image, "input/smith_hutton_velocity_vec.dat" using 1:2:($4/sqrt(($4)**2 + ($5)**2)/30):($5/sqrt(($4)**2 + ($5)**2)/30) every 10:10 with vectors lc -1 filled
 
 replot
 
