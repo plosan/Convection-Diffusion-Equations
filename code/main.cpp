@@ -31,15 +31,11 @@ double schemeEDS(const double P);
 
 void computeSteadyStateDiscretizationCoefficientsInternalNodes(const Mesh m, const double rho, const double gamma,
 double (*vx)(double,double), double (*vy)(double, double), double (*sourceP)(double, double),
-double (*sourceC)(double, double), double (*scheme)(double), double* A, double* b);
-
-void computeSteadyStateDiscretizationCoefficientsInternalNodes(const Mesh m, const double rho, const double gamma,
-double (*vx)(double,double), double (*vy)(double, double), double (*sourceP)(double, double),
-double (*sourceC)(double, double), int scheme, double* A, double* b);
+double (*sourceC)(double, double), const int schemeCode, double* A, double* b);
 
 // Diagonal case functions
 int solveDiagonalCase(const double L, const double lz, const int N, const double rho, const double gamma, const double phi_low, const double phi_high);
-void computeDiscCoefsBoundaryNodesDiagonal(const Mesh m, const double phi_low, const double phi_high, double* A, double* b);
+void computeDiscCoefsBoundaryNodesDiagonalCase(const Mesh m, const double phi_low, const double phi_high, double* A, double* b);
 double vxDiagonal(const double, const double);
 double vyDiagonal(const double, const double);
 double sourcePDiagonal(const double, const double);
@@ -74,8 +70,8 @@ double checkLinearSystemSolution(const int nx, const int ny, const double* A, co
 int main(int argc, char* argv[]) {
 
     // Physical data
-    double L = 1;   // Domain size in x and y axis  [m]
-    double lz = 1;  // Domain size in z axis        [m]
+    double L = 1;   // Characteristic length    [m]
+    double lz = 1;  // Domain size in z axis    [m]
 
     // Numerical data
     int N = 200;    // Nodes for uniform discretization
@@ -95,92 +91,94 @@ int main(int argc, char* argv[]) {
 // COMPUTATION OF INTERNAL NODES DISCRETIZATION COEFFICIENTS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 double schemeUDS(const double P) {
+    /*
+    schemeUDS: computes the contribution to the discretization coefficient according to the Upwind-Difference Scheme (UDS)
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - P         Péclet's number     [const double]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - double    Contribution to the discretization coefficient
+    */
     return 1;
 }
 
 double schemeCDS(const double P) {
+    /*
+    schemeCDS: computes the contribution to the discretization coefficient according to the Central-Difference Scheme (CDS)
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - P         Péclet's number     [const double]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - double    Contribution to the discretization coefficient
+    */
     return 1 - 0.5 * std::abs(P);
 }
 
 double schemeHybrid(const double P) {
+    /*
+    schemeHybrid: computes the contribution to the discretization coefficient according to the Hybrid scheme
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - P         Péclet's number     [const double]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - double    Contribution to the discretization coefficient
+    */
     return std::max(0.0, 1 - 0.5 * std::abs(P));
 }
 
 double schemePowerlaw(const double P) {
+    /*
+    schemePowerlaw: computes the contribution to the discretization coefficient according to the Powerlaw scheme
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - P         Péclet's number     [const double]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - double    Contribution to the discretization coefficient
+    */
     return std::max(0.0, std::pow(1 - 0.1*std::abs(P), 5));
 }
 
 double schemeEDS(const double P) {
+    /*
+    schemeEDS: computes the contribution to the discretization coefficient according to the Exponential-Difference Scheme (EDS)
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - P         Péclet's number     [const double]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - double    Contribution to the discretization coefficient
+    */
     return std::abs(P)/(std::exp(std::abs(P)) - 1);
 }
 
 void computeSteadyStateDiscretizationCoefficientsInternalNodes(const Mesh m, const double rho, const double gamma,
 double (*vx)(double,double), double (*vy)(double, double), double (*sourceP)(double, double),
-double (*sourceC)(double, double), double (*scheme)(double), double* A, double* b) {
+double (*sourceC)(double, double), const int schemeCode, double* A, double* b) {
     /*
     computeSteadyStateDiscretizationCoefficientsInternalNodes: computes the discretization coefficients for the internal nodes in a steady state
     convection diffusion problem in a 2D cartesian mesh.
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Inputs:
-        - m         Mesh object                                                                     [const Mesh]
-        - prop      Thermophysical properties. 0: rho, 1: gamma                                     [const double*]
-        - *vx       Function that gives the velocity in the x axis provided the (x,y) coordinates   [returns double, needs (double,double)]
-        - *vy       Function that gives the velocity in the y axis provided the (x,y) coordinates   [returns double, needs (double,double)]
-        - *source   Function that gives the source term provided the (x,y) coordinates              [returns double, needs (double,double)]
-        - A         Linear system matrix set to zero. Rows: nx*ny, Columns: 5                       [double*]
-        - b         Vector of indenpendent terms set to zero. Rows: nx*ny, Columns: 1               [double*]
-        - scheme    Scheme used to evaluate the convective terms. (In construction yet)             [const int]
+        - m             Mesh object                                                                     [const Mesh]
+        - rho           Density                                                                         [const double]
+        - gamma         Diffusion coefficient                                                           [const double]
+        - *vx           Function that gives the velocity in the x axis at (x,y)                         [returns double, needs (double,double)]
+        - *vy           Function that gives the velocity in the y axis at (x,y)                         [returns double, needs (double,double)]
+        - *sourceP      Function that gives the P source term at (x,y)                                  [returns double, needs (double,double)]
+        - *sourceC      Function that gives the C source term at (x,y)                                  [returns double, needs (double,double)]
+        - schemeCode    Integer that tells what scheme is used to compute the convective properties     [const int]
+        - A             Linear system matrix set to zero. Rows: nx*ny, Columns: 5                       [double*]
+        - b             Vector of indenpendent terms set to zero. Rows: nx*ny, Columns: 1               [double*]
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Outputs:
         - A         Linear system matrix. Rows: nx*ny, Columns: 5                            [double*]
         - b         Vector of indenpendent terms. Rows: nx*ny, Columns: 1                    [double*]
     */
-    printf("Computing internal nodes discretization coefficients...\n\n");
-
-    // Initialize matrix of discretization coefficients (A) and vector of independent terms (b) to zero
-    std::fill_n(A, 5*m.getNX()*m.getNY(), 0);
-    std::fill_n(b, m.getNX()*m.getNY(), 0);
-
-    // Internal nodes
-    for(int j = 1; j < m.getNY()-1; j++) {
-        for(int i = 1; i < m.getNX()-1; i++) {
-            int node = j * m.getNX() + i;
-            double x = m.atNodeX(i);
-            double y = m.atNodeY(j);
-            // South node
-            double D = gamma * m.atSurfY(i) / m.atDistY(j-1);
-            double F = rho * (*vy)(x, m.atFaceY(j)) * m.atSurfY(i);
-            double P = F / D;
-            A[5*node] = D * (*scheme)(P) + std::max(F, 0.0);
-            // West node
-            D = gamma * m.atSurfX(j) / m.atDistX(i-1);
-            F = rho * (*vx)(m.atFaceX(i), y) * m.atSurfX(j);
-            P = F / D;
-            A[5*node+1] = D * (*scheme)(P) + std::max(F, 0.0);
-            // East node
-            D = gamma * m.atSurfX(j) / m.atDistX(i);
-            F = rho * (*vx)(m.atFaceX(i+1), y) * m.atSurfX(j);
-            P = F / D;
-            A[5*node+2] = D * (*scheme)(P) + std::max(-F, 0.0);
-            // North node
-            D = gamma * m.atSurfY(i) / m.atDistY(j);
-            F = rho * (*vy)(x, m.atFaceY(j+1)) * m.atSurfY(i);
-            P = F / D;
-            A[5*node+3] = D * (*scheme)(P) + std::max(-F, 0.0);
-            // Central node
-            A[5*node+4] = A[5*node] + A[5*node+1] + A[5*node+2] + A[5*node+3] - (*sourceP)(x,y) * m.atVol(i,j);
-            // Independent term
-            b[node] = (*sourceC)(x,y) * m.atVol(i,j);
-        }
-    }
-}
-
-void computeSteadyStateDiscretizationCoefficientsInternalNodes(const Mesh m, const double rho, const double gamma,
-double (*vx)(double,double), double (*vy)(double, double), double (*sourceP)(double, double),
-double (*sourceC)(double, double), int schemeCode, double* A, double* b) {
-
-
-
+    // Choose scheme to compute the convective properties
     double (*scheme) (const double);
     switch(schemeCode) {
         // UDS scheme
@@ -208,8 +206,8 @@ double (*sourceC)(double, double), int schemeCode, double* A, double* b) {
     std::fill_n(A, 5*m.getNX()*m.getNY(), 0);
     std::fill_n(b, m.getNX()*m.getNY(), 0);
 
-    printf("Computing internal nodes discretization coefficients...\n\n");
     // Internal nodes
+    printf("Computing internal nodes discretization coefficients...\n\n");
     for(int j = 1; j < m.getNY()-1; j++) {
         for(int i = 1; i < m.getNX()-1; i++) {
             int node = j * m.getNX() + i;
@@ -241,20 +239,35 @@ double (*sourceC)(double, double), int schemeCode, double* A, double* b) {
             b[node] = (*sourceC)(x,y) * m.atVol(i,j);
         }
     }
-
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // DIAGONAL CASE FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int solveDiagonalCase(const double L, const double lz, const int N, const double rho, const double gamma, const double phi_low, const double phi_high) {
+    /*
+    solveDiagonalCase: solves the diagonal case problem given the geometry, the thermophysical properties and the boundary conditions.
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - l             Characteristic length               [const double]
+        - lz            Domain size in z axis               [const double]
+        - N             Nodes for uniform discretization    [const int]
+        - rho           Density                             [const double]
+        - gamma         Diffusion coefficient               [const double]
+        - phi_low       Boundary condition                  [const double]
+        - phi_high      Boundary condition                  [const double]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - int           Exit code. 1: Everything nominal. -1: Could not build mesh. -2: Could not allocate memory with malloc at some point.
+    */
+
     // Build mesh
     printf("Building uniform cartesian mesh...\n\n");
     Mesh m;
     m.buildUniformMesh(0, 0, L, L, lz, N, N);
     if(!m.isBuilt()) {
         printf("\tError. Could not build mesh\n");
-        return -2;
+        return -1;
     }
 
     // Allocate memory
@@ -272,9 +285,9 @@ int solveDiagonalCase(const double L, const double lz, const int N, const double
 
     // Compute discretization coefficients
     computeSteadyStateDiscretizationCoefficientsInternalNodes(m, rho, gamma, vxDiagonal, vyDiagonal, sourcePDiagonal, sourceCDiagonal, SCHEME_UDS, A, b);
-    computeDiscCoefsBoundaryNodesDiagonal(m, phi_low, phi_high, A, b);
+    computeDiscCoefsBoundaryNodesDiagonalCase(m, phi_low, phi_high, A, b);
 
-    // Allocate memory for the linear system solution
+    // Allocate memory for the linear system solution vector
     double* phi = (double*) malloc(m.getNX() * m.getNY() * sizeof(double*));
     if(!phi) {
         printf("Error. Could not allocate memory for the linear system solution vector.\n");
@@ -298,9 +311,9 @@ int solveDiagonalCase(const double L, const double lz, const int N, const double
     return 1;
 }
 
-void computeDiscCoefsBoundaryNodesDiagonal(const Mesh m, const double phi_low, const double phi_high, double* A, double* b) {
+void computeDiscCoefsBoundaryNodesDiagonalCase(const Mesh m, const double phi_low, const double phi_high, double* A, double* b) {
     /*
-    computeDiscCoefsBoundaryNodesDiagonal: computes the discretization coefficients for the boundary nodes in the diagonal case
+    computeDiscCoefsBoundaryNodesDiagonalCase: computes the discretization coefficients for the boundary nodes in the diagonal case
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Inputs:
         - m                 Mesh object                                                                     [const Mesh]
@@ -399,17 +412,30 @@ double sourceCDiagonal(const double x, const double y) {
 // SMITH-HUTTON CASE FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int solveSmithHuttonCase(const double L, const double lz, const int N, const double rho, const double gamma) {
+    /*
+    solveSmithHuttonCase: solves the Smith-Hutton case given the geometry, the thermophysical properties and the boundary conditions.
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - l             Characteristic length               [const double]
+        - lz            Domain size in z axis               [const double]
+        - N             Nodes for uniform discretization    [const int]
+        - rho           Density                             [const double]
+        - gamma         Diffusion coefficient               [const double]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - int           Exit code. 1: Everything nominal. -1: Could not build mesh. -2: Could not allocate memory with malloc at some point.
+    */
 
     // Build mesh
-    const int nx = (N % 2 == 1 ? N : N+1);
-    const int ny = 0.5*(nx + 1);
+    const int nx = (N % 2 == 1 ? N : N+1);  // Number of nodes along x axis. Has to be an odd number
+    const int ny = 0.5*(nx + 1);            // Number of nodes along y axis for uniform discretization.
 
     printf("Building uniform cartesian mesh...\n\n");
     Mesh m;
     m.buildUniformMesh(-L, 0, 2*L, L, lz, nx, ny);
     if(!m.isBuilt()) {
         printf("\tError. Could not build mesh\n");
-        return -2;
+        return -1;
     }
 
     // Allocate memory
@@ -457,9 +483,19 @@ int solveSmithHuttonCase(const double L, const double lz, const int N, const dou
 
 void computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(const Mesh m, double* A, double* b) {
     /*
+    computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase: computes the boundary nodes discretization coefficient for the Smith-Hutton case
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Inputs:
+        - m     Mesh object                                                                     [const Mesh]
+        - A     Linear system matrix set to zero. Rows: nx*ny, Columns: 5                       [double*]
+        - b     Vector of indenpendent terms set to zero. Rows: nx*ny, Columns: 1               [double*]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Outputs:
+        - A     Linear system matrix set to zero. Rows: nx*ny, Columns: 5                       [double*]
+        - b     Vector of indenpendent terms set to zero. Rows: nx*ny, Columns: 1               [double*]
     */
     printf("Computing boundary nodes discretization coefficients for Smith-Hutton case...\n\n");
-    // Lower row nodes: 0 <= i <= nx-1; j=0
+    // Lower boundary nodes: 0 <= i <= nx-1; j=0
     // Lower boundary: [-L, 0]
     for(int i = 0; i < m.getNX() && m.atNodeX(i) <= 0; i++) {
         A[5*i+4] = 1;
@@ -472,7 +508,7 @@ void computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(const Mesh m,
         A[5*i+4] = 1;
     }
 
-    // Left and right boudnaries
+    // Left and right boundaries
     for(int j = 1; j < m.getNY(); j++) {
         // Left boundary
         int node = j*m.getNX();
@@ -547,7 +583,6 @@ double sourceCSmithHutton(const double, const double) {
     */
     return 0;
 }
-
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -831,7 +866,6 @@ void assembleMatrix(const int nx, const int ny, const double* A, double* AA) {
     }
 }
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // PRINT RESULTS FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -919,7 +953,7 @@ void printVelocityField(const Mesh m, double (*vx)(double, double), double (*vy)
         - *vx               Function that gives the velocity in the x axis provided the (x,y) coordinates               [returns double, needs (double,double)]
         - *vy               Function that gives the velocity in the y axis provided the (x,y) coordinates               [returns double, needs (double,double)]
         - filename_mod      File where the norm of the velocity field at each point is printed.                         [const char*]
-        - filename_vecd     File where the norm and the components of the velocity field at each point are printed.     [const char*]
+        - filename_vec      File where the norm and the components of the velocity field at each point are printed.     [const char*]
         - precision         Number of decimal places to which doubles are printed.                                      [const int]
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Outputs:
@@ -1011,103 +1045,4 @@ double checkLinearSystemSolution(const int nx, const int ny, const double* A, co
         maxDiff = std::max(maxDiff, std::abs(diff));
     }
     return maxDiff;
-}
-
-struct ProblemInput {
-    int type;
-    double L;
-    double lx;
-    double ly;
-    double lz;
-    double x0;
-    double y0;
-    double rho;
-    double gamma;
-    double phi_low;
-    double phi_high;
-    int N;
-    const char* filename;
-};
-
-int parseInputFile(const char* filename, ProblemInput &p) {
-
-    std::ifstream file;
-    file.open(filename);
-
-    printf("filename: %s\n", filename);
-    if(!file.is_open()) {
-        printf("Error. Could not open the file %s\n", filename);
-        return -1;
-    }
-
-    // Parse case
-    std::string line;
-    getline(file, line);
-
-    std::istringstream iss(line);
-    std::string word;
-    iss >> word;
-    std::string caseDiagonal("diagonal");
-    std::string caseSmithHutton("smith-hutton");
-
-    if(caseDiagonal.compare(word) == 0) {
-        p.type = 1;
-        double L;
-        iss >> L;
-        p.lx = L;
-        p.ly = L;
-        p.filename = "output/outputDiagonal.dat";
-    } else if(caseSmithHutton.compare(word) == 0) {
-        p.type = 2;
-        double L;
-        iss >> L;
-        p.lx = L;
-        p.ly = L;
-        p.filename = "output/outputSmithHutton.dat";
-    } else {
-        printf("Error. Case provided (%s) is not valid.\n", word.c_str());
-        return -1;
-    }
-
-    // Read lz
-    file >> p.lz;
-    // Read x0
-    file >> p.x0;
-    // Read y0
-    file >> p.y0;
-
-    // Read density
-    file >> p.rho;
-    if(p.rho <= 0) {
-        printf("Error. The density provided (%.5e) must be positive.\n", p.rho);
-        return -1;
-    }
-
-    // Read diffusion coefficient
-    file >> p.gamma;
-    if(p.gamma <= 0) {
-        printf("Error. The diffusion coefficient provided (%.5e) must be positive.\n", p.gamma);
-        return -1;
-    }
-
-    // Read phi_low and phi_high if it is the diagonal case
-    if(p.type == 1) {
-        file >> p.phi_low;
-        file >> p.phi_high;
-    }
-
-    // Read N
-    file >> p.N;
-    if(p.N < 2) {
-        printf("Error. Number of control volumes provided (%d) must be at least 2.\n", p.N);
-        return -1;
-    }
-
-    if(p.type == 2 && p.N % 2 == 0) {
-        printf("Warning. Number of control volumes provided (%d) for the Smith-Hutton case has been increased in one.\n", p.N);
-        p.N++;
-    }
-
-    file.close();
-    return 0;
 }
