@@ -1,7 +1,7 @@
 
 \subsection{Numerical solution}
 
-In this section we present the numerical solution of problem \eqref{eq:diagonal_case_cauchy_problem} for several Péclet numbers. The width and height of the domain are $L = 1 \ \meter$ and the velocity of the flow is $u = 1 \ \meter / \second$. The density is kept constant at $\rho = 1000 \ \kilo\gram / \meter^3$, therefore Péclet's number is varied by chaging the diffusion coefficient $\Gamma$. The boundary conditions are $\phi_\text{low} = 0$ and $\phi_\text{high} = 1$. A tolerance of $10^{-12}$ has been used as a stop criterion for the Gauss--Seidel algorithm. The Upwind--Difference Scheme (UDS) has been chosen to compute the convective properties.
+In this section we present the numerical solution of problem \eqref{eq:diagonal_case_cauchy_problem} for several Péclet numbers. The width and height of the domain are $L = 1 \ \meter$ and the velocity of the flow is $u = 1 \ \meter / \second$. The density is kept constant at $\rho = 1000 \ \kilo\gram / \meter^3$, therefore Péclet's number is varied by chaging the diffusion coefficient $\Gamma$. The boundary conditions are $\phi_\text{low} = 0$ and $\phi_\text{high} = 1$. A uniform mesh of $N = 200$ nodes has been used to discretize the domain, with a tolerance of $10^{-12}$ as a stop criterion for the Gauss--Seidel algorithm. The Upwind--Difference Scheme (UDS) has been chosen to compute the convective properties.
 
 Figure \ref{fig:diagonal_N200_Pe1.0e+00} shows the solution to the diagonal case problem for $\mathrm{Pe} = 1$. Transport and diffusion have a similar strength as can be seen in the central zone of the domain $\Omega$. There is clearly a transport phenomena carrying the fluid from the lower left corner to the upper right corner of $\Omega$, but there is also mixing due to the diffusion process. Note that the solution is not continuous at the lower left and upper right corners because of the sudden jump from $\phi_\text{low}$ to $\phi_\text{high}$. The zone around the upper left corner does not seem affected by the diffusion process as it is far from the boundary where $\phi = \phi_\text{low}$. The same applies to the zone close to the lower right corner.
 
@@ -27,7 +27,7 @@ Figures \eqref{fig:diagonal_N200_Pe1.0e+01} to \eqref{fig:diagonal_N200_Pe1.0e+0
 		\input{figures/case_diagonal_flow/diagonal_N200_Pe1.0e+01.tex}
 		\vspace{-0.50cm}
 		\captionsetup{width=0.8\textwidth}
-		\caption{Numerical solution to the diagonal case for $\mathrm{Pe} = 10$}
+		\caption{Numerical solution to the diagonal case for $\mathrm{Pe} = 10$.}
 		\label{fig:diagonal_N200_Pe1.0e+01}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
@@ -37,7 +37,7 @@ Figures \eqref{fig:diagonal_N200_Pe1.0e+01} to \eqref{fig:diagonal_N200_Pe1.0e+0
 		\input{figures/case_diagonal_flow/diagonal_N200_Pe1.0e+02.tex}
 		\vspace{-0.50cm}
 		\captionsetup{width=0.8\textwidth}
-		\caption{Numerical solution to the diagonal case for $\mathrm{Pe} = 10^2$}
+		\caption{Numerical solution to the diagonal case for $\mathrm{Pe} = 10^2$.}
 		\label{fig:diagonal_N200_Pe1.0e+02}
 	\end{subfigure}
 	\begin{subfigure}{.5\textwidth}
@@ -47,7 +47,7 @@ Figures \eqref{fig:diagonal_N200_Pe1.0e+01} to \eqref{fig:diagonal_N200_Pe1.0e+0
 		\input{figures/case_diagonal_flow/diagonal_N200_Pe1.0e+04.tex}
 		\vspace{-0.50cm}
 		\captionsetup{width=0.8\textwidth}
-		\caption{Numerical solution to the diagonal case for $\mathrm{Pe} = 10^3$}
+		\caption{Numerical solution to the diagonal case for $\mathrm{Pe} = 10^3$.}
 		\label{fig:diagonal_N200_Pe1.0e+04}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
@@ -57,13 +57,15 @@ Figures \eqref{fig:diagonal_N200_Pe1.0e+01} to \eqref{fig:diagonal_N200_Pe1.0e+0
 		\input{figures/case_diagonal_flow/diagonal_N200_Pe1.0e+09.tex}
 		\vspace{-0.50cm}
 		\captionsetup{width=0.8\textwidth}
-		\caption{Numerical solution to the diagonal case for $\mathrm{Pe} = 1^90$}
+		\caption{Numerical solution to the diagonal case for $\mathrm{Pe} = 1^90$.}
 		\label{fig:diagonal_N200_Pe1.0e+09}
 	\end{subfigure}%
-	\caption{A figure with two subfigures}
+	\caption{Numerical solution to the diagonal case for $\mathrm{Pe} = 10, \ 10^2, 10^4$ and $10^9$.}
 	\label{fig:diagonal_N200_Pe_greater_than_1}
 \end{figure}
 
+\clearpage
+Figures \ref{fig:diagonal_N200_Pe1.0e-01} to \ref{fig:diagonal_N200_Pe1.0e-09} show the diagonal case solution to $\mathrm{Pe} = 10^{-1}, \ 10^{-2}, \ 10^{-4}$ and $10^{-9}$. As it can be observed, all the solutions have a similar appearance to that for $\mathrm{Pe} = 1$ (figure \ref{fig:diagonal_N200_Pe1.0e+00}), whence it can be deduced that reducing Péclet's number has not obvious effect.
 
 \begin{figure}[h]
 	\centering
@@ -73,7 +75,8 @@ Figures \eqref{fig:diagonal_N200_Pe1.0e+01} to \eqref{fig:diagonal_N200_Pe1.0e+0
 		%		\fbox{\input{figures/case_diagonal_flow/diagonal_N200_Pe1.0e-01.tex}}
 		\input{figures/case_diagonal_flow/diagonal_N200_Pe1.0e-01.tex}
 		\vspace{-0.50cm}
-		\caption{Test}
+		\captionsetup{width=0.8\textwidth}
+		\caption{Numerical solution to the diagonal case for $\mathrm{Pe} = 10^{-1}$.}
 		\label{fig:diagonal_N200_Pe1.0e-01}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
@@ -82,7 +85,8 @@ Figures \eqref{fig:diagonal_N200_Pe1.0e+01} to \eqref{fig:diagonal_N200_Pe1.0e+0
 		%		\fbox{\input{figures/case_diagonal_flow/diagonal_N200_Pe1.0e-02.tex}}
 		\input{figures/case_diagonal_flow/diagonal_N200_Pe1.0e-02.tex}
 		\vspace{-0.50cm}
-		\caption{Test}
+		\captionsetup{width=0.8\textwidth}
+		\caption{Numerical solution to the diagonal case for $\mathrm{Pe} = 10^{-2}$.}
 		\label{fig:diagonal_N200_Pe1.0e-02}
 	\end{subfigure}
 	\begin{subfigure}{.5\textwidth}
@@ -91,7 +95,8 @@ Figures \eqref{fig:diagonal_N200_Pe1.0e+01} to \eqref{fig:diagonal_N200_Pe1.0e+0
 		%		\fbox{\input{figures/case_diagonal_flow/diagonal_N200_Pe1.0e-04.tex}}
 		\input{figures/case_diagonal_flow/diagonal_N200_Pe1.0e-04.tex}
 		\vspace{-0.50cm}
-		\caption{Test}
+		\captionsetup{width=0.8\textwidth}
+		\caption{Numerical solution to the diagonal case for $\mathrm{Pe} = 10^{-4}$.}
 		\label{fig:diagonal_N200_Pe1.0e-04}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
@@ -100,9 +105,10 @@ Figures \eqref{fig:diagonal_N200_Pe1.0e+01} to \eqref{fig:diagonal_N200_Pe1.0e+0
 		%		\fbox{\input{figures/case_diagonal_flow/diagonal_N200_Pe1.0e-09.tex}}
 		\input{figures/case_diagonal_flow/diagonal_N200_Pe1.0e-09.tex}
 		\vspace{-0.50cm}
-		\caption{Test}
+		\captionsetup{width=0.8\textwidth}
+		\caption{Numerical solution to the diagonal case for $\mathrm{Pe} = 10^{-9}$.}
 		\label{fig:diagonal_N200_Pe1.0e-09}
 	\end{subfigure}
-	\caption{A figure with two subfigures}
+	\caption{Numerical solution to the diagonal case for $\mathrm{Pe} = 10^{-1}, \ 10^{-2}, \ 10^{-4}$ and $10^{-9}$.}
 	\label{fig:diagonal_N200_Pe_less_than_1}
 \end{figure}

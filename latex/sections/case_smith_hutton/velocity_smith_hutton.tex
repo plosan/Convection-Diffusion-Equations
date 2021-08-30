@@ -1,24 +1,60 @@
 
 \subsection{Velocity field}
 
-The velocity field for the Smith-Hutton case, given by $\vb{v} = 2 y (1 - x^2) \vb{i} - 2 x (1 - y^2) \vb{j}$ verifies the incompressibility condition since $\div{\vb{v}} = 0$. The stream function associated to $\vb{v}$ is $\psi(x,y) = -(1-x^2)(1-y^2)$. Recall that the streamlines are defined to be the curves $C \subset \Omega$ tangent to the vector field $\vb{v}$ at each point. If the streamlines are given by $h \colon I \subset \real \to \Omega$, $t \mapsto h(t) = (x(t), y(t))$, these satisfy
-\begin{equation}
+The velocity field for the Smith-Hutton case, given by $\vb{v} = 2 y (1 - x^2) \vb{i} - 2 x (1 - y^2) \vb{j}$ and verifies the incompressibility condition since $\div{\vb{v}} = 0$. 
+
+The only points where $\vb{v}$ vanishes are $(0,0)$, $(-1,1)$, $(1,1)$, $(-1,-1)$ and $(1,-1)$. If $L < 1$, then only $(0,0)$ belongs to $\overline{\Omega}$. If $L > 1$, the first three points belong to $\overline{\Omega}$. 
+
+Henceforth we will assume $L = 1$. The stream function associated to $\vb{v}$ is $\psi(x,y) = -(1-x^2)(1-y^2)$. Recall that the streamlines are defined to be the curves $C \subset \Omega$ tangent to the vector field $\vb{v}$ at each point. Let $h \colon I \subset \real \to \Omega$, $t \mapsto h(t) = (x(t), y(t))$ be the parametrization of a streamline. Then it satisfies the following system of ODEs:
+\begin{equation} \label{eq:velocity_smith_hutton_odes}
 	\left\{
 	\begin{aligned}
-		\dot{x} &= 2 y (1 - x^2) \\
-		\dot{y} &= - 2 x (1 - y^2)
+		\dot{x}(t) &= 2 y (1 - x^2) \\
+		\dot{y}(t) &= - 2 x (1 - y^2)
 	\end{aligned}
 	\right.
 \end{equation}
-Define $f \colon \Omega \rightarrow \real^2$ by $f(x,y) = (2y(1 - x^2), -2x(1 - y^2))$. Since the stream lines must fill $\Omega$
+Since at each point in $\Omega$ there is a unique velocity vector, each point is contained in a single streamline. In order to find the streamlines, we can specify an initial condition $(x_0, y_0) \in \Omega$ and then pose an initial value problem with the system \eqref{eq:velocity_smith_hutton_odes}. The streamlines must fill $\Omega$ since $\vb{v}$ is defined everywhere, hence $(x_0, y_0) \in \Omega$ is arbitrary. However, we may become less formal and take $x_0 \in (-L, 0)$ and $y_0 = 0$. With this in mind, the resulting initial value problem for the streamlines is the following:
+\begin{equation} \label{eq:velocity_smith_hutton_ivp}
+	\left\{
+	\begin{aligned}
+		\dot{x}(t) &= 2 y (1 - x^2) 	&	x(0) &= x_0 \\
+		\dot{y}(t) &= - 2 x (1 - y^2)	&	y(0) &= 0
+	\end{aligned}
+	\right.
+\end{equation}
+Finding a solution to \eqref{eq:velocity_smith_hutton_ivp} might be difficult as the system is non--linear. Nonetheless, even more important than finding an explicit formula that solves the initial value problem is proving the existence and uniqueness of solution. To do so, we define the following vector field:
+\begin{align}
+	f \colon \Omega \subset \real^2 &\longrightarrow \real^2 \\
+	(x,y) &\longmapsto f(x,y) = 
+	\begin{pmatrix}
+		2 y (1 - x^2) \\ - 2 x (1 - y^2)
+	\end{pmatrix}
+\end{align}
+Then the problem \eqref{eq:velocity_smith_hutton_ivp} is rewritten as:
+\begin{equation} \label{eq:velocity_smith_hutton_ivp_2}
+	\frac{\dd}{\dd{t}} 
+	\begin{pmatrix}
+		x(t) \\ y(t)
+	\end{pmatrix} = 
+	f(x,y)	
+	\quad
+	\begin{pmatrix}
+		x(0) \\ y(0)
+	\end{pmatrix} =
+	\begin{pmatrix}
+		x_0 \\ 0
+	\end{pmatrix}
+\end{equation}
+The ODE \eqref{eq:velocity_smith_hutton_ivp_2} is autonomous since $f$ does not depend upon time. Let $U \subset \real^2$ be an open bounded convex subset containing $\Omega \cup \left([-L, L] \times \{ 0 \} \right)$ (for instance, the ball $B(\vb{0}, 3)$). The vector field $f$ is actually defined on all $\real^2$ and is a $\mathcal{C}^\infty(\real^2, \real^2)$ map and, in particular, is a $\mathcal{C}^1(\overline{U}, \real^2)$ map. By theorem \ref{teo:c1_function_implies_lipschitz}, $f$ is Lipschitz on $\overline{U}$. By the Picard--Lindelöf theorem (Theorem \ref{teo:picard_lindelof}), the solution of \eqref{eq:velocity_smith_hutton_ivp} exists and is unique.
 
+Once we have proven that a solution to \eqref{eq:velocity_smith_hutton_ivp} exists and is unique, we aim to find the solution for several $x_0 \in (-L, 0)$. As we have previously mentioned, we cannot expect to find an analytical solution since the ODE is non--linear. Nevertheless we may apply a numerical method, such as the Runge--Kutta 4 algorithm to sort out the problem. This is precisely what has been done to produce figure \ref{fig:smith_hutton_N201_streamlines}. In it, the norm of the vector field $\vb{v}$ is shown, along with the streamlines for several $x_0$ values.
 
-For the purpose of visualization, the velocity field norm and direction is shown in figure \ref{fig:smith_hutton_velocity_field}.
 \begin{figure}[h]
 	\centering
 	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+02.tex}}
-	\input{figures/case_smith_hutton/smith_hutton_velocity_field.tex}
+	\input{figures/case_smith_hutton/smith_hutton_N201_streamlines.tex}
 	\captionsetup{width=0.75\textwidth}
-	\caption{Velocity field for the Smith--Hutton case. Vectors are normalized and then scaled down by a factor of $\sqrt{2}/30$.}
-	\label{fig:smith_hutton_velocity_field}
+	\caption{Norm of the Smith--Hutton velocity field and streamlines for $x_0 = 0.10, \ 0.20, \ 0.30, \ 0.40, \ 0.50, \ 0.60, \ 0.70, \ 0.80, \ 0.90$ and $0.99 \ \meter$. The vectors tangent to the streamlines are normalized and then scaled down by a factor of $\sqrt{2}/50$.}
+	\label{fig:smith_hutton_N201_streamlines}
 \end{figure}
