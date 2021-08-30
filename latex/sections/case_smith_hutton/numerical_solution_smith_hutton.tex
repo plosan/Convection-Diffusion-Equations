@@ -1,11 +1,16 @@
 
 \subsection{Numerical solution}
 
+In this section we present the numerical solution to problem \eqref{eq:smith_hutton_cauchy_problem} for several values of the quotient $\rho / \Gamma$. The characteristic length taken is $L = 1 \ \meter$. The density is kept constant at $\rho = 1000 \ \kilo\gram / \meter^3$ and the diffusion coefficient $\Gamma$ is varied. A uniform mesh has been used to discretize the domain, with $N_x = 201$ nodes in the $x$--axis and $N_y = 101$ nodes in the $y$--axis. The tolerance to stop Gauss--Seidel's iteration has been of $10^{-12}$. The convective properties have been evaluated applying the Upwind--Difference Scheme (UDS). 
+
+As it has been said, the characteristic length of the problem is $L = 1 \ \meter$, while the characteristic velocity is unknown. Nonetheless, it must be constant as the velocity field $\vb{v}$ is constant, hence Péclet's number depends on the quotient $\rho / \Gamma$. This means that $\rho / \Gamma$ gives an idea of the relation convection transport rate/diffusion transport rate.
+
+
 \begin{figure}[h]
 	\centering
 	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+00.tex}}
 	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+00.tex}
-	\caption{}
+	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 1$.}
 	\label{fig:smith_hutton_N201_Pe1.0e+00}
 \end{figure}
 
@@ -13,7 +18,7 @@
 	\centering
 	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+01.tex}}
 	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+01.tex}
-	\caption{}
+	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10$.}
 	\label{fig:smith_hutton_N201_Pe1.0e+01}
 \end{figure}
 
@@ -21,40 +26,25 @@
 	\centering
 	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+02.tex}}
 	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+02.tex}
-	\caption{}
+	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10^2$.}
 	\label{fig:smith_hutton_N201_Pe1.0e+02}
 \end{figure}
 
-\begin{figure}[h]
-	\centering
-	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+03.tex}}
-	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+03.tex}
-	\caption{}
-	\label{fig:smith_hutton_N201_Pe1.0e+03}
-\end{figure}
 
 \begin{figure}[h]
 	\centering
 	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+04.tex}}
 	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+04.tex}
-	\caption{}
+	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10^4$.}
 	\label{fig:smith_hutton_N201_Pe1.0e+04}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
-	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+05.tex}}
-	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+05.tex}
-	\caption{}
-	\label{fig:smith_hutton_N201_Pe1.0e+05}
-\end{figure}
-
-\begin{figure}[h]
-	\centering
 	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+06.tex}}
-	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+06.tex}
-	\caption{}
-	\label{fig:smith_hutton_N201_Pe1.0e+06}
+	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+09.tex}
+	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10^9$.}
+	\label{fig:smith_hutton_N201_Pe1.0e+09}
 \end{figure}
 
 % /////////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +52,7 @@
 	\centering
 	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-01.tex}}
 	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-01.tex}
-	\caption{}
+	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10^{-1}$.}
 	\label{fig:smith_hutton_N201_Pe1.0e-01}
 \end{figure}
 
@@ -70,39 +60,23 @@
 	\centering
 	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-02.tex}}
 	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-02.tex}
-	\caption{}
+	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10^{-2}$.}
 	\label{fig:smith_hutton_N201_Pe1.0e-02}
-\end{figure}
-
-\begin{figure}[h]
-	\centering
-	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-03.tex}}
-	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-03.tex}
-	\caption{}
-	\label{fig:smith_hutton_N201_Pe1.0e-03}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
 	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-04.tex}}
 	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-04.tex}
-	\caption{}
+	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10^{-4}$.}
 	\label{fig:smith_hutton_N201_Pe1.0e-04}
-\end{figure}
-
-\begin{figure}[h]
-	\centering
-	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-05.tex}}
-	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-05.tex}
-	\caption{}
-	\label{fig:smith_hutton_N201_Pe1.0e-05}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
 	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-06.tex}}
 	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-06.tex}
-	\caption{}
+	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10^{-6}$.}
 	\label{fig:smith_hutton_N201_Pe1.0e-06}
 \end{figure}
 

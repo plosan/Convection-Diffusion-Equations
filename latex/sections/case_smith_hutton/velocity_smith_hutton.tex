@@ -5,7 +5,7 @@ The velocity field for the Smith-Hutton case, given by $\vb{v} = 2 y (1 - x^2) \
 
 The only points where $\vb{v}$ vanishes are $(0,0)$, $(-1,1)$, $(1,1)$, $(-1,-1)$ and $(1,-1)$. If $L < 1$, then only $(0,0)$ belongs to $\overline{\Omega}$. If $L > 1$, the first three points belong to $\overline{\Omega}$. 
 
-Henceforth we will assume $L = 1$. The stream function associated to $\vb{v}$ is $\psi(x,y) = -(1-x^2)(1-y^2)$. Recall that the streamlines are defined to be the curves $C \subset \Omega$ tangent to the vector field $\vb{v}$ at each point. Let $h \colon I \subset \real \to \Omega$, $t \mapsto h(t) = (x(t), y(t))$ be the parametrization of a streamline. Then it satisfies the following system of ODEs:
+In this and in the coming sections we will assume $L = 1$. The stream function associated to $\vb{v}$ is $\psi(x,y) = -(1-x^2)(1-y^2)$. Recall that the streamlines are defined to be the curves $C \subset \Omega$ tangent to the vector field $\vb{v}$ at each point. Let $h \colon I \subset \real \to \Omega$, $t \mapsto h(t) = (x(t), y(t))$ be the parametrization of a streamline. Then it satisfies the following system of ODEs:
 \begin{equation} \label{eq:velocity_smith_hutton_odes}
 	\left\{
 	\begin{aligned}
@@ -24,13 +24,15 @@ Since at each point in $\Omega$ there is a unique velocity vector, each point is
 	\right.
 \end{equation}
 Finding a solution to \eqref{eq:velocity_smith_hutton_ivp} might be difficult as the system is non--linear. Nonetheless, even more important than finding an explicit formula that solves the initial value problem is proving the existence and uniqueness of solution. To do so, we define the following vector field:
-\begin{align}
-	f \colon \Omega \subset \real^2 &\longrightarrow \real^2 \\
-	(x,y) &\longmapsto f(x,y) = 
-	\begin{pmatrix}
-		2 y (1 - x^2) \\ - 2 x (1 - y^2)
-	\end{pmatrix}
-\end{align}
+\begin{equation}
+	\begin{aligned}
+		f \colon \Omega \subset \real^2 &\longrightarrow \real^2 \\
+		(x,y) &\longmapsto f(x,y) = 
+		\begin{pmatrix}
+			2 y (1 - x^2) \\ - 2 x (1 - y^2)
+		\end{pmatrix}
+	\end{aligned}
+\end{equation}
 Then the problem \eqref{eq:velocity_smith_hutton_ivp} is rewritten as:
 \begin{equation} \label{eq:velocity_smith_hutton_ivp_2}
 	\frac{\dd}{\dd{t}} 

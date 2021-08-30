@@ -72,7 +72,7 @@ The velocity field is given by $u = 2 y (1 - x^2)$ and $v = -2 x (1 - y^2)$. The
 		\path[-latex] (lbbc) edge[bend right] node [left] {} (lbb);
 		% PDE outer sep=0pt, greenNode, yshift=3mm, fill=white
 		\node[fill=cyan!70!white] at (0,{0.5*\L}) 
-		{$\Delta{\phi} - \beta \left( \pdv{\phi}{x} + \pdv{\phi}{x} \right) = 0$};
+		{$\Delta \phi - \frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} = 0$};
 		% Inlet and outlet
 		\node[] at ({-0.5*\L},0.3) {Inlet};
 		\node[] at ({0.5*\L},0.3) {Outlet};

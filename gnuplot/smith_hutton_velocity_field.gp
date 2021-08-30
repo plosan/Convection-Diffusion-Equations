@@ -22,7 +22,7 @@ plot "input/smith_hutton_velocity_mod.dat" with image, "input/smith_hutton_veloc
 
 replot
 
-set terminal epslatex color colortext size 13cm,7cm
+set terminal epslatex color colortext size 13cm,7cm standalone
 set rmargin 2
 set output "figures/case_smith_hutton/smith_hutton_velocity_field.tex"
 replot
