@@ -82,11 +82,11 @@ int main(int argc, char* argv[]) {
 
     // Thermophysical properties
     const double rho = 1000;        // Density                  [kg/m^3]
-    const double gamma = 1e9*rho;   // Diffusion coefficient
+    const double gamma = 1e12*rho;   // Diffusion coefficient
 
-    solveDiagonalCase(L, lz, N, rho, gamma, 0, 1);
+    // solveDiagonalCase(L, lz, N, rho, gamma, 0, 1);
 
-    // solveSmithHuttonCase(L, lz, N, rho, gamma);
+    solveSmithHuttonCase(L, lz, N, rho, gamma);
 
     return 1;
 }
@@ -438,15 +438,15 @@ int solveSmithHuttonCase(const double L, const double lz, const int N, const dou
     std::fill_n(phi, m.getNX()*m.getNY(), 1);
     solveSystem(m.getNX(), m.getNY(), A, b, phi, 0);
 
-    const char* filename = "output/smith_hutton.dat";
-    printToFile(m, phi, filename, 5);
-    plotSolution(m, filename);
+    // const char* filename = "output/smith_hutton.dat";
+    // printToFile(m, phi, filename, 5);
+    // plotSolution(m, filename);
 
-    // char filename[150];
-    // sprintf(filename, "../gnuplot/output/smith_hutton_N%d_Pe%.1e.dat", m.getNX(), rho/gamma);
+    char filename[250];
+    sprintf(filename, "../gnuplot/input/case_smith_hutton/smith_hutton_N%d_rg%.1e.dat", m.getNX(), rho/gamma);
 
     printToFile(m, phi, filename, 5);
-    plotSolution(m, filename);
+    // plotSolution(m, filename);
 
     // Free memory allocated
     free(A);
