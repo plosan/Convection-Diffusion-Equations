@@ -22,6 +22,9 @@
 #define SCHEME_HYBRID 3
 #define SCHEME_POWERLAW 4
 
+#define METHOD_GAUSS_SEIDEL 0
+#define METHOD_LUP 1
+
 // Computation of internal nodes discretization coefficients
 double schemeUDS(const double P);
 double schemeCDS(const double P);
@@ -34,7 +37,9 @@ double (*vx)(double,double), double (*vy)(double, double), double (*sourceP)(dou
 double (*sourceC)(double, double), const int schemeCode, double* A, double* b);
 
 // Diagonal case functions
-int solveDiagonalCase(const double L, const double lz, const int N, const double rho, const double gamma, const double phi_low, const double phi_high);
+int solveDiagonalCase(const double L, const double lz, const int N, const double rho, const double gamma, const double phi_low, const double phi_high,
+const int method, const bool print, const bool plot, const char* filename);
+
 void computeDiscCoefsBoundaryNodesDiagonalCase(const Mesh m, const double phi_low, const double phi_high, double* A, double* b);
 double vxDiagonal(const double, const double);
 double vyDiagonal(const double, const double);
@@ -42,7 +47,8 @@ double sourcePDiagonal(const double, const double);
 double sourceCDiagonal(const double, const double);
 
 // Smith-Hutton case functions
-int solveSmithHuttonCase(const double L, const double lz, const int N, const double rho, const double gamma);
+int solveSmithHuttonCase(const double L, const double lz, const int N, const double rho, const double gamma,
+const int method, const bool print, const bool plot, const char* filename);
 void computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(const Mesh m, double* A, double* b);
 double vxSmithHutton(const double x, const double y);
 double vySmithHutton(const double x, const double y);
@@ -53,9 +59,9 @@ double sourceCSmithHutton(const double, const double);
 void checkSystemMatrix(const int nx, const int ny, const double tol, const double* A);
 
 // Linear system solve functions
-void solveSystem(const int nx, const int ny, const double* A, const double* b, double* phi, const int method);
-void solveSystemGS(const int nx, const int ny, const double tol, const int maxIt, const double* A, const double* b, double* phi);
-void solveSystemLUP(const int nx, const int ny, const double* A, const double* b, double* phi);
+int solveSystem(const int nx, const int ny, const double* A, const double* b, double* phi, const int method);
+int solveSystemGS(const int nx, const int ny, const double tol, const int maxIt, const double* A, const double* b, double* phi);
+int solveSystemLUP(const int nx, const int ny, const double* A, const double* b, double* phi);
 void assembleMatrix(const int nx, const int ny, const double* A, double** AA);
 void assembleMatrix(const int nx, const int ny, const double* A, double* AA);
 
@@ -78,11 +84,14 @@ int main(int argc, char* argv[]) {
 
     // Thermophysical properties
     const double rho = 1000;        // Density                  [kg/m^3]
-    const double gamma = 1e12*rho;   // Diffusion coefficient
+    const double gamma = rho/1e3;   // Diffusion coefficient
 
-    // solveDiagonalCase(L, lz, N, rho, gamma, 0, 1);
+    const char* filename = "test.dat";
+    const double phi_low = 0;
+    const double phi_high = 1;
+    solveDiagonalCase(L, lz, N, rho, gamma, phi_low, phi_high, METHOD_GAUSS_SEIDEL, true, true, filename);
 
-    solveSmithHuttonCase(L, lz, N, rho, gamma);
+    // solveSmithHuttonCase(L, lz, N, rho, gamma, METHOD_GAUSS_SEIDEL, true, true, filename);
 
     return 1;
 }
@@ -207,7 +216,6 @@ double (*sourceC)(double, double), const int schemeCode, double* A, double* b) {
     std::fill_n(b, m.getNX()*m.getNY(), 0);
 
     // Internal nodes
-    printf("Computing internal nodes discretization coefficients...\n\n");
     for(int j = 1; j < m.getNY()-1; j++) {
         for(int i = 1; i < m.getNX()-1; i++) {
             int node = j * m.getNX() + i;
@@ -244,7 +252,8 @@ double (*sourceC)(double, double), const int schemeCode, double* A, double* b) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // DIAGONAL CASE FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int solveDiagonalCase(const double L, const double lz, const int N, const double rho, const double gamma, const double phi_low, const double phi_high) {
+int solveDiagonalCase(const double L, const double lz, const int N, const double rho, const double gamma, const double phi_low, const double phi_high,
+const int method, const bool print, const bool plot, const char* filename) {
     /*
     solveDiagonalCase: solves the diagonal case problem given the geometry, the thermophysical properties and the boundary conditions.
     --------------------------------------------------------------------------------------------------------------------------------------------------
@@ -256,12 +265,16 @@ int solveDiagonalCase(const double L, const double lz, const int N, const double
         - gamma         Diffusion coefficient               [const double]
         - phi_low       Boundary condition                  [const double]
         - phi_high      Boundary condition                  [const double]
+        - method        Method to solve the linear system   [const int]
+        - print         True: the solution is printed to the file named filename. False: the solution is not printed                                                        [const bool]
+        - plot          True: the solution is ploted with the data in the file named filename. False: the solution is not plotted. In order to work need print to be true.  [const bool]
+        - filename      Name of the file where the solution is printed and/or plotted
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Outputs:
         - int           Exit code. 1: Everything nominal. -1: Could not build mesh. -2: Could not allocate memory with malloc at some point.
     */
 
-    // Build mesh
+    // MESH BUILDING
     printf("Building uniform cartesian mesh...\n\n");
     Mesh m;
     m.buildUniformMesh(0, 0, L, L, lz, N, N);
@@ -270,45 +283,67 @@ int solveDiagonalCase(const double L, const double lz, const int N, const double
         return -1;
     }
 
+    // DISCRETIZATION COEFFICIENTS COMPUTATION
+    printf("Computing discretization coefficients for the diagonal case...\n");
     // Allocate memory
+    printf("\tAllocating memory for the linear system matrix...\n");
     double* A = (double*) malloc(5 * m.getNX() * m.getNY() * sizeof(double*));
     if(!A) {
-        printf("Error. Could not allocate memory for the linear system matrix.\n");
+        printf("\tError. Could not allocate memory for the linear system matrix.\n");
         return -2;
     }
 
+    printf("\tAllocating memory for the linear system vector...\n");
     double* b = (double*) malloc(m.getNX() * m.getNY() * sizeof(double*));
     if(!b) {
-        printf("Error. Could not allocate memory for the linear system vector.\n");
+        free(A);
+        printf("\tError. Could not allocate memory for the linear system vector.\n");
         return -2;
     }
 
-    // Compute discretization coefficients
+    printf("\tComputing internal nodes discretization coefficients...\n");
     computeSteadyStateDiscretizationCoefficientsInternalNodes(m, rho, gamma, vxDiagonal, vyDiagonal, sourcePDiagonal, sourceCDiagonal, SCHEME_UDS, A, b);
+
+    printf("\tComputing boundary nodes discretization coefficients...\n\n");
     computeDiscCoefsBoundaryNodesDiagonalCase(m, phi_low, phi_high, A, b);
 
+    // LINEAR SYSTEM SOLVING
     // Allocate memory for the linear system solution vector
+    printf("Solving the linear system...\n");
+    printf("\tAllocating memory for the linear system solution...\n");
     double* phi = (double*) malloc(m.getNX() * m.getNY() * sizeof(double*));
     if(!phi) {
-        printf("Error. Could not allocate memory for the linear system solution vector.\n");
+        free(A);
+        free(b);
+        printf("\tError. Could not allocate memory for the linear system solution vector.\n");
         return -2;
     }
     std::fill_n(phi, m.getNX()*m.getNY(), 1);
-    solveSystem(m.getNX(), m.getNY(), A, b, phi, 0);
 
-    // const char* filename = "output/diagonal.dat";
+    // Solve the linear system
+    int exitSolve = solveSystem(m.getNX(), m.getNY(), A, b, phi, method);
 
-    char filename[100];
-    sprintf(filename, "output/diagonal_N%d_Pe%.1e.dat", m.getNX(), rho/gamma);
-
-    printToFile(m, phi, filename, 5);
-    plotSolution(m, filename);
+    // Check linear system solution, set exitCode and print/plot results
+    int exitCode = 0;
+    if(exitSolve > 0) {
+        exitCode = 1;
+        double error = checkLinearSystemSolution(m.getNX(), m.getNY(), A, b, phi);
+        printf("\tChecking the solution... Infinity norm of A*x-b: %.2e\n\n", error);
+        // PRINT AND/OR PLOT SOLUTION
+        if(print) {
+            printToFile(m, phi, filename, 5);
+            if(plot)
+                plotSolution(m, filename);
+        }
+    } else
+        exitCode = -3;
 
     // Free memory allocated
+    printf("Freeing memory allocated...\n");
     free(A);
     free(b);
     free(phi);
-    return 1;
+    return exitCode;
 }
 
 void computeDiscCoefsBoundaryNodesDiagonalCase(const Mesh m, const double phi_low, const double phi_high, double* A, double* b) {
@@ -326,7 +361,7 @@ void computeDiscCoefsBoundaryNodesDiagonalCase(const Mesh m, const double phi_lo
         - A                 Linear system matrix. Rows: nx*ny, Columns: 5                                   [double*]
         - b                 Vector of indenpendent terms. Rows: nx*ny, Columns: 1                           [double*]
     */
-    printf("Computing boundary nodes discretization coefficients for the diagonal case...\n\n");
+    // printf("Computing boundary nodes discretization coefficients for the diagonal case...\n\n");
     // Lower row nodes: 0 <= i <= nx-1; j=0
     for(int i = 0; i < m.getNX(); i++) {
         A[5*i+4] = 1;
@@ -411,7 +446,8 @@ double sourceCDiagonal(const double x, const double y) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // SMITH-HUTTON CASE FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int solveSmithHuttonCase(const double L, const double lz, const int N, const double rho, const double gamma) {
+int solveSmithHuttonCase(const double L, const double lz, const int N, const double rho, const double gamma,
+const int method, const bool print, const bool plot, const char* filename) {
     /*
     solveSmithHuttonCase: solves the Smith-Hutton case given the geometry, the thermophysical properties and the boundary conditions.
     --------------------------------------------------------------------------------------------------------------------------------------------------
@@ -421,9 +457,14 @@ int solveSmithHuttonCase(const double L, const double lz, const int N, const dou
         - N             Nodes for uniform discretization    [const int]
         - rho           Density                             [const double]
         - gamma         Diffusion coefficient               [const double]
+        - method        Method to solve the linear system   [const int]
+        - print         True: the solution is printed to the file named filename. False: the solution is not printed                                                        [const bool]
+        - plot          True: the solution is ploted with the data in the file named filename. False: the solution is not plotted. In order to work need print to be true.  [const bool]
+        - filename      Name of the file where the solution is printed and/or plotted
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Outputs:
         - int           Exit code. 1: Everything nominal. -1: Could not build mesh. -2: Could not allocate memory with malloc at some point.
+                        -3: an error ocurred while the linear system was being solved.
     */
 
     // Build mesh
@@ -438,47 +479,68 @@ int solveSmithHuttonCase(const double L, const double lz, const int N, const dou
         return -1;
     }
 
+    // DISCRETIZATION COEFFICIENTS COMPUTATION
+    printf("Computing discretization coefficients for the Smith-Hutton case...\n");
     // Allocate memory
+    printf("\tAllocating memory for the linear system matrix...\n");
     double* A = (double*) malloc(5 * m.getNX() * m.getNY() * sizeof(double*));
     if(!A) {
-        printf("Error. Could not allocate memory for the linear system matrix.\n");
+        printf("\tError. Could not allocate memory for the linear system matrix.\n");
         return -2;
     }
 
+    printf("\tAllocating memory for the linear system vector...\n");
     double* b = (double*) malloc(m.getNX() * m.getNY() * sizeof(double*));
     if(!b) {
-        printf("Error. Could not allocate memory for the linear system vector.\n");
+        free(A);
+        printf("\tError. Could not allocate memory for the linear system vector.\n");
         return -2;
     }
 
     // Compute discretization coefficients
+    printf("\tComputing internal nodes discretization coefficients...\n");
     computeSteadyStateDiscretizationCoefficientsInternalNodes(m, rho, gamma, vxSmithHutton, vySmithHutton, sourcePSmithHutton, sourceCSmithHutton, SCHEME_POWERLAW, A, b);
+
+    printf("\tComputing boundary nodes dicretization coefficients...\n\n");
     computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(m, A, b);
 
-    // Allocate memory for the linear system solution
+    // LINEAR SYSTEM SOLVING
+    // Allocate memory for the linear system solution vector
+    printf("Solving the linear system...\n");
+    printf("\tAllocating memory for the linear system solution...\n");
     double* phi = (double*) malloc(m.getNX() * m.getNY() * sizeof(double*));
     if(!phi) {
-        printf("Error. Could not allocate memory for the linear system solution vector.\n");
+        free(A);
+        free(b);
+        printf("\tError. Could not allocate memory for the linear system solution vector.\n");
         return -2;
     }
     std::fill_n(phi, m.getNX()*m.getNY(), 1);
-    solveSystem(m.getNX(), m.getNY(), A, b, phi, 0);
 
-    // const char* filename = "output/smith_hutton.dat";
-    // printToFile(m, phi, filename, 5);
-    // plotSolution(m, filename);
+    // Solve the linear system
+    int exitSolve = solveSystem(m.getNX(), m.getNY(), A, b, phi, method);
 
-    char filename[250];
-    sprintf(filename, "../gnuplot/input/case_smith_hutton/smith_hutton_N%d_rg%.1e.dat", m.getNX(), rho/gamma);
-
-    printToFile(m, phi, filename, 5);
-    // plotSolution(m, filename);
+    // Check linear system solution, set exitCode and print/plot results
+    int exitCode = 0;
+    if(exitSolve > 0) {
+        exitCode = 1;
+        double error = checkLinearSystemSolution(m.getNX(), m.getNY(), A, b, phi);
+        printf("\tChecking the solution... Infinity norm of A*x-b: %.2e\n\n", error);
+        // PRINT AND/OR PLOT SOLUTION
+        if(print) {
+            printToFile(m, phi, filename, 5);
+            if(plot)
+                plotSolution(m, filename);
+        }
+    } else
+        exitCode = -3;
 
     // Free memory allocated
+    printf("Freeing memory allocated...\n");
     free(A);
     free(b);
     free(phi);
-    return 1;
+    return exitCode;
 }
 
 void computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(const Mesh m, double* A, double* b) {
@@ -494,7 +556,6 @@ void computeDiscretizationCoefficientsBoundaryNodesSmithHuttonCase(const Mesh m,
         - A     Linear system matrix set to zero. Rows: nx*ny, Columns: 5                       [double*]
         - b     Vector of indenpendent terms set to zero. Rows: nx*ny, Columns: 1               [double*]
     */
-    printf("Computing boundary nodes discretization coefficients for Smith-Hutton case...\n\n");
     // Lower boundary nodes: 0 <= i <= nx-1; j=0
     // Lower boundary: [-L, 0]
     for(int i = 0; i < m.getNX() && m.atNodeX(i) <= 0; i++) {
@@ -639,7 +700,7 @@ void checkSystemMatrix(const int nx, const int ny, const double tol, const doubl
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // lINEAR SYSTEM SOLVING FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void solveSystem(const int nx, const int ny, const double* A, const double* b, double* phi, const int method) {
+int solveSystem(const int nx, const int ny, const double* A, const double* b, double* phi, const int method) {
     /*
     solveSystem: solves the linear system resulting from a 2D convection-diffusion problem in a domain discretized with a cartesian mesh using the
     specified method.
@@ -653,19 +714,41 @@ void solveSystem(const int nx, const int ny, const double* A, const double* b, d
         - metho     Method to solve the linear system. 0 - Gauss-Seidel, Other - LUP    [int]
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Outputs:
-        - A                 Linear system matrix. Rows: nx*ny, Columns: 5                                   [double*]
-        - b                 Vector of indenpendent terms. Rows: nx*ny, Columns: 1                           [double*]
+        - phi       Solution of the linar system. Rows: nx*ny, Columns: 1               [double*]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Return:
+        - int       Depends on the method.
+                        - For Gauss-Seidel method, when there is convergence it returns the number of iterations. Otherwise it returns -1.
+                        - For LUP method
     */
-    if(method == 0)  {// Solve using Gauss-Seidel
-        printf("Solving linear system using Gauss-Seidel method...\n");
-        solveSystemGS(nx, ny, TOL, MAXIT, A, b, phi);
-    } else {          // Solve using LUP factorization
-        printf("Solving linear system using LUP factorization...\n");
-        solveSystemLUP(nx, ny, A, b, phi);
+    // printf("Solving linear system using Gauss-Seidel method...\n");
+    // printf("Solving linear system using LUP factorization...\n");
+
+    // Solve the linear system
+    int exitSolve = 0;
+    if(method == METHOD_LUP) {
+        // Solve using LUP decomposition
+        printf("\tSolving the linear system using LUP decomposition...\n");
+        exitSolve = solveSystemLUP(nx, ny, A, b, phi);
+        if(exitSolve > 0)
+            printf("\tLUP decomposition exited successfully.\n");
+        else if(exitSolve == -1)
+            printf("\tError. An error occurred during LUP decomposition. Linear system matrix is singular or close to singular.\n\n");
+        else
+            printf("\tError. An error occurred during LUP decomposition. Could not allocate enough memory.\n\n");
+    } else {
+        // Solve using Gauss--Seidel algorithm
+        printf("\tSolving the linear system using Gauss-Seidel algorithm...\n");
+        exitSolve = solveSystemGS(nx, ny, TOL, MAXIT, A, b, phi);
+        if(exitSolve > 0)
+            printf("\tGauss-Seidel algorithm exited successfully. Iterations: %d\n", exitSolve);
+        else
+            printf("\tError. No convergence of solution.\n\n");
     }
+    return exitSolve;
 }
 
-void solveSystemGS(const int nx, const int ny, const double tol, const int maxIt, const double* A, const double* b, double* phi) {
+int solveSystemGS(const int nx, const int ny, const double tol, const int maxIt, const double* A, const double* b, double* phi) {
     /*
     solveSystemGS: solves the linear system resulting from a 2D convection-diffusion problem in a domain discretized with a cartesian mesh using
     Gauss-Seidel algorithm. It has two criterion to stop the iteration:
@@ -683,8 +766,10 @@ void solveSystemGS(const int nx, const int ny, const double tol, const int maxIt
         - phi       Solution of the linar system. Rows: nx*ny, Columns: 1       [double*]
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Outputs:
-        - A                 Linear system matrix. Rows: nx*ny, Columns: 5                                   [double*]
-        - b                 Vector of indenpendent terms. Rows: nx*ny, Columns: 1                           [double*]
+        - phi       Solution of the linar system. Rows: nx*ny, Columns: 1       [double*]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
+    Return:
+        - int       If the algorithm reaches the max number of iterations with no convergence, it returns -1. Otherwise returns the number of iterations.
     */
     // printf("Solving linear system...\n");
     int it = 0;        // Current iteration
@@ -719,10 +804,13 @@ void solveSystemGS(const int nx, const int ny, const double tol, const int maxIt
         convergence = (maxDiff < tol);  // Convergence condition
         it++;                           // Increase iteration counter
     }
-    printf("\tIterations: %d\n\n", it);
+    // Return value
+    if(convergence)
+        return it;
+    return -1;
 }
 
-void solveSystemLUP(const int nx, const int ny, const double* A, const double* b, double* phi) {
+int solveSystemLUP(const int nx, const int ny, const double* A, const double* b, double* phi) {
     /*
     solveSystemLUP: solves the linear system resulting from a 2D convection-diffusion problem in a domain discretized with a cartesian mesh using
     the LUP factorization.
@@ -738,33 +826,40 @@ void solveSystemLUP(const int nx, const int ny, const double* A, const double* b
         - phi       Solution of the linar system. Rows: nx*ny, Columns: 1       [double*]
     */
 
-    int n = nx * ny;
-    double* AA = (double*) malloc(n * n * sizeof(double*));
+    int exit = 0;       // Exit code
+    int n = nx * ny;    // Number of nodes (size of the linear system matrix)
+    double* AA = (double*) malloc(n * n * sizeof(double*)); // Linear system matrix
     // Check if memory was allocated
     if(AA) {
+        // Enough memory, continue solving
         std::fill_n(AA, n*n, 0);
         assembleMatrix(nx, ny, A, AA);
         // LUP method
         int* perm = (int*) malloc(n * sizeof(int*));
-        printf("\tLUP factor...\n");
         int permSign = factorLU(AA, perm, n, TOL);
+        // Check the permutation sign
         if(permSign == 0) {
-            printf("\tError. Matrix is singular. Setting solution to zero\n\n");
+            // Matrix is singular, error
             std::fill_n(phi, n, 0);
+            exit = -1;
         } else {
-            printf("\tLUP solving...\n\n");
+            // Solve the triangular linear systems
             solveLUP(AA, b, phi, perm, n);
+            exit = 1;
         }
+        free(AA);
     } else {
-        printf("\tError. Could not allocate memory to assemble matrix. Setting solution to zero\n\n");
+        // Not enough memory, error
         std::fill_n(phi, n, 0);
+        exit = -2;
     }
-    free(AA);
+    return exit;
 }
 
 void assembleMatrix(const int nx, const int ny, const double* A, double** AA) {
     /*
-    assembleMatrix: given the matrix A (is in vector form), the function assembles the matrix AA (square matrix) for LUP method.
+    assembleMatrix: given the matrix A (is in vector form), the function assembles the matrix AA (square matrix) for LUP method. It is assumed that
+    AA is already allocated.
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Inputs:
         - nx        Number of nodes in the X axis                               [const int]
@@ -774,49 +869,46 @@ void assembleMatrix(const int nx, const int ny, const double* A, double** AA) {
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Outputs: temperature map of phi. Prior to running the program,
         - AA        Assembled matrix (in square matrix form)                    [double**]
+    --------------------------------------------------------------------------------------------------------------------------------------------------
     */
-    printf("\tAssembling matrix...\n");
-    if(AA) {
-        // // Lower row
-        for(int i = 0; i < nx; i++) {
-            int node = i;
-            AA[node][node+nx] = -A[5*node+3]; // aN coefficient
-            AA[node][node] = A[5*node+4];    // aP coefficient
-        }
-        // // Central rows
-        for(int j = 1; j < ny-1; j++) {
-            // First node
-            int node = j * nx;
-            AA[node][node+1] = -A[5*node+2];  // aE coefficient
-            AA[node][node] = A[5*node+4];    // aP coefficient
-            // Central nodes
-            for(int i = 1; i < nx-1; i++) {
-                node = j * nx + i;
-                AA[node][node-nx] = -A[5*node];   // aS coefficient
-                AA[node][node-1]  = -A[5*node+1]; // aW coefficient
-                AA[node][node+1]  = -A[5*node+2]; // aE coefficient
-                AA[node][node+nx] = -A[5*node+3]; // aN coefficient
-                AA[node][node]    = A[5*node+4]; // aP coefficient
-            }
-            // Last node
-            node = j * nx + nx - 1;
-            AA[node][node-1] = -A[5*node+1];  // aW coefficient
-            AA[node][node]   = A[5*node+4];  // aP coefficient
-        }
-        // // Upper row
-        for(int i = 0; i < nx; i++) {
-            int node = (ny - 1) * nx + i;
+    // // Lower row
+    for(int i = 0; i < nx; i++) {
+        int node = i;
+        AA[node][node+nx] = -A[5*node+3]; // aN coefficient
+        AA[node][node] = A[5*node+4];    // aP coefficient
+    }
+    // // Central rows
+    for(int j = 1; j < ny-1; j++) {
+        // First node
+        int node = j * nx;
+        AA[node][node+1] = -A[5*node+2];  // aE coefficient
+        AA[node][node] = A[5*node+4];    // aP coefficient
+        // Central nodes
+        for(int i = 1; i < nx-1; i++) {
+            node = j * nx + i;
             AA[node][node-nx] = -A[5*node];   // aS coefficient
+            AA[node][node-1]  = -A[5*node+1]; // aW coefficient
+            AA[node][node+1]  = -A[5*node+2]; // aE coefficient
+            AA[node][node+nx] = -A[5*node+3]; // aN coefficient
             AA[node][node]    = A[5*node+4]; // aP coefficient
         }
-    } else {
-        printf("\tError. Matrix AA not allocated\n");
+        // Last node
+        node = j * nx + nx - 1;
+        AA[node][node-1] = -A[5*node+1];  // aW coefficient
+        AA[node][node]   = A[5*node+4];  // aP coefficient
+    }
+    // // Upper row
+    for(int i = 0; i < nx; i++) {
+        int node = (ny - 1) * nx + i;
+        AA[node][node-nx] = -A[5*node];   // aS coefficient
+        AA[node][node]    = A[5*node+4]; // aP coefficient
     }
 }
 
 void assembleMatrix(const int nx, const int ny, const double* A, double* AA) {
     /*
-    assembleMatrix: given the matrix A (is in vector form), the function assembles the matrix AA (square matrix) for LUP method.
+    assembleMatrix: given the matrix A (is in vector form), the function assembles the matrix AA (square matrix) for LUP method. It is assumed that
+    AA is already allocated.
     --------------------------------------------------------------------------------------------------------------------------------------------------
     Inputs:
         - nx        Number of nodes in the X axis                               [const int]
@@ -827,42 +919,37 @@ void assembleMatrix(const int nx, const int ny, const double* A, double* AA) {
     Outputs: temperature map of phi. Prior to running the program,
         - AA        Assembled matrix (in vector form)                           [double**]
     */
-    printf("\tAssembling matrix...\n");
-    if(AA) {
-        int n = nx * ny;
-        // // Lower row
-        for(int i = 0; i < nx; i++) {
-            AA[i*n+i]    = A[5*i+4];    // aP coefficient
-            AA[i*n+i+nx] = -A[5*i+3];    // aN coefficient
-        }
-        // // Central rows
-        for(int j = 1; j < ny-1; j++) {
-            // First node
-            int node = j * nx;
-            AA[node*n+node] = A[5*node+4];    // aP coefficient
-            AA[node*n+node+1] = -A[5*node+2];  // aE coefficient
-            // Central nodes
-            for(int i = 1; i < nx-1; i++) {
-                node = j * nx + i;
-                AA[node*n+node-nx] = -A[5*node];   // aS coefficient
-                AA[node*n+node-1]  = -A[5*node+1]; // aW coefficient
-                AA[node*n+node+1]  = -A[5*node+2]; // aE coefficient
-                AA[node*n+node+nx] = -A[5*node+3]; // aN coefficient
-                AA[node*n+node]    = A[5*node+4]; // aP coefficient
-            }
-            // Last node
-            node = j * nx + nx - 1;
-            AA[node*n+node-1] = -A[5*node+1];  // aW coefficient
-            AA[node*n+node]   = A[5*node+4];  // aP coefficient
-        }
-        // // Upper row
-        for(int i = 0; i < nx; i++) {
-            int node = (ny - 1) * nx + i;
+    int n = nx * ny;
+    // // Lower row
+    for(int i = 0; i < nx; i++) {
+        AA[i*n+i]    = A[5*i+4];    // aP coefficient
+        AA[i*n+i+nx] = -A[5*i+3];    // aN coefficient
+    }
+    // // Central rows
+    for(int j = 1; j < ny-1; j++) {
+        // First node
+        int node = j * nx;
+        AA[node*n+node] = A[5*node+4];    // aP coefficient
+        AA[node*n+node+1] = -A[5*node+2];  // aE coefficient
+        // Central nodes
+        for(int i = 1; i < nx-1; i++) {
+            node = j * nx + i;
             AA[node*n+node-nx] = -A[5*node];   // aS coefficient
+            AA[node*n+node-1]  = -A[5*node+1]; // aW coefficient
+            AA[node*n+node+1]  = -A[5*node+2]; // aE coefficient
+            AA[node*n+node+nx] = -A[5*node+3]; // aN coefficient
             AA[node*n+node]    = A[5*node+4]; // aP coefficient
         }
-    } else {
-        printf("\tError. Matrix AA not allocated\n");
+        // Last node
+        node = j * nx + nx - 1;
+        AA[node*n+node-1] = -A[5*node+1];  // aW coefficient
+        AA[node*n+node]   = A[5*node+4];  // aP coefficient
+    }
+    // // Upper row
+    for(int i = 0; i < nx; i++) {
+        int node = (ny - 1) * nx + i;
+        AA[node*n+node-nx] = -A[5*node];   // aS coefficient
+        AA[node*n+node]    = A[5*node+4]; // aP coefficient
     }
 }
 
@@ -928,13 +1015,23 @@ void plotSolution(const Mesh m, const char* filename) {
     sprintf(plotCommand, "plot '%s' with image", filename);
 
     // Commands sent to gnuplot
-    const char* GnuCommands[] = {xrange, yrange, sizeratio, "set palette rgb 33,13,10", plotCommand};
+    const char* GnuCommands[] = {"unset key",
+        "set xlabel 'x (m)'",
+        "set xtics format '%.1f'",
+        "set xtics border out nomirror",
+        "set ylabel 'y (m)'",
+        "set ytics format '%.1f'",
+        "set ytics border out nomirror",
+        "set cblabel 'phi'",
+        "set cbtics format '%.1f'",
+        "set palette rgb 33,13,10",
+        xrange, yrange, sizeratio, plotCommand};
 
     // Send commands to gnuplot
     FILE *gnupipe = NULL;
     gnupipe = popen("gnuplot -persistent", "w");
-    printf("Plotting the solution in gnuplot...\n");
-    for(int i = 0; i < 5; i++) {
+    printf("Plotting the solution in gnuplot... Commands:\n");
+    for(int i = 0; i < 14; i++) {
         printf("\t%s\n", GnuCommands[i]);
         fprintf(gnupipe, "%s\n", GnuCommands[i]);
     }
