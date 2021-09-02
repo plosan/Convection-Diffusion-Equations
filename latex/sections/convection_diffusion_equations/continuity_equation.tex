@@ -1,48 +1,59 @@
 
 \subsection{Continuity equation}
 
-For the purposes of this project, where no nuclear nor relativistic effects are considered, mass is a property preserved over time. Let $\cv{} \subset \real^n$ be a control volume, which may depend on time, and let $\rho = \rho(\vb{x}, t)$ be the mass density defined over $\cv{}$ for each time $t \in I$. The mass enclosed by $\cv{}$ at time $t$ is
+For the purposes of this project, where no nuclear nor relativistic effects are
+considered, mass is a property preserved over time. Let $\cv{} \subset \real^n$
+be a control volume, which may depend on time, and let $\rho = \rho(x, t)$ be
+the mass density defined over $\cv{}$ for each time $t \in I$. The mass
+enclosed by $\cv{}$ at time $t$ is
 \begin{equation}
-	m(t) = \int_\cvt \rho(\vb{x}, t) \dd{\vb{x}} = \int_\cvt \rho \dd{\vb{x}}
+	m(t) = \int_\cvt \rho(x, t) \dd{x} = \int_\cvt \rho \dd{x}
 \end{equation}
 and as a result of the mass conservation principle
 \begin{equation} \label{eq:cde_continuity_2}
 	\frac{\dd}{\dd{t}} m(t) = 
-	\frac{\dd}{\dd{t}} \int_\cvt \rho(\vb{x}, t) \dd{x} = 0
+	\frac{\dd}{\dd{t}} \int_\cvt \rho(x, t) \dd{x} = 0
 \end{equation}
-Now applying Reynolds Transport Theorem to \eqref{eq:cde_continuity_2} setting $\vb{b} = \vb{v}$,
+Now applying Reynolds Transport Theorem to \eqref{eq:cde_continuity_2} setting
+$\vb{b} = \vb{v}$,
 \begin{equation}
-	\int_\cvt \frac{\partial \rho}{\partial t} \dd{\vb{x}} + 
+	\int_\cvt \frac{\partial \rho}{\partial t} \dd{x} + 
 	\int_\cst \rho \vb{v} \vdot \vb{n} \dd{S} = 0
 \end{equation}
-We apply the divergence theorem on the surface integral to transform it into a volume integral,
+We apply the divergence theorem on the surface integral to transform it into a
+volume integral,
 \begin{equation} \label{eq:cde_continuity_4}
-	\int_\cvt \frac{\partial \rho}{\partial t} \dd{\vb{x}} + 
-	\int_\cvt \div(\rho \vb{v}) \dd{\vb{x}} = 
-	\int_\cvt \left\{ \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right\} \dd{\vb{x}} = 0
+	\int_\cvt \frac{\partial \rho}{\partial t} \dd{x} + 
+	\int_\cvt \div(\rho \vb{v}) \dd{x} = 
+	\int_\cvt \left\{ \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right\} \dd{x} = 0
 \end{equation}
-%Since the control volume is non--degenerate, it has non--zero $n$--dimensional volume for all $t \in I$, that is,
-%\begin{equation}
-%	V(t) = \abs{\cvt} = \int_\cvt 1 \dd{\vb{x}} \neq 0 \quad \forall t \in I
-%\end{equation}
-Fix one time $t_0 \in I$ and let $\vb{x}_0 \in \mathcal{V}(t_0)$ be a point inside the moving control volume. As $\cvt$ is open, there exists $r_0 > 0$ such that $B(\vb{x}_0, r_0) \subset \mathcal{V}(t_0)$. Since $B(\vb{x}_0, r_0)$ can be regarded as a control volume inside $\mathcal{V}(t_0)$, equation \eqref{eq:cde_continuity_4} also holds when the integral is computed over $B(\vb{x}_0, r_0)$, \ie
+We claim that the integrand in equation \eqref{eq:cde_continuity_4} vanishes at
+every point in space and time. Indeed, assume there exists a time $t_0$ and a
+point $x_0 \in \cv{}(t_0)$ such that
 \begin{equation}
-	\int_{B(\vb{x}_0, r_0)} \left\{ \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right\} \dd{\vb{x}} = 0
+	\left. \left\{ \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right\} \right\rvert_{(x_0,t_0)} > 0
 \end{equation}
-and it is still true if it is divided by the volume of $B(\vb{x}_0, r_0)$,
+Recall that we assumed the physical magnitudes are differentiable functions as
+many times as necessary. In particular, by fixing $t = t_0$, $(\partial_t \rho +
+\div(\rho \vb{v}))(\cdot, t_0)$ is a continuous function of $x$. Since
+$\cv{}(t_0)$ is open, there exists $\tilde{\delta} > 0$ such that $B(x_0,
+\tilde{\delta}) \subset \cv{}(t_0)$. By continuity we can take $\delta > 0$,
+with $\delta < \tilde{\delta}$ such that for all $y \in B(x_0, \delta) \subset
+\cv{}(t_0)$,
 \begin{equation}
-	\frac{1}{\abs{B(\vb{x}_0, r_0)}}
-	\int_{B(\vb{x}_0, r_0)} \left\{ \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right\} \dd{\vb{x}} = 0
+	\left. \left\{ \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right\} \right\rvert_{(y,t_0)} > 0
 \end{equation}
-When $r_0 \to 0$, $\abs{B(\vb{x}_0, r_0)} \to 0$, hence applying Lebesgue's Differentiation Lemma (Theorem \ref{eq:lebesgue_differentiation_lemma}),
+Hence integrating on $B(x_0, \delta)$ yields
 \begin{equation}
-	\lim_{r_0 \to 0}
-	\frac{1}{\abs{B(\vb{x}_0, r_0)}}
-	\int_{B(\vb{x}_0, r_0)} \left\{ \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right\} \dd{\vb{x}} = 
-	\left( \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right) (\vb{x}_0, t_0) = 0
+	\int_{B(x_0, \delta)} \left\{ \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right\} \dd{x} > 0
 \end{equation}
-Since this is true for each $\vb{x}_0 \in \mathcal{V}(t_0)$ and $t_0 \in I$ is arbitrary, the continuity equation is
+a contradiction as it should be zero according to equation \eqref{eq:cde_continuity_4}. The same contradiction is reached if we assume the existence of
+a point $x_0$ and a time $t_0$ where
+\begin{equation}
+	\left. \left\{ \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right\} \right\rvert_{(x_0,t_0)} < 0
+\end{equation}
+thereby proving our claim. Because this is true for each $x_0 \in \mathcal{V}(t_0)$ and $t_0 \in I$ is
+arbitrary, we obtain the continuity equation
 \begin{equation}
 	\pdv{\rho}{t} + \div(\rho \vb{v}) = 0
 \end{equation}
-

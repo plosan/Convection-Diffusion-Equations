@@ -1,0 +1,65 @@
+
+\subsection{Notation and assumption}
+
+First of all, we shall introduce some notation that will be exhaustively used in
+the project.
+\begin{itemize}[topsep=0pt]
+    \item Let $\Omega$ be a subset of $\real^n$. The subsets $\partial \Omega$ and
+    $\overline{\Omega}$ of $\real^n$ will denote the boundary and the closure of $\Omega$,
+    respectively. 
+    \item Let $x \in \real^n$ and $R > 0$. We will denote by $B(x, R) = \{y \in
+    \real^n \mid \norm{x - y} < R \}$ the open ball centered at $x$ of radius
+    $R$. The set $\overline{B(x, R)} = \{y \in \real^n \mid \norm{x - y} \leq R
+    \}$ is the closure $B(x, R)$.
+    \item Let $U \subset \real^n$ be an open set. We will denote by
+    $\mathcal{C}^k(U, \real^m)$ the set of $k$ times continously differentiable
+    functions $f \colon U \rightarrow \real^m$. If the codomain is clear from
+    the context, we will use $\mathcal{C}^k(U)$. The set of continuous functions
+    $f \colon U \rightarrow \real^m$ will be denoted $\mathcal{C}(U, \real^m)$
+    or $\mathcal{C}(U)$ when the codomain is clear.
+	\item The velocity of a fluid will be the vector field $\vb{v} =
+	\vb{v}(x,t)$. When working in $\real^2$ it will be written as $\vb{v} = u
+	\vb{i} + v \vb{j}$.
+\end{itemize}
+
+\noindent
+Hereinafter, if $\cv{} \subset \real^n$ is a control volume, we will assume it satisfies the following:
+\begin{enumerate}[label={(\roman*)}, topsep=0pt]
+	\item $\cv{}$ is an open set of $\real^n$, \ie for all $x \in \cv{}$
+	there exists $R > 0$ such that $B(x, R) \subset \cv{}$.
+	\label{item:control_volume_condition_1}
+	\item $\cv{}$ is bounded, that is to say, there exist $x_0 \in \real^n$
+	and $R > 0$ such that $\cv{} \subset B(x_0, R)$.
+	\label{item:control_volume_condition_2}
+	\item $\cv{}$ is a $\mathcal{C}^1$--domain. This implies that for every
+	point $x \in \partial \cv{}$ there exists a system of coordinates
+	$(y_1, \ldots, y_{n-1}, y_n) \equiv (\vb{y'}, y_n)$ with origin at $x$,
+	a ball $B(x, R)$ and a function $\varphi$ defined in an open subset
+	$\mathcal{N} \subset \real^{n-1}$ containing $\vb{y'} = \vb{0}'$, such that
+	\cite{salsa2009chap1}: \label{item:control_volume_condition_3}
+	\begin{enumerate}[topsep=0pt]
+		\item $\varphi(\vb{0'}) = 0$ and $\varphi \in \mathcal{C}^1(\mathcal{N},
+		\real)$ ($\varphi$ is a $\mathcal{C}^1$ function from $\mathcal{N}$ to
+		$\real$),
+		\item $\partial \cv{} \cap B(x, R) = \{ (\vb{y'}, y_n) \mid y_n =
+		\varphi(\vb{y'}), \, \vb{y'} \in \mathcal{N} \}$,
+		\item $\cv{} \cap B(x, R) = \{ (\vb{y'}, y_n) \mid y_n >
+		\varphi(\vb{y'}), \, \vb{y'} \in \mathcal{N} \}$.
+	\end{enumerate} 
+\end{enumerate}
+Condition \ref{item:control_volume_condition_1} will be useful to cast an
+integral equation into a differential equation. Condition
+\ref{item:control_volume_condition_2} prevents the integral of a continuous
+function defined on $\overline{\mathcal{V}}$ from becoming infinite. Moreover,
+an unbounded control volume, that is to say, a subset of $\real^n$ that extends
+indefinitely, makes no physical sense. Condition
+\ref{item:control_volume_condition_3}, which is more technical, will allow us to
+apply vector calculus theorems.
+
+Finally, we shall assume that all physical magnitudes, such as the velocity
+field $\vb{v}$, the density $\rho$ or the temperature $T$ are differentiable
+functions on their domains of definition as many times as necessary.
+
+
+
+
