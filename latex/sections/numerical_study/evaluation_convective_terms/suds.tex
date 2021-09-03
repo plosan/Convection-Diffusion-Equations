@@ -1,0 +1,181 @@
+\subsubsection{Second--order Upwind Linear Extrapolation (SUDS)}
+
+As previously mentioned, incompressible flows and fluids at low Mach number are
+more influenced by upstream condition than by downstream conditions. In order to
+account for this fact and to ease the study, we introduce a new notation. When
+located at the face separating two control volumes, $f$ refers to the face, $D$
+is the downstream node, $C$ is the first upstream node and $U$ is the most
+upstream node. Some books may use $U$ and $UU$ instead of $C$ and $U$,
+respectively.
+
+The Second--order Upwind Linear Extrapolation scheme takes profit of this idea
+since it extrapolates $\phi_e$ using a straight line between the values of
+$\phi$ at nodes $C$ and $U$. The two possible situations are pictured in figures
+\ref{fig:suds_1} and \ref{fig:suds_2}.
+\FloatBarrier
+
+\begin{figure}[ht]
+	\centering
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\begin{tikzpicture}
+			% Points
+			\def\zerox{0.5} \def\zeroy{1.5} \def\onex{3} \def\oney{2}
+			\def\twox{5.5} \def\twoy{3} \def\coefa{1.5} \def\coefb{0.2}
+			\def\coefc{0.04}
+			% Ground
+			\draw[thick] (0,0) -- ++(6,0);
+			% Point W
+			\filldraw[black] (\zerox,0) circle (2pt); \draw[dashed] (\zerox,0)
+			-- ++(0,\zeroy); \node[black, yshift=-0.5cm] at (\zerox,0) {$W$};
+			\node[black, yshift=-1cm] at (\zerox,0) {$(U)$};
+			\filldraw[sblue] (\zerox,\zeroy) circle (2pt); \node[blue,
+			yshift=0.5cm] at (\zerox,\zeroy) {$\phi_W$};
+			% Point P
+			\filldraw[black] (\onex,0) circle (2pt); \draw[dashed] (\onex,0) --
+			++(0,\oney); \node[black, yshift=-0.5cm] at (\onex,0) {$P$};
+			\node[black, yshift=-1cm] at (\onex,0) {$(C)$};
+			\filldraw[sblue] (\onex,\oney) circle (2pt); \node[blue,
+			yshift=0.5cm] at (\onex,\oney) {$\phi_P$};
+			% Point e
+			\filldraw[black] ({\onex+1},0) circle (2pt); \draw[dashed]
+			({\onex+1},0) -- ++(0,{1.5+0.5*3.5/2.5}); \node[black,
+			yshift=-0.5cm] at ({\onex+1},0) {$e$}; \filldraw[sblue]
+			({\onex+1},{1.5+0.5*3.5/2.5}) circle (2pt); \node[blue,
+			yshift=0.5cm] at ({\onex+1},{1.5+0.5*3.5/2.5}) {$\phi_e$};
+			% Point E
+			\filldraw[black] (\twox,0) circle (2pt); \draw[dashed] (\twox,0) --
+			++(0,\twoy); \node[black, yshift=-0.5cm] at (\twox,0) {$E$};
+			\node[black, yshift=-1cm] at (\twox,0) {$(D)$};
+			\filldraw[sblue] (\twox,\twoy) circle (2pt); \node[blue,
+			yshift=0.5cm] at (\twox,\twoy) {$\phi_E$}; 
+			% Blue line
+			\draw[scale=1, domain=0:4.5, smooth, variable=\x, sblue,
+			thick] plot ({\x}, {1.5+0.2*(\x-0.5)});
+			% Mass flow
+			\draw[-latex, red, thick] (3.25,0.75) -- ++(1.5,0)
+			node[above]{$\dot{m}_e > 0$};
+		\end{tikzpicture}
+		\captionsetup{width=0.9\textwidth}
+		\caption{SUDS when $(\vb{v} \vdot \vb{n})_e > 0$.}
+		\label{fig:suds_1}
+	\end{minipage}%
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\begin{tikzpicture}
+			% Points
+			\def\zerox{0.5} \def\zeroy{1.5} \def\onex{3} \def\oney{2.5}
+			\def\twox{5.5} \def\twoy{3} \def\coefa{1.5} \def\coefb{0.4}
+			\def\coefc{-0.04}
+			% Ground
+			\draw[thick] (0,0) -- ++(6,0);
+			% Point P
+			\filldraw[black] (\zerox,0) circle (2pt); \draw[dashed] (\zerox,0)
+			-- ++(0,\zeroy); \node[black, yshift=-0.5cm] at (\zerox,0) {$P$};
+			\node[black, yshift=-1cm] at (\zerox,0) {$(D)$};
+			\filldraw[sblue] (\zerox,\zeroy) circle (2pt); \node[blue,
+			yshift=0.5cm] at (\zerox,\zeroy) {$\phi_P$};
+			% Point e
+			\filldraw[black] ({\zerox+1},0) circle (2pt); \draw[dashed]
+			({\zerox+1},0) -- ++(0,{2.5-0.2*1.5}); \node[black, yshift=-0.5cm]
+			at ({\zerox+1},0) {$e$}; \filldraw[sblue]
+			({\zerox+1},{2.5-0.2*1.5}) circle (2pt); \node[blue, yshift=0.5cm]
+			at ({\zerox+1},{2.5-0.2*1.5}) {$\phi_e$};
+			% Point e
+			\filldraw[black] (\onex,0) circle (2pt); \draw[dashed] (\onex,0) --
+			++(0,\oney); \node[black, yshift=-0.5cm] at (\onex,0) {$E$};
+			\node[black, yshift=-1cm] at (\onex,0) {$(C)$};
+			\filldraw[sblue] (\onex,\oney) circle (2pt); \node[blue,
+			yshift=0.5cm] at (\onex,\oney) {$\phi_E$}; 
+			% Point ee
+			\filldraw[black] (\twox,0) circle (2pt); \draw[dashed] (\twox,0) --
+			++(0,\twoy); \node[black, yshift=-0.5cm] at (\twox,0) {$EE$};
+			\node[black, yshift=-1cm] at (\twox,0) {$(U)$};
+			\filldraw[sblue] (\twox,\twoy) circle (2pt); \node[blue,
+			yshift=0.5cm] at (\twox,\twoy) {$\phi_{EE}$}; 
+			% Blue line
+			\draw[scale=1, domain=1:6, smooth, variable=\x, sblue,
+			thick] plot ({\x}, {2.5+0.2*(\x-3)});
+			% Mass flow
+			\draw[-latex, red, thick] (0.75,0.75) -- ++(1.5,0)
+			node[above]{$\dot{m}_e < 0$};
+		\end{tikzpicture}
+		\captionsetup{width=0.9\textwidth}
+		\caption{SUDS when $(\vb{v} \vdot \vb{n})_e < 0$.}
+		\label{fig:suds_2}
+	\end{minipage}
+\end{figure}
+
+\noindent
+On the one hand, when $(\vb{v} \vdot \vb{n})_e > 0$, the line between points
+$(x_W, \phi_W)$ and $(x_P, \phi_P)$ is given by
+\begin{equation}
+	\phi(x) = \phi_W + \frac{\phi_P - \phi_W}{d_{PW}} (x - x_W)
+\end{equation}
+and substituting at $x = x_e$, the formula for $\phi_e$ is obtained:
+\begin{equation} \label{eq:suds_1_1}
+	\phi_e =
+	\phi_W + \frac{\phi_P - \phi_W}{d_{PW}} (x_e - x_W) = 
+	\phi_P + \frac{d_{Pe}}{d_{PW}} (\phi_P - \phi_W) 
+\end{equation}
+On the other hand, in the case of $(\vb{v} \vdot \vb{n})_e < 0$, the line
+between points $(x_E, \phi_E)$ and $(x_{EE}, \phi_{EE})$ is
+\begin{equation}
+	\phi(x) = \phi_E + \frac{\phi_{EE} - \phi_E}{d_{E,EE}} (x - x_E)
+\end{equation}
+and the approximation of $\phi_e$ is
+\begin{equation} \label{eq:suds_2_1}
+	\phi_e =
+	\phi_E + \frac{\phi_{EE} - \phi_E}{d_{E,EE}} (x_e - x_E) =
+	\phi_E + \frac{d_{Ee}}{d_{E,EE}} (\phi_E - \phi_{EE})	
+\end{equation}
+Using the DCU notation, \eqref{eq:suds_1_1} and \eqref{eq:suds_2_1} are both
+rewritten in the following manner:
+\begin{equation}
+	\phi_f - \phi_C = \frac{d_{Cf}}{d_{CU}} (\phi_C - \phi_U)
+\end{equation}
+
+In order to prove that SUDS is a second order scheme when a uniform mesh
+is used and $(\vb{v} \vdot \vb{n})_e > 0$, consider the Taylor expansion up to
+$2^{nd}$ degree of $\phi$ about point $x_W$,
+\begin{equation}
+	\phi_e = 
+	\phi_W + 
+	\left( \pdv{\phi}{x} \right)_W d_{We} + 
+	\left( \pdv[2]{\phi}{x} \right)_{\xi_1} \frac{d_{We}^2}{2}
+\end{equation}
+The first derivative of $\phi$ with respect to $x$ can be replaced by its first
+order approximation, namely,
+\begin{equation}
+	\left(\pdv{\phi}{x}\right)_W = 
+	\frac{\phi_P - \phi_W}{d_{PW}} - \left(\pdv[2]{\phi}{x}\right)_{\xi_2} \frac{d_{PW}}{2}
+\end{equation}
+thereby,
+\begin{align}
+	\phi_e 
+	&= 
+	\phi_W + 
+	\frac{d_{We}}{d_{PW}} (\phi_P - \phi_W) + 
+	\left( \pdv[2]{\phi}{x} \right)_{\xi_1} \frac{d_{We}^2}{2} - 
+	\left( \pdv[2]{\phi}{x} \right)_{\xi_2} \frac{d_{We} d_{PW}}{2} \nonumber \\
+	&= 
+	\phi_P + 
+	\frac{d_{Pe}}{d_{PW}} (\phi_P - \phi_W) + 
+	\left( \pdv[2]{\phi}{x} \right)_{\xi_1} \frac{(d_{PW} + d_{Pe})^2}{2} - 
+	\left( \pdv[2]{\phi}{x} \right)_{\xi_2} \frac{(d_{PW} + d_{Pe}) d_{PW}}{2}	
+	\label{eq:suds_error}
+\end{align}
+The scheme retains the two first terms on the right--hand side of
+\eqref{eq:suds_error}, therefore the error is composed by the last two terms.
+The uniform mesh hypothesis implies $d_{PW} = 2 d_{Pe} = L$, therefore the error
+term is multiplied by $L^2$,
+\begin{equation}
+	\phi_e = 
+	\phi_P + \frac{d_{Pe}}{d_{PW}} (\phi_P - \phi_W) + 
+	\frac{3 L^2}{4}
+	\left\{
+	3 \left( \pdv[2]{\phi}{x} \right)_{\xi_1} - \left( \pdv[2]{\phi}{x} \right)_{\xi_2}
+	\right\}
+\end{equation}
+whence the second order of SUDS is deduced. The proof in the case of $(\vb{v}
+\vdot \vb{n})_e < 0$ is analogous.

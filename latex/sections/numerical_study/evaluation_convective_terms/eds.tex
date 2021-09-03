@@ -1,0 +1,57 @@
+\subsubsection{Exponential--Difference Scheme (EDS)}
+
+The exponential difference scheme assumes a distribution for $\phi$ based on the
+steady 2--dimensional generalized convection--diffusion equation with no source
+term, that is to say,
+\begin{equation}
+	\frac{\dd}{\dd{x}} (\rho u \phi) = \frac{\dd}{\dd{x}} \left( \Gamma \frac{\dd{\phi}}{\dd{x}} \right)
+\end{equation}
+So as to ease the
+study, $\rho u$ and $\Gamma$ are assumed to be constant. Thereby the initial
+value problem obtained is
+\begin{equation} \label{eq:eds_ivp}
+	\left\{
+	\begin{aligned}
+		&\frac{\dd^2 \phi}{\phi{x^2}} - \frac{\rho u}{\Gamma} \frac{\dd{\phi}}{\dd{x}} = 0 & &\text{in } (x_P, x_E) \subset \real \\
+		&\phi(x_P) = \phi_P \\
+		&\phi(x_E) = \phi_E \\
+	\end{aligned}
+	\right.
+\end{equation}
+Since the initial value problem \eqref{eq:eds_ivp} is a second order linear ODE
+with two boundary conditions, its solutions exists, is unique \colorbox{red}{THEOREM}, and is given by
+\begin{equation} \label{eq:eds_ivp_solution_1}
+	\phi(x) = 
+	\phi_P +
+	\frac{e^{\frac{\rho u}{\Gamma} (x - x_P)} - 1}{e^{\frac{\rho u}{\Gamma} d_{PE}} - 1} (\phi_E - \phi_P)
+\end{equation}
+Péclet's number is defined as the ratio between of strengths of convection
+and diffusion \cite{patankar2008numerical},
+\begin{equation}
+	\mathrm{Pe} = 
+	\frac{\text{convection transport rate}}{\text{diffusion transport rate}} = 
+	\frac{\rho u L}{\Gamma}
+\end{equation}
+where $L$ is a characteristic length of the problem. Taking $d_{PE}$ as characteristic length and evaluating
+\eqref{eq:eds_ivp_solution_1} at $x = x_e$, the approximation of $\phi_e$ given
+by EDS in terms of Péclet's number is written as
+\begin{equation} \label{eq:eds_e}
+	\phi_e - \phi_P = 
+	\frac{e^{\mathrm{Pe}_e \frac{d_{Pe}}{d_{PE}}} - 1}{e^{\mathrm{Pe}_e} - 1} (\phi_E - \phi_P)
+\end{equation}
+The extension of \eqref{eq:eds_e} to the face $f$ is done by taking $d_{PF}$ as
+characteristic length, that is, if $f = w$, then the characteristic length is
+$d_{PW}$. Thereby EDS gives the following face values:
+\begin{align}
+	\phi_w &= 
+	\left( 1 - \frac{e^{\mathrm{Pe}_w \frac{d_{Ww}}{d_{PW}}} - 1}{e^{\mathrm{Pe}_w} - 1} \right)
+	 \phi_W + 
+	\frac{e^{\mathrm{Pe}_w \frac{d_{Ww}}{d_{PW}}} - 1}{e^{\mathrm{Pe}_w} - 1} \phi_P \\
+	\phi_n - \phi_P &= 
+	\frac{e^{\mathrm{Pe}_n \frac{d_{Pn}}{d_{PN}}} - 1}{e^{\mathrm{Pe}_n} - 1} (\phi_N - \phi_P) \\
+	\phi_s &= 
+	\left( 1 - \frac{e^{\mathrm{Pe}_s \frac{d_{Ss}}{d_{PS}}} - 1}{e^{\mathrm{Pe}_s} - 1} \right)
+	\phi_S + 
+	\frac{e^{\mathrm{Pe}_s \frac{d_{Ss}}{d_{PS}}} - 1}{e^{\mathrm{Pe}_s} - 1} \phi_P
+	\label{eq:eds_s}	
+\end{align}

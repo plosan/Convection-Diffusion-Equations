@@ -1,0 +1,60 @@
+\subsubsection{Sharp and Monotonic Algorithm for Realistic Transport (SMART)}
+
+As aforementioned, schemes whose order is higher than one might be unstable,
+producing oscillatory outputs for the convective variables. For instance, CDS,
+SUDS and QUICK are not bounded schemes. The conditions for stability and
+accuracy are formulated in \cite{gaskell1988curvature}:
+\begin{enumerate}[label=(\roman*),topsep=0pt]
+	\item $\hat{\phi}_f$ must be a continuous function of $\hat{\phi}_C$.
+	\label{item:stability_accuracy_conditions_scheme_1}
+	\item If $\hat{\phi}_C = 0$, then $\hat{\phi}_f = 0$.
+	\item If $\hat{\phi}_C = 1$, then $\hat{\phi}_f = 1$.
+	\item If $0 < \hat{\phi}_f < 1$, then $\hat{\phi}_C < \hat{\phi}_f <
+	1$.\label{item:stability_accuracy_conditions_scheme_2}
+\end{enumerate}
+Conditions \ref{item:stability_accuracy_conditions_scheme_1} through
+\ref{item:stability_accuracy_conditions_scheme_2} are represented in figure
+\ref{fig:stability_accuracy_conditions_scheme}. A bounded convective scheme must
+output results lying within the shadowed region.
+
+\begin{figure}[ht]
+	\centering
+	\begin{tikzpicture}
+		% Filled zone
+		\fill[fill=sblue, opacity=0.5] (0,0) -- (3,3) -- (0,3) -- cycle;
+		% Axis
+		\draw[-latex, thick] (-0.2,0) -- (4.5,0) node[above]{$\hat{\phi}_C$};
+		\draw[-latex, thick] (0,-0.2) -- (0,4.5) node[right]{$\hat{\phi}_f$};
+		% Countour of filled zine
+		\draw[sblue, thick, dashed] (0,0) -- ++(0,3) -- ++(3,0) --
+		cycle;
+		% Marks
+		\node[below,xshift=2mm] at (0,0) {$0$}; \node[above,xshift=-2mm] at
+		(0,0) {$0$}; \draw[thick] (3,0) -- ++(0,-0.1) node[below]{$1$};
+		\draw[thick] (0,3) -- ++(-0.1,0) node[left]{$1$}; \draw[dashed] (3,0) --
+		++(0,3);
+		% Function
+		\draw[scale=1, domain=-0.2:0, smooth, variable=\x, sblue, thick]
+		plot ({\x}, {\x}); \draw[scale=1, domain=3:4, smooth, variable=\x,
+		sblue, thick] plot ({\x}, {\x});
+	\end{tikzpicture}
+	\captionsetup{width=0.5\textwidth}
+	\caption{High--order bounded convection schemes conditions for stability.}
+	\label{fig:stability_accuracy_conditions_scheme}
+\end{figure}
+
+The SMART scheme (Sharp and Monotonic Algorithm for Realistic Transport) is a
+bounded convective scheme \cite{gaskell1988curvature}, given by:
+\begin{equation} \label{eq:smart_scheme}
+	\hat{\phi}_f = 
+	\left\{
+	\begin{aligned}
+		&-\frac{\hat{x}_f (1 - 3 \hat{x}_C + 2 \hat{x}_f)}{\hat{x}_C (\hat{x}_C - 1)} \hat{\phi}_C & 
+		&\text{if} \quad 0 < \hat{\phi}_C < \frac{\hat{x}_C}{3} \\
+		&\frac{\hat{x}_f (\hat{x}_f - \hat{x}_C)}{1 - \hat{x}_C} + \frac{\hat{x}_f (\hat{x}_f - 1)}{\hat{x}_C (\hat{x}_C - 1)} \hat{\phi}_C &
+		&\text{if} \quad \frac{\hat{x}_C}{3} < \hat{\phi}_C <  \frac{\hat{x}_C (1 + \hat{x}_f - \hat{x}_C)}{\hat{x}_f} \\
+		&1 & &\text{if} \quad \frac{\hat{x}_C (1 + \hat{x}_f - \hat{x}_C)}{\hat{x}_f} < \hat{\phi_C} < 1 \\
+		&\hat{\phi}_C & &\text{otherwise} \\
+	\end{aligned}
+	\right.
+\end{equation}

@@ -1,0 +1,180 @@
+
+\subsection{Spatial and time discretization}
+
+The type of problems we will addressed in this project occur in a bounded
+rectangular domain $\Omega \subset \real^2$, that is to say, there exist
+non--degenerate intervals $[0, L]$ and $[0, W]$ such that
+$\Omega = [0, L] \times [0, W]$. In order to solve the problem numerically we shall
+follow a control--volume formulation. This methodology discretizes
+the domain into nonoverlapping control volumes along with a grid of points named
+discretization nodes. The resulting discretized domain is named mesh or
+numerical grid \cite{patankar2008numerical}.
+
+There exist several types of grids according to the shape of control volumes and
+the ammount of subdivisions the domain has been partitioned into, namely, a
+structured (regular) grid, a block--structured grid and an unstructured grid
+\cite{ferziger2002computational2grid}. However, henceforth we will only consider
+structured regular grids. This formulation allows for two manners to discretize
+the domain, namely, cell--centered and node--centered discretizations. The
+former places discretization nodes over the domain and generates a
+control--volume centered on each node. The latter first generates the
+control--volumes, next places a node at the center of each one and finally sets
+nodes at the border if necessary.
+
+\begin{figure}[ht]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\begin{tikzpicture}
+			% Canvas
+			\fill[white] (-0.5,0) rectangle ++(7,4);
+			% Rectangle
+			\filldraw[fill=dofill, opacity=0.5] (0,0) rectangle ++(6,4);
+			\draw[thick] (0,0) rectangle ++(6,4);
+			% Control volumes
+			\foreach \x in {0,1,...,5} {
+				\draw[black, dashed] ({\x+0.5},0) -- ++(0,4);
+			}
+			\foreach \y in {0,1,...,3} {
+				\draw[black, dashed] (0,{\y+0.5}) -- ++(6,0);
+			}
+			% Axis
+			\draw[-latex, thick, red] (0,0) -- ++(1.5,0) node[below]{$x$};
+			\draw[-latex, thick, red] (0,0) -- ++(0,1.5) node[left]{$y$};
+			% Nodes
+			\foreach \x in {0,1,...,6} {
+				\foreach \y in {0,1,...,4} {
+					\filldraw[sblue, thick] (\x,\y) circle (2pt);
+				}
+			}
+		\end{tikzpicture}
+		\caption{Cell--centered uniform discretization.}
+		\label{fig:face_node_centered_uniform_discretization_comparison_1}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\begin{tikzpicture}
+			% Canvas
+			\fill[white] (-0.5,0) rectangle ++(7,4);
+			% Rectangle
+			\filldraw[fill=dofill, opacity=0.5] (0,0) rectangle ++(6,4);
+			\draw[thick] (0,0) rectangle ++(6,4);
+			% Control volumes
+			\foreach \x in {1,...,5} {
+				\draw[black, dashed] (\x,0) -- ++(0,4);
+			}
+			\foreach \y in {1,...,3} {
+				\draw[black, dashed] (0,\y) -- ++(6,0);
+			}
+			% Axis
+			\draw[-latex, thick, red] (0,0) -- ++(1.5,0) node[below]{$x$};
+			\draw[-latex, thick, red] (0,0) -- ++(0,1.5) node[left]{$y$};
+			% Internal nodes
+			\foreach \x in {0,1,...,5} {
+				\foreach \y in {0,1,...,3} {
+					\filldraw[sblue, thick] ({\x+0.5},{\y+0.5}) circle (2pt);
+				}
+			}
+			% Lower and upper rows nodes
+			\foreach \x in {0,1,...,5} {
+				\filldraw[sblue, thick] ({\x+0.5},0) circle (2pt);
+				\filldraw[sblue, thick] ({\x+0.5},4) circle (2pt);
+			}
+			% Left and right columns nodes
+			\foreach \y in {0,1,...,3} {
+				\filldraw[sblue, thick] (0,{\y+0.5}) circle (2pt);
+				\filldraw[sblue, thick] (6,{\y+0.5}) circle (2pt);
+			}
+			% Corner nodes
+			\foreach \x in {0,1} {
+				\foreach \y in {0,1} {
+					\filldraw[sblue, thick] ({6*\x},{4*\y}) circle (2pt);
+				}
+			}
+		\end{tikzpicture}
+		\caption{Node--centered uniform discretization.}
+		\label{fig:face_node_centered_uniform_discretization_comparison_2}
+	\end{subfigure}
+	\caption{Comparison of the cell--centered and the node--centered uniform discretizations.}
+	\label{fig:face_node_centered_uniform_discretization_comparison}
+\end{figure}
+
+\noindent
+As it can be noticed when uniform discretizations are used, the node--centered
+discretization approach offers higher resolution near the boundary of the
+domain. Notwithstanding, it also generates singular nodes located at the corners
+which need a special treatment, whilst the cell--centered does not. Furthermore,
+we can distinguish between uniform discretizations, where distances between
+adjacent internal nodes are constant along the domain, and non--uniform
+discretizations, meaning the opposite.
+
+Later we will deal with the discretization of the convection--diffusion
+equations in a cell--centered discretized domain. In order to enumerate the
+nodes, we will start from the lower left corner of $\Omega$, where node $(0,0)$
+is located. We will use the notation $(i,j)$ to refer the $i$--th node in
+$x$--coordinate and $j$--th node in $y$--coordinate. Given an arbitrary node
+$(i,j)$ that we denote by $P$, its neighbour nodes are the west node $(i-1,j)$,
+the east node $(i+1,j)$, the south node $(i,j-1)$ and the north node $(i,j+1)$.
+This scheme is pictured in figure \ref{fig:central_node_and_neighbour_nodes}.
+The calligraphic letter $\cv{}$ will be used to denote a control volume. For
+instance, $\cv{P}$ is the control volume associated to node $P$. The volume of
+$\cv{P}$ is $V_P$. The notation $\mathcal{S}_{Pi}$ will denote the interface
+between the control volumes $\mathcal{V}_P$ and $\mathcal{V}_I$. As an example,
+$\mathcal{S}_{Pw}$ is the surface between the control volumes $\mathcal{V}_P$
+and $\mathcal{V}_W$. The distance between the control volumes associated to
+nodes $A$ and $B$ is $d_{AB} = \norm{(x_A - x_B, y_A - y_B)}$. The distance
+between the node $P$ and one of its control surfaces $i$ is given by $d_{Pi}$,
+for example, $d_{Pw}$. 
+
+\begin{figure}[ht]
+	\centering
+	\begin{tikzpicture}
+		\def\nl{1.5cm}
+		\def\of{0.25cm}
+		\def\ys{3mm}
+		% Closing
+		\draw[dashed] (-\nl,-\of) -- (-\nl,{\nl+\of});
+		\draw[dashed] (2*\nl,-\of) -- (2*\nl,{\nl+\of});
+		\draw[dashed] (-\of,-\nl) -- (\nl+\of,-\nl);
+		\draw[dashed] (-\of,2*\nl) -- (\nl+\of,2*\nl);
+		% Horizontal
+		\draw[dashed] ({-\nl-\of},0) -- ({2*\nl+\of},0);
+		\draw[dashed] ({-\nl-\of},\nl) -- ({2*\nl+\of},\nl);
+		% Vertical
+		\draw[dashed] (0,{-\nl-\of}) -- (0,{2*\nl+\of});
+		\draw[dashed] (\nl,{-\nl-\of}) -- (\nl,{2*\nl+\of});
+		% Node P
+		\filldraw[sblue, thick] (0.5*\nl,0.5*\nl) circle (2pt);
+		\node[sblue, yshift=\ys] at (0.5*\nl,0.5*\nl) {$P$};
+		\node[sblue, yshift=-1.3*\ys] at (0.5*\nl,0.5*\nl) {\small{$(i,j)$}};
+		% Node W
+		\filldraw[sblue, thick] (-0.5*\nl,0.5*\nl) circle (2pt);
+		\node[sblue, yshift=\ys] at (-0.5*\nl,0.5*\nl) {$W$};
+		\node[sblue, yshift=-1.3*\ys] at (-0.5*\nl,0.5*\nl) {\small{$(i-1,j)$}};
+		% Node E
+		\filldraw[sblue, thick] (1.5*\nl,0.5*\nl) circle (2pt);
+		\node[sblue, yshift=\ys] at (1.5*\nl,0.5*\nl) {$E$};
+		\node[sblue, yshift=-1.3*\ys] at (1.5*\nl,0.5*\nl) {\small{$(i+1,j)$}};
+		% Node S
+		\filldraw[sblue, thick] (0.5*\nl,-0.5*\nl) circle (2pt);
+		\node[sblue, yshift=\ys] at (0.5*\nl,-0.5*\nl) {$S$};
+		\node[sblue, yshift=-1.3*\ys] at (0.5*\nl,-0.5*\nl) {\small{$(i,j-1)$}};
+		% Node N
+		\filldraw[sblue, thick] (0.5*\nl,1.5*\nl) circle (2pt);
+		\node[sblue, yshift=\ys] at (0.5*\nl,1.5*\nl) {$N$};
+		\node[sblue, yshift=-1.3*\ys] at (0.5*\nl,1.5*\nl) {\small{$(i,j+1)$}};
+	\end{tikzpicture}
+	\caption{Central node $P$ and neighbour nodes.}
+	\label{fig:central_node_and_neighbour_nodes}
+\end{figure}
+
+In regards to time, the problems we consider last for finite time. Therefore the
+time interval is $I = [0, T] \subset \real$ with $T > 0$ finite. The
+discretization of $I$ is simply a partition of it, that is to say, a finite set
+of points $P(I) = \{ t_0 = 0, t_1, \ldots, t_{m-1}, t_m = T \}$ with $t_{i+1} >
+t_i$ for all $0 \leq i < m$. The time discretization is said to uniform whenever
+there exists $\Delta t > 0$ such that $t_{i+1} - t_i = \Delta t$ for all $i$,
+and non--uniform otherwise. In the case of a uniform time discretization, the
+number $\Delta t$ is know as time step. We shall only consider uniform time
+discretizations, nevertheless non--uniform discretizations might be convenient
+in problems combining fast and low transient processes.

@@ -1,0 +1,114 @@
+\subsubsection{Normalization of variables}
+
+Owing to numerical reasons, it is convenient to normalize spatial and convective
+variables, that is to say, define new variables which take a rather small range
+of values. This is accomplished using the $DCU$ notation and defining
+\begin{align}
+	\hat{x} &= \frac{x - x_U}{x_D - x_U} \\
+	\hat{\phi} &= \frac{\phi - \phi_U}{\phi_D - \phi_U}
+\end{align}
+Of course, $(\hat{x}_U, \hat{\phi}_U) = (0,0)$, $(\hat{x}_D, \hat{\phi}_D) =
+(1,1)$ and $\hat{x}_C, \hat{x}_f \in [0,1]$. However, $\hat{\phi}$ is not
+necessarily in $[0,1]$ for all $x \in [0,1]$, nor does it have to be an
+increasing function. These situations are represented in figures
+\ref{fig:normalization_of_variables_1} and
+\ref{fig:normalization_of_variables_2}.
+
+\begin{figure}[ht]
+	\centering
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\draw[-latex, thick] (0,-0.2) -- (0,4.5) node[right]{$\hat{\phi}$};
+			\draw[-latex, thick] (-0.2,0) -- (4.5,0) node[above]{$\hat{x}$};
+			\def\coefa{4}
+			% x-U lines
+			\draw[thick] (0,0) -- ++(0,-0.1) node[below]{$\hat{x}_U = 0$};
+			% phi-U lines
+			\draw[thick] (0,0) -- ++(-0.1,0) node[left]{$\hat{\phi}_U = 0$};
+			% x-D lines
+			\draw[thick] (4,0) -- ++(0,-0.1) node[below]{$\hat{x}_D = 1$};
+			\draw[dashed] (4,0) -- ++(0,4);
+			% phi-D lines
+			\draw[thick] (0,\coefa) -- ++(-0.1,0) node[left]{$\hat{\phi}_D =
+			1$}; \draw[dashed] (0,4) -- (4,4);
+			% x-D lines
+			\draw[thick] (1.5,0) -- ++(0,-0.1) node[below]{$\hat{x}_C$};
+			\draw[dashed] (1.5,0) -- ++(0,{39/16});
+			% phi-D lines
+			\draw[thick] (0,{39/16}) -- ++(-0.1,0) node[left]{$\hat{\phi}_C$};
+			\draw[dashed] (0,{39/16}) -- ++(1.5,0);
+			% x-f lines
+			\draw[thick] (2.5,0) -- ++(0,-0.1) node[below]{$\hat{x}_f$};
+			\draw[dashed] (2.5,0) -- ++(0,{55/16});
+			% phi-f lines
+			\draw[thick] (0,{55/16}) -- ++(-0.1,0) node[left]{$\hat{\phi}_f$};
+			\draw[dashed] (0,{55/16}) -- ++(2.5,0);
+			% Mass flow
+			\draw[-latex, red!70!white, thick] (2,.3125) -- ++(1,0)
+			node[above]{$\dot{m}_f$};
+			% Points
+			\draw[scale=1, domain=0:4, smooth, variable=\x, sblue,
+			thick] plot ({\x}, {(-\x*(\x-2*\coefa))/\coefa});
+			\filldraw[sblue] (0,0) circle (2.5pt);
+			\filldraw[sblue] (4,4) circle (2.5pt);
+			\filldraw[sblue] (1.5,{39/16}) circle (2.5pt);
+			\filldraw[sblue] (2.5,{55/16}) circle (2.5pt);
+		\end{tikzpicture}
+		\captionsetup{width=0.9\textwidth}
+		\caption{Scheme of normalized variables when $\hat{\phi}(x)$ is a
+		strictly increasing function.}
+		\label{fig:normalization_of_variables_1}
+	\end{minipage}%
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\draw[-latex, thick] (0,-0.2) -- (0,4.5) node[right]{$\hat{\phi}$};
+			\draw[-latex, thick] (-0.2,0) -- (4.5,0) node[above]{$\hat{x}$};
+			\def\coefa{1} \def\coefb{-6} \def\coefc{9}
+			% U lines
+			\draw[thick] (0,0) -- ++(0,-0.1) node[below]{$\hat{x}_U = 0$};
+			\draw[thick] (0,0) -- ++(-0.1,0) node[left]{$\hat{\phi}_U = 0$};
+			% x-D lines
+			\draw[thick] (4,0) -- ++(0,-0.1) node[below]{$\hat{x}_D = 1$};
+			\draw[dashed] (4,0) -- (4,4);
+			% phi-D lines
+			\draw[thick] (0,4) -- ++(-0.1,0) node[left]{$\hat{\phi}_D = 1$};
+			\draw[dashed] (0,4) -- (4,4);
+			% x-C lines
+			\draw[thick] (1.5,0) -- ++(0,-0.1) node[below]{$\hat{x}_C$};
+			\draw[dashed] (1.5,0) -- ++(0,3.375);
+			% phi-C lines
+			\draw[thick] (0,3.375) -- ++(-0.1,0) node[left]{$\hat{\phi}_C$};
+			\draw[dashed] (0,3.375) -- ++(1.5,0);
+			% x-f lines
+			\draw[thick] (2.5,0) -- ++(0,-0.1) node[below]{$\hat{x}_f$};
+			\draw[dashed] (2.5,0) -- ++(0,0.625);
+			% phi-f lines
+			\draw[thick] (0,0.625) -- ++(-0.1,0) node[left]{$\hat{\phi}_f$};
+			\draw[dashed] (0,0.625) -- ++(2.5,0);
+			% Mass flow
+			\draw[-latex, red!70!white, thick] (2,0.3125) -- ++(1,0)
+			node[above]{$\dot{m}_f$};
+			% Function
+			\draw[scale=1, domain=0:4, smooth, variable=\x, sblue,
+			thick] plot ({\x}, {\coefa*\x^3 + \coefb*\x^2 + \coefc*\x});
+			% Points
+			\filldraw[sblue] (0,0) circle (2.5pt);
+			\filldraw[sblue] (4,4) circle (2.5pt);
+			\filldraw[sblue] (1.5,3.375) circle (2.5pt);
+			\filldraw[sblue] (2.5,0.625) circle (2.5pt);
+		\end{tikzpicture}
+		\captionsetup{width=0.9\textwidth}
+		\caption{Scheme of normalized variables when $\hat{\phi}(x)$ is not a
+		strictly increasing function.}
+		\label{fig:normalization_of_variables_2}
+	\end{minipage}
+\end{figure}
+
+Some schemes, such as SMART, give the value of the normalized variable at face
+$\hat{\phi}_f$ directly as equation \eqref{eq:smart_scheme} shows. Based on $\hat{\phi}_f$, the variable at
+face is calculated by
+\begin{equation}
+	\phi_f = \phi_U + \hat{\phi}_f (\phi_D - \phi_U)
+\end{equation}

@@ -1,0 +1,155 @@
+\subsection{Treatment of boundary conditions}
+
+In Cauchy problems involving Partial Differential Equations (PDEs), there exist
+several kinds of boundary conditions which must be prescribed in order to
+guarantee the existence and uniqueness of solution, although in this project
+we will only consider two types. So as to illustrate how these conditions are set,
+let $U \subset \real^n$ be a bounded open subset of $\real^n$. The heat or diffusion
+equation is the PDE
+\begin{equation} \label{eq:boundary_conditions_heat_equation}
+	u_t - \Delta u = f(x, t) \quad (x, t) \in U \times (0,\infty)
+\end{equation}
+where $\Delta = \sum_{i=1}^{m} \pdv[2]{}{x_i}$ is Laplace's operator and $f$
+models the internal sources for magnitude $u$ \cite{evans1998heat}. This equation models the
+evolution in time of the density $u$ of some quantity such as heat, chemical
+concentration, etc. Let $g \colon U \rightarrow \real$ be the
+initial value for $u$. The typical Cauchy problem for diffusion equation is
+\begin{equation} \label{eq:boundary_conditions_problem}
+	\left\{
+	\begin{aligned}
+		&u_t - \Delta u = f(x, t) & &\text{in } U \times (0,\infty) \\
+		&u = g & &\text{on } U \times \{ t = 0 \} \\
+		&\text{Boundary conditions}
+	\end{aligned}
+	\right.
+\end{equation}
+The boundary conditions considered are:
+\begin{itemize}[topsep=0pt]
+	\item Dirichlet boundary condition: the value of $u$ is prescribed on
+	$\partial U \times (0,\infty)$, that is to say, if $d \colon \partial U
+	\times (0,\infty) \rightarrow \real$, $(x, t) \mapsto d(x, t)$
+	describes the boundary condition, then
+	\eqref{eq:boundary_conditions_problem} is written as
+	\begin{equation}
+		\left\{
+		\begin{aligned}
+			&u_t - \Delta u = f(x, t) & &\text{in } U \times (0,\infty) \\
+			&u = g & &\text{on } U \times \{ t = 0 \} \\
+			&u = d & &\text{on } \partial U \times (0,\infty)
+		\end{aligned}
+		\right.
+	\end{equation}
+	When \eqref{eq:boundary_conditions_heat_equation} is thought of as
+	describing the propagation of heat, then $d$ fixes the temperature at the
+	boundary of $U$ for each time.
+	\item Neumann boundary condition: the normal derivative of $u$ to the
+	boundary of $U$ is prescribed on $\partial U \times (0,\infty)$, \ie if $n
+	\colon \partial U \times (0,\infty) \rightarrow \real$ describes the
+	boundary condition, then \eqref{eq:boundary_conditions_problem} is written
+	as
+	\begin{equation}
+		\left\{
+		\begin{aligned}
+			&u_t - \Delta u = f(x, t) 	& &\text{in } U \times (0,\infty) \\
+			&u = g 							& &\text{on } U \times \{ t = 0 \} \\
+			&\partial_{\nu} u = n 			& &\text{on } \partial U \times (0,\infty)
+		\end{aligned}
+		\right.
+	\end{equation}
+	where $\nu$ is the outer normal vector to $\partial U$. In terms of heat,
+	this boundary condition sets the conduction heat transfer through $U$ for
+	each time.
+\end{itemize}
+
+The numerical treatment of boundary conditions is straightforward, specially is
+our case as we are using a cartesian mesh on a rectangular domain. In the
+case of a Dirichlet boundary condition, such as the one shown in figure
+\ref{fig:boundary_conditions_dirichlet}, the value at face must be equal to the
+prescribed value at boundary, that is,
+\begin{equation}
+	\phi_e = \phi_E
+\end{equation}
+and flux per unit of surface can be easily computed as
+\begin{equation}
+	j_e = -\Gamma_P \frac{\phi_e - \phi_P}{d_{Pe}}
+\end{equation}
+In contrast, when a Neumann boundary condition with flux $j_e$ is imposed, the value at
+face is
+\begin{equation}
+	\phi_e = \phi_P - \frac{j_e d_{Pe}}{\Gamma_P}
+\end{equation}
+This second situation is pictured in figure
+\ref{fig:boundary_conditions_neumann}.
+
+\begin{figure}\centering
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\def\nl{1.5cm}
+			\def\of{0.25cm}
+			\def\ys{3mm}
+			% Canvas
+			\fill[white] (-\of,{-\nl-\of}) rectangle (3*\nl,{2*\nl+\of});
+			% Horizontal lines control volumes
+			\draw[dashed] (-\of,-\nl) -- (1.5*\nl,-\nl);
+			\draw[dashed] (-\of,0) -- (1.5*\nl,0);
+			\draw[dashed] (-\of,\nl) -- (1.5*\nl,\nl);
+			\draw[dashed] (-\of,2*\nl) -- (1.5*\nl,2*\nl);
+			% Vertical lines control volumes
+			\draw[dashed] (0,-\nl-\of) -- (0,2*\nl+\of);
+			\draw[dashed] (\nl,-\nl-\of) -- (\nl,2*\nl+\of);
+			\draw[thick] (1.5*\nl,-\nl-\of) -- (1.5*\nl,2*\nl+\of);
+			% Nodes
+			\foreach \x in {0,1} {
+				\foreach \y in {-1,0,1} {
+					\filldraw[sblue] (\x*\nl+0.5*\nl,\y*\nl+0.5*\nl) circle (2pt);
+				}
+			}
+			% Text
+			\node[sblue, yshift=\ys] at (0.5*\nl, 0.5*\nl) {$P$};
+			\node[sblue, yshift=\ys] at (0.5*\nl, 1.5*\nl) {$N$};
+			\node[sblue, yshift=\ys] at (0.5*\nl, -0.5*\nl) {$S$};
+			\node[circle, inner sep=0pt, outer sep=0pt, yshift=\ys, sblue, fill=white] at ({1.5*\nl},0.5*\nl) {$E$};
+			\node[sblue, anchor=west, xshift=1mm] at ({1.5*\nl}, 0.5*\nl) {$\phi_e = \phi_E$};
+		\end{tikzpicture}
+		\captionsetup{width=0.9\textwidth}
+		\caption{Dirichlet boundary condition.}
+		\label{fig:boundary_conditions_dirichlet}
+	\end{minipage}%
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\def\nl{1.5cm}
+			\def\of{0.25cm}
+			\def\ys{3mm}
+			% Canvas
+			\fill[white] (-\of,{-\nl-\of}) rectangle (3*\nl,{2*\nl+\of});
+			% Horizontal lines control volumes
+			\draw[dashed] (-\of,-\nl) -- (1.5*\nl,-\nl);
+			\draw[dashed] (-\of,0) -- (1.5*\nl,0);
+			\draw[dashed] (-\of,\nl) -- (1.5*\nl,\nl);
+			\draw[dashed] (-\of,2*\nl) -- (1.5*\nl,2*\nl);
+			% Vertical lines control volumes
+			\draw[dashed] (0,-\nl-\of) -- (0,2*\nl+\of);
+			\draw[dashed] (\nl,-\nl-\of) -- (\nl,2*\nl+\of);
+			\draw[thick] (1.5*\nl,-\nl-\of) -- (1.5*\nl,2*\nl+\of);
+			% Nodes
+			\foreach \x in {0,1} {
+				\foreach \y in {-1,0,1} {
+					\filldraw[sblue] (\x*\nl+0.5*\nl,\y*\nl+0.5*\nl) circle (2pt);
+				}
+			}
+			% Text
+			\node[sblue, yshift=\ys] at (0.5*\nl, 0.5*\nl) {$P$};
+			\node[sblue, yshift=\ys] at (0.5*\nl, 1.5*\nl) {$N$};
+			\node[sblue, yshift=\ys] at (0.5*\nl, -0.5*\nl) {$S$};
+			\node[circle, inner sep=0pt, outer sep=0pt, yshift=\ys, sblue, fill=white] at ({1.5*\nl},0.5*\nl) {$E$};			
+			% Arrow
+			\draw[->, red, thick] (1.05*\nl,0.5*\nl) -- ++(0.9*\nl,0) node[anchor=west]{$j_e = j_E$};
+		\end{tikzpicture}
+		\captionsetup{width=0.9\textwidth}
+		\caption{Neumann boundary condition.}
+		\label{fig:boundary_conditions_neumann}
+	\end{minipage}
+\end{figure}
+

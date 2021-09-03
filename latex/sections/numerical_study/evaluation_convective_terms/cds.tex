@@ -1,0 +1,74 @@
+\subsubsection{Central--Difference Scheme (CDS)}
+
+The Central--Difference Scheme assumes a linear distribution for $\phi$ as
+illustrated in figure \ref{fig:central_difference_scheme}. 
+\begin{figure}[ht]
+	\centering
+	\begin{tikzpicture}
+		% Ground
+		\draw[thick] (0,0) -- ++(6,0);
+		% Point P
+		\filldraw[black] (0.5,0) circle (2pt); \draw[dashed] (0.5,0) --
+		++(0,1.5); \node[black, yshift=-0.5cm] at (0.5,0) {$P$};
+		\filldraw[sblue] (0.5,1.5) circle (2pt); \node[blue,
+		yshift=0.5cm] at (0.5,1.5) {$\phi_P$};
+		% Point e
+		\filldraw[black] (2.5,0) circle (2pt); \draw[dashed] (2.5,0) --
+		++(0,{1.5+3/5}); \node[black, yshift=-0.5cm] at (2.5,0) {$e$};
+		\filldraw[sblue] (2.5,{1.5+3/5}) circle (2pt); \node[blue,
+		yshift=0.5cm] at (2.5,{1.5+3/5}) {$\phi_e$}; 
+		% Point E
+		\filldraw[black] (5.5,0) circle (2pt); \draw[dashed] (5.5,0) -- ++(0,3);
+		\node[black, yshift=-0.5cm] at (5.5,0) {$E$}; \filldraw[sblue]
+		(5.5,3) circle (2pt); \node[blue, yshift=0.5cm] at (5.5,3.0) {$\phi_e$};
+		
+		% Blue line
+		\draw[thick, sblue] (0,{1.5-1.5/10}) -- (6,{1.5+1.5*5.5/5});
+	\end{tikzpicture}
+	\caption{Central Difference Scheme (CDS).}
+	\label{fig:central_difference_scheme}
+\end{figure}
+
+\noindent
+Thereby $\phi_e$ can be obtained interpolating between $\phi_P$ and $\phi_E$,
+\begin{equation} \label{eq:cds_e}
+	\phi_e - \phi_P = \frac{d_{Pe}}{d_{PE}} (\phi_E - \phi_P)
+\end{equation}
+as well as the remaining faces values,
+\begin{align}
+	\phi_w - \phi_P &= \frac{d_{Pw}}{d_{PW}} (\phi_W - \phi_P) \\
+	\phi_n - \phi_P &= \frac{d_{Pn}}{d_{PN}} (\phi_N - \phi_P) \\
+	\phi_s - \phi_P &= \frac{d_{Ps}}{d_{PS}} (\phi_S - \phi_P) \label{eq:cds_s}
+\end{align}
+This yields a $2^{\text{nd}}$ order approximation for $\phi_e$ if $d_{Pe} =
+d_{Ee}$. In effect, applying Taylor's theorem about point $x_e$,
+\begin{equation} \label{eq:cds_taylor_expansion}
+	\phi_P = 
+	\phi_e 
+	- \left(\pdv{\phi}{x}\right)_e d_{Pe} 
+	+ \frac{1}{2} \left(\pdv[2]{\phi}{x}\right)_e d_{Pe}^2 
+	+ \frac{1}{6} \left(\pdv[3]{\phi}{x}\right)_{\xi_1} d_{Pe}^3
+\end{equation}
+The $2^\text{nd}$ order approximation of $(\partial_x \phi)_e$ is given by
+\begin{equation} \label{eq:cds_derivative_approximation}
+	\left(\pdv{\phi}{x}\right)_e = 
+	\frac{\phi_E - \phi_P}{d_{PE}} - \left(\pdv[3]{\phi}{x}\right)_{\xi_2} \frac{d_{PE}^2}{3!} = 	
+	\frac{\phi_E - \phi_P}{d_{PE}} - \left(\pdv[3]{\phi}{x}\right)_{\xi_2} \frac{(d_{Pe} + d_{Ee})^2}{3!}
+\end{equation}
+Introducing \eqref{eq:cds_derivative_approximation} in
+\eqref{eq:cds_taylor_expansion} and imposing $d_{Pe} = d_{Ee}$, 
+\begin{equation} \label{eq:cds_error_terms}
+	\phi_e - \phi_P = 
+	\frac{d_{Pe}}{d_{PE}} (\phi_E - \phi_P) - 
+	\left( \pdv[2]{\phi}{x} \right)_e \frac{d_{Pe}^2}{2} -
+	\left\{ 
+	\left( \pdv[3]{\phi}{x} \right)_{\xi_1} + 4 \left( \pdv[3]{\phi}{x} \right)_{\xi_2}
+	\right\} 
+	\frac{d_{Pe}^3}{6}
+\end{equation}
+As CDS retains the first term on the left--hand side of
+\eqref{eq:cds_error_terms}, the highest order term of the error is $\frac{1}{2}
+(\partial_x^2 \phi)_e d_{Pe}^2$, proving that CDS provides a $2^\text{nd}$ order
+approximation of $\phi_e$ when $d_{Pe} = d_{Ee}$. Nonetheless, this scheme is
+prone to stability problems producing oscillatory outputs since the
+approximation is of order higher than $1$.

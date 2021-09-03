@@ -1,0 +1,18 @@
+\subsection{Evaluation of the convective terms}
+
+The discretized version of the generalized convection--diffusion equation
+requires the values of $\phi$ at points different from the nodes. In this
+subsection we study several methods to compute the value of $\phi$ at faces. We
+will assume that $\rho$ and $\Gamma$ are known at the nodal points. For the sake
+of simplicity, we will evaluate the convective term at east face, although the
+generalization to the remaining faces is straightforward. The references for
+this subsection are \cite{patankar2008numerical} and
+\cite{ferziger2002computational4finite}.
+
+\input{sections/numerical_study/evaluation_convective_terms/uds.tex}
+\input{sections/numerical_study/evaluation_convective_terms/cds.tex}
+\input{sections/numerical_study/evaluation_convective_terms/eds.tex}
+\input{sections/numerical_study/evaluation_convective_terms/suds.tex}
+\input{sections/numerical_study/evaluation_convective_terms/quick.tex}
+\input{sections/numerical_study/evaluation_convective_terms/variable_normalization.tex}
+\input{sections/numerical_study/evaluation_convective_terms/smart.tex}

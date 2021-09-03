@@ -1,0 +1,191 @@
+\subsubsection{Quadratic Upwind Interpolation for Convective Kinematics (QUICK)}
+
+A logical improvement of CDS is using a parabola to interpolate between nodal
+points rather than a straight line. To construct a parabola three points are
+needed. As aforementioned, upstream conditions have a greater influence on flow
+properties than downstream conditions for incompressible flows and low Mach
+number gases. QUICK scheme takes profit of this fact. 
+
+\begin{figure}[ht]
+	\centering
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\begin{tikzpicture}
+			% Points
+			\def\zerox{0.5} \def\zeroy{1.5} \def\onex{3} \def\oney{2}
+			\def\twox{5.5} \def\twoy{3} \def\coefa{1.5} \def\coefb{0.2}
+			\def\coefc{0.04}
+			% Ground
+			\draw[thick] (0,0) -- ++(6,0);
+			% Point W
+			\filldraw[black] (\zerox,0) circle (2pt); \draw[dashed] (\zerox,0)
+			-- ++(0,\zeroy); \node[black, yshift=-0.5cm] at (\zerox,0) {$W$};
+			\node[black, yshift=-1cm] at (\zerox,0) {$(U)$}; \filldraw[sblue]
+			(\zerox,\zeroy) circle (2pt); \node[blue, yshift=0.5cm] at
+			(\zerox,\zeroy) {$\phi_W$};
+			% Point P
+			\filldraw[black] (\onex,0) circle (2pt); \draw[dashed] (\onex,0) --
+			++(0,\oney); \node[black, yshift=-0.5cm] at (\onex,0) {$P$};
+			\node[black, yshift=-1cm] at (\onex,0) {$(C)$}; \filldraw[sblue]
+			(\onex,\oney) circle (2pt); \node[blue, yshift=0.5cm] at
+			(\onex,\oney) {$\phi_P$};
+			% Point e
+			\filldraw[black] ({\onex+1},0) circle (2pt); \draw[dashed]
+			({\onex+1},0) -- ++(0,2.34); \node[black, yshift=-0.5cm] at
+			({\onex+1},0) {$e$}; \filldraw[sblue] ({\onex+1},2.34) circle (2pt);
+			\node[blue, yshift=0.5cm] at ({\onex+1},2.34) {$\phi_e$};
+			% Point E
+			\filldraw[black] (\twox,0) circle (2pt); \draw[dashed] (\twox,0) --
+			++(0,\twoy); \node[black, yshift=-0.5cm] at (\twox,0) {$E$};
+			\node[black, yshift=-1cm] at (\twox,0) {$(D)$}; \filldraw[sblue]
+			(\twox,\twoy) circle (2pt); \node[blue, yshift=0.5cm] at
+			(\twox,\twoy) {$\phi_E$}; 
+			% Blue line
+			\draw[scale=1, domain=0:6, smooth, variable=\x, sblue, thick] plot
+			({\x}, {\coefa + \coefb*(\x-\zerox) +
+			\coefc*(\x-\zerox)*(\x-\onex)});
+			% Mass flow
+			\draw[-latex, red, thick] (3.25,0.75) -- ++(1.5,0)
+			node[above]{$\dot{m}_e > 0$};
+		\end{tikzpicture}
+		\captionsetup{width=0.9\textwidth}
+		\caption{QUICK when $(\vb{v} \vdot \vb{n})_e > 0$.}
+		\label{fig:quick_1}
+	\end{minipage}%
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\begin{tikzpicture}
+			% Points
+			\def\zerox{0.5} \def\zeroy{1.5} \def\onex{3} \def\oney{2.5}
+			\def\twox{5.5} \def\twoy{3} \def\coefa{1.5} \def\coefb{0.4}
+			\def\coefc{-0.04}
+			% Ground
+			\draw[thick] (0,0) -- ++(6,0);
+			% Point P
+			\filldraw[black] (\zerox,0) circle (2pt); \draw[dashed] (\zerox,0)
+			-- ++(0,\zeroy); \node[black, yshift=-0.5cm] at (\zerox,0) {$P$};
+			\node[black, yshift=-1cm] at (\zerox,0) {$(D)$}; \filldraw[sblue]
+			(\zerox,\zeroy) circle (2pt); \node[blue, yshift=0.5cm] at
+			(\zerox,\zeroy) {$\phi_P$};
+			% Point e
+			\filldraw[black] ({\zerox+1},0) circle (2pt); \draw[dashed]
+			({\zerox+1},0) -- ++(0,1.96); \node[black, yshift=-0.5cm] at
+			({\zerox+1},0) {$e$}; \filldraw[sblue] ({\zerox+1},1.96) circle
+			(2pt); \node[blue, yshift=0.5cm] at ({\zerox+1},1.96) {$\phi_e$};
+			% Point e
+			\filldraw[black] (\onex,0) circle (2pt); \draw[dashed] (\onex,0) --
+			++(0,\oney); \node[black, yshift=-0.5cm] at (\onex,0) {$E$};
+			\node[black, yshift=-1cm] at (\onex,0) {$(C)$}; \filldraw[sblue]
+			(\onex,\oney) circle (2pt); \node[blue, yshift=0.5cm] at
+			(\onex,\oney) {$\phi_E$}; 
+			% Point ee
+			\filldraw[black] (\twox,0) circle (2pt); \draw[dashed] (\twox,0) --
+			++(0,\twoy); \node[black, yshift=-0.5cm] at (\twox,0) {$EE$};
+			\node[black, yshift=-1cm] at (\twox,0) {$(U)$}; \filldraw[sblue]
+			(\twox,\twoy) circle (2pt); \node[blue, yshift=0.5cm] at
+			(\twox,\twoy) {$\phi_{EE}$}; 
+			% Blue line
+			\draw[scale=1, domain=0:6, smooth, variable=\x, sblue, thick] plot
+			({\x}, {\coefa + \coefb*(\x-\zerox) +
+			\coefc*(\x-\zerox)*(\x-\onex)});
+			% Mass flow
+			\draw[-latex, red, thick] (0.75,0.75) -- ++(1.5,0)
+			node[above]{$\dot{m}_e < 0$};
+		\end{tikzpicture}
+		\captionsetup{width=0.9\textwidth}
+		\caption{QUICK when $(\vb{v} \vdot \vb{n})_e < 0$.}
+		\label{fig:quick_2}
+	\end{minipage}
+\end{figure}
+
+\noindent
+Let $(x_0, \phi_0)$, $(x_1, \phi_1)$, $(x_2, \phi_2)$ be the points which the
+polynomial $p(x)$ must interpolate, that is, $p(x_0) = \phi_0$, $p(x_1) =
+\phi_1$ and $p(x_2) = \phi_2$, satisfying $x_0 < x_1 < x_2$. If $(\vb{v} \vdot
+\vb{n})_e > 0$ then $x_0 = x_W$, $x_1 = x_P$ and $x_2 = x_E$, whereas $x_0 =
+x_P$, $x_1 = x_E$ and $x_2 = x_{EE}$ in the case of $(\vb{v} \vdot \vb{n})_e <
+0$. Let $p(x)$ be the following polynomial
+\begin{equation}
+	p(x) = a_0 + a_1 (x - x_0) + a_2 (x - x_0) (x - x_1), \quad a_0, a_1, a_2 \in \real
+\end{equation}
+Since the interpolating polynomial exists and is unique (see
+\cite{quarteroni2010numerical8pinterp}, Theorem 8.1), by imposing the
+interpolating condition, $p(x)$ will be the desired polynomial. The
+interpolating condition is,
+\begin{equation}
+	\left.
+	\begin{aligned}
+		p(x_0) &= a_0 = \phi_0 \\
+		p(x_1) &= a_0 + a_1 (x_1 - x_0) = \phi_1 \\
+		p(x_2) &= a_0 + a_1 (x_2 - x_0) + a_2 (x_2 - x_0) (x_2 - x_1) = \phi_2
+	\end{aligned}	
+	\right\}
+\end{equation}
+which yields the following linear system:
+\begin{equation}
+	\begin{pmatrix}
+		1 & 0 & 0 \\
+		1 & x_1 - x_0 & 0 \\
+		1 & x_2 - x_0 & (x_2 - x_1)(x_2 - x_0)
+	\end{pmatrix}
+	\begin{pmatrix}
+		a_0 \\ a_1 \\ a_2
+	\end{pmatrix} = 
+	\begin{pmatrix}
+		\phi_0 \\ \phi_1 \\ \phi_2
+	\end{pmatrix}
+\end{equation}
+The determinant of the system matrix is non-zero because the abscissae are
+distinct, therefore the solution is given by
+\begin{equation}
+	\left.
+	\begin{aligned}
+		a_0 &= \phi_0 \\
+		a_1 &= \frac{\phi_1 - \phi_0}{x_1 - x_0} \\
+		a_2 &= \frac{\phi_2 - \phi_0}{(x_2 - x_1)(x_2 - x_0)} - \frac{\phi_1 - \phi_0}{(x_2 - x_1)(x_1 - x_0)}
+	\end{aligned}	
+	\right\}
+\end{equation}
+and the polynomial is
+\begin{equation} \label{eq:quick_polynomial_1}
+	p(x) = 
+	\phi_0 - 
+	\frac{(x - x_2) (x - x_0)}{(x_2 - x_1)(x_1 - x_0)} (\phi_1 - \phi_0) + 
+	\frac{(x - x_1)(x - x_0)}{(x_2 - x_1)(x_2 - x_0)} (\phi_2 - \phi_0)
+\end{equation}
+In terms of the $DCU$ notation, we have the following:
+\begin{equation}
+	p(x) = 
+	\left\{
+	\begin{aligned}		
+		&\phi_U - 
+		\frac{(x - x_D)(x - x_U)}{(x_D - x_C)(x_C - x_U)} (\phi_C - \phi_U) + 
+		\frac{(x - x_C)(x - x_U)}{(x_D - x_C)(x_D - x_U)} (\phi_D - \phi_U)
+		& &\text{if } (\vb{v} \vdot \vb{n})_e > 0 \\
+		&\phi_D - 
+		\frac{(x - x_U)(x - x_D)}{(x_U - x_C)(x_C - x_D)} (\phi_C - \phi_D) + 
+		\frac{(x - x_C)(x - x_D)}{(x_U - x_C)(x_U - x_D)} (\phi_U - \phi_D)
+		& &\text{if } (\vb{v} \vdot \vb{n})_e < 0
+	\end{aligned}
+	\right.
+\end{equation}
+Assuming a uniform grid, \ie $x_1 - x_0 = x_2 - x_1 = L$ and the face $f$
+located at the midpoint between nodal points, the approximation of $\phi_e$
+given by QUICK scheme is
+\begin{equation}
+	\phi_e = -\frac{1}{8} \phi_0 + \frac{6}{8} \phi_1 + \frac{3}{8} \phi_2
+\end{equation}
+and depending on the sign of $(\vb{v} \vdot \vb{n})_e$,
+\begin{equation} \label{eq:quick_approximation}
+	\phi_e = 
+	\left\{
+	\begin{aligned}
+		&-\frac{1}{8} \phi_U + \frac{6}{8} \phi_C + \frac{3}{8} \phi_D & 
+		&\text{if } (\vb{v} \vdot \vb{n})_e > 0 \\
+		&-\frac{1}{8} \phi_D + \frac{6}{8} \phi_C + \frac{3}{8} \phi_U & 
+		&\text{if } (\vb{v} \vdot \vb{n})_e < 0 \\
+	\end{aligned}
+	\right.
+\end{equation}
+The output \eqref{eq:quick_approximation} provided by QUICK scheme is
+second--order accurate.
