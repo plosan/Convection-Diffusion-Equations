@@ -1,16 +1,24 @@
 
 \subsection{Statement}
 
-The diagonal flow case takes places in the domain $\Omega = (0,L) \times (0,L) \subset \real^2$ where $L > 0$ is a constant length. In $\Omega$ the steady state general convection--diffusion equation with no source term, constant density and constant diffusion coefficient is considered. Under these hypothesis equation \eqref{eq:cde_general_convection_diffusion_equation} is
+Let $L > 0$ be a constant and consider the square domain $\Omega = (0,L) \times
+(0,L) \subset \real^2$. In $\Omega$ we consider the steady state version of the
+generalized convection--diffusion equation
+\eqref{eq:cde_general_convection_diffusion_equation}, with no source term,
+constant density and constant diffusion coefficient, that is to say,
 \begin{equation} \label{eq:diagcase_statement_pde1}
 	\frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} = \Delta{\phi}
 \end{equation}
 The following Dirichlet boundary conditions are prescribed:
 \begin{itemize}[topsep=0pt]
-	\item $\phi = \phi_\text{low}$ on $C_1 = [0,L) \times \{ 0 \} \cup \{ L \} \times [0,L)$.
-	\item $\phi = \phi_\text{high}$ on $C_2 = \{ 0 \} \times (0,L] \cup (0,L] \times \{ L \}$.
+	\item $\phi = \phi_\text{low}$ on $C_1 = [0,L) \times \{ 0 \} \cup \{ L \}
+	\times [0,L)$.
+	\item $\phi = \phi_\text{high}$ on $C_2 = \{ 0 \} \times (0,L] \cup (0,L]
+	\times \{ L \}$.
 \end{itemize}
-Notice that $C_1, \ C_2 \subset \real^2$ constitute a partition of the boundary of $\Omega$. In order to encode the boundary conditions more easily, we define the function $g \colon \Omega \rightarrow \real$ in the following way:
+Notice that $C_1, \ C_2 \subset \real^2$ constitute a partition of the boundary
+of $\Omega$. In order to encode the boundary conditions more easily, we define
+the function $g \colon \Omega \rightarrow \real$ in the following way:
 \begin{equation}
 	g(x,y) =
 	\left\{
@@ -20,7 +28,8 @@ Notice that $C_1, \ C_2 \subset \real^2$ constitute a partition of the boundary 
 	\end{aligned}
 	\right.
 \end{equation}
-The velocity field is $\vb{v} = v_0 \cos(\alpha) \vb{i} + v_0 \sin(\alpha) \vb{j}$ with $v_0 > 0$ constant and $\alpha = \pi / 4$, whence
+The velocity field is $\vb{v} = v_0 \cos(\alpha) \vb{i} + v_0 \sin(\alpha)
+\vb{j}$ with $v_0 > 0$ constant and $\alpha = \pi / 4$, whence
 \begin{align}
 	\frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} = 
 	\frac{\rho v_0 \cos(\alpha)}{\Gamma} \left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\} = 
@@ -29,7 +38,9 @@ The velocity field is $\vb{v} = v_0 \cos(\alpha) \vb{i} + v_0 \sin(\alpha) \vb{j
 	\left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\} = 
 	\beta \, \mathrm{Pe} \left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\}
 \end{align}
-The resulting Cauchy problem is gathered in \eqref{eq:diagonal_case_cauchy_problem} and summarized in figure \ref{fig:diagonal_case_cauchy_problem}.
+The resulting Cauchy problem is gathered in
+\eqref{eq:diagonal_case_cauchy_problem} and summarized in figure
+\ref{fig:diagonal_case_cauchy_problem}.
 \begin{equation} \label{eq:diagonal_case_cauchy_problem}
 	\left\{
 	\begin{aligned}
@@ -53,7 +64,7 @@ The resulting Cauchy problem is gathered in \eqref{eq:diagonal_case_cauchy_probl
 		\draw[black, thick] (\L,0) -- ++(0,-\mlength) node[below]{$L$};
 		\draw[black, thick] (0,\L) -- ++(-\mlength,0) node[left]{$L$};
 		% Domain
-		\fill[cyan!70!white,opacity=0.7] (0,0) rectangle (\L, \L);
+		\fill[sblue,opacity=0.5] (0,0) rectangle (\L, \L);
 		\draw[thick, thick] (0,0) rectangle (\L, \L);
 		% Right boundary condition
 		\node[inner sep=0pt] at (\L,{0.5*\L}) (rb) {};
