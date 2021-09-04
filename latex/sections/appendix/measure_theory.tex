@@ -1,53 +1,85 @@
 
 \section{Some results on Measure Theory}
 
-In this appendix we gather two important theorems needed to justify some steps in the derivation of conservation laws in section \ref{sec:the_convection_diffusion_equations}. Despite these results are basic, a previous study of real analysis is required in order to understand and prove them. A good reference for the interested reader is Real and Complex Analysis of Walter Rudin \cite{rudin1987real}. 
+In this appendix we gather two important theorems needed to justify some steps
+in the derivation of conservation laws in section
+\ref{sec:the_convection_diffusion_equations}. Despite these results are basic, a
+previous study of real analysis is required in order to understand and prove
+them. A good reference for the interested reader is Real and Complex Analysis of
+Walter Rudin \cite{rudin1987real}. 
 
 \subsection{Differentiation under the integral sign}
 
-Differentiation under the integral sign allows us to compute the derivative of an integral of a function of two parameters in a simple way. It is needed, for instance, when the mass conservation law or the heat diffusion equation are derived. 
+Differentiation under the integral sign allows us to compute the derivative of
+an integral of a function of two parameters in a simple way. It is needed, for
+instance, when the mass conservation law or the heat diffusion equation are
+derived. 
 
-Let $(X, \mathcal{A}, \mu)$ be a measure space and let $[a, b] \subset \real$. Hereinafter we deal with functions $f \colon X \times [a,b] \rightarrow \real$, where $t \in [a, b]$ is the parameter on which $f$ depends. We assume that $f(\cdot, t)$ is a measurable function for each $t \in [a, b]$.
+Let $(X, \mathcal{A}, \mu)$ be a measure space and let $[a, b] \subset \real$.
+Hereinafter we deal with functions $f \colon X \times [a,b] \rightarrow \real$,
+where $t \in [a, b]$ is the parameter on which $f$ depends. We assume that
+$f(\cdot, t)$ is a measurable function for each $t \in [a, b]$.
 
-\begin{theorem}[Differentiation under the integral sign] \label{theo:differentiation_under_the_integral_sign}
-	Let $F(t) = \int_X f(\vb{x},t) \dd{\mu}$. Assume that
+\begin{theorem}[Differentiation under the integral sign]
+	\label{theo:differentiation_under_the_integral_sign} Let $F(t) = \int_X
+	f(x,t) \dd{\mu}$. Assume that
 	\begin{enumerate}[label={(\roman*)}, topsep=0pt]
-		\item $f(\vb{x},t_0)$ is an integrable function for some $t_0 \in [a,b]$.
-		\item $\dfrac{\partial f}{\partial t}(\vb{x},t)$ is defined for all $(\vb{x}, t) \in X \times [a, b]$.
-		\item There exists an integral function $g \colon X \rightarrow \real$ such that $\abs{\dfrac{\partial f}{\partial t} (\vb{x},t)} \leq g(\vb{x})$ for all $(\vb{x}, t) \in X \times [a, b]$.
+		\item $f(x,t_0)$ is an integrable function for some $t_0 \in
+		[a,b]$.
+		\item $\dfrac{\partial f}{\partial t}(x,t)$ is defined for all
+		$(x, t) \in X \times [a, b]$.
+		\item There exists an integral function $g \colon X \rightarrow \real$
+		such that $\abs{\dfrac{\partial f}{\partial t} (x,t)} \leq
+		g(x)$ for all $(x, t) \in X \times [a, b]$.
 	\end{enumerate}
 	Then $F$ is a differentiable function and
 	\[
-		F'(t) = \frac{\dd}{\dd t} F(t) = \int_X \frac{\partial f}{\partial t}(\vb{x},t) \dd{\mu}
+		F'(t) = \frac{\dd}{\dd t} F(t) = \int_X \frac{\partial f}{\partial t}(x,t) \dd{\mu}
 	\]
 \end{theorem}
 
-For the applications needed in this project, $X = \real^m$ with $1 \leq m \leq 3$, $\mathcal{A}$ is the Borel $\sigma$--algebra on $\real^m$ and $\mu$ is Lebesgue's measure on $\real^m$, which for most of the ``natural'' sets of $\mathcal{A}$ coincides with the usual notion of $m$--dimensional volume.
+For the applications needed in this project, $X = \real^m$ with $1 \leq m \leq
+3$, $\mathcal{A}$ is the Borel $\sigma$--algebra on $\real^m$ and $\mu$ is
+Lebesgue's measure on $\real^m$, which for most of the ``natural'' sets of
+$\mathcal{A}$ coincides with the usual notion of $m$--dimensional volume.
 
 \subsection{Lebesgue's differentiation lemma}
 
-A common way to derive a conservation law is to integrate some functions in a control volume, then apply Differentiation under the integral sign to obtain an integral equation and finally get to a differential equation using Lebesgue's differentiation lemma. 
+A common way to derive a conservation law is to integrate some functions in a
+control volume, then apply Differentiation under the integral sign to obtain an
+integral equation and finally get to a differential equation using Lebesgue's
+differentiation lemma. 
 
-An intuitive way to understand and to motivate Lebesgue's differentiation lemma is the following. Let $f \colon \real \to \real$ be a continuous function, let $a \in \real$ be a fixed point and let $F(x) = \int_a^x f(y) \dd{y}$, which is a differentiable function. Due to a corollary of the Fundamental Theorem of Calculus, we have $F'(x) = f(x)$. Using the definition of derivative,
+An intuitive way to understand and to motivate Lebesgue's differentiation lemma
+is the following. Let $f \colon \real \to \real$ be a continuous function, let
+$a \in \real$ be a fixed point and let $F(x) = \int_a^x f(y) \dd{y}$, which is a
+differentiable function. Due to a corollary of the Fundamental Theorem of
+Calculus, we have $F'(x) = f(x)$. Using the definition of derivative,
 \[
 	F'(x) = 
 	\lim_{h \to 0} \frac{F(x + h) - F(x)}{h} = 
 	\lim_{h \to 0} \frac{1}{h} \left\{ \int_a^{x + h} f(y) \dd{y} - \int_a^{x} f(y) \dd{y} \right\} = 
 	\lim_{h \to 0} \frac{1}{h} \int_x^{x + h} f(y) \dd{y} = f(x)
 \]
-Notice that the integral is divided by the length of the interval $[x, x+h]$, otherwise the limit would be zero. Lebesgue's lemma generalizes the previous equality by considering functions $f \colon \real^n \to \real$ and integrating them on open balls $B(\vb{x_0}, r) = \{ x \in \real^n \mid \norm{\vb{x} - \vb{x_0}} < r\}$. Furthermore, the integral is divided by the $n$--dimensional volume of $B(\vb{x_0}, r)$, which is denoted by $\abs{B(\vb{x_0}, r)}$.
+Notice that the integral is divided by the length of the interval $[x, x+h]$,
+otherwise the limit would be zero. Lebesgue's lemma generalizes the previous
+equality by considering functions $f \colon \real^n \to \real$ and integrating
+them on open balls $B(x_0, r) = \{ x \in \real^n \mid \norm{x -
+x_0} < r\}$. Furthermore, the integral is divided by the $n$--dimensional
+volume of $B(x_0, r)$, which is denoted by $\abs{B(x_0, r)}$.
 
-\begin{theorem}[Lebesgue's differentiation lemma \cite{evans1998measure}] \label{eq:lebesgue_differentiation_lemma}
-	Let $f \colon \real^n \rightarrow \real$ be a locally integrable function.
+\begin{theorem}[Lebesgue's differentiation lemma \cite{evans1998measure}]
+	\label{eq:lebesgue_differentiation_lemma} Let $f \colon \real^n \rightarrow
+	\real$ be a locally integrable function.
 	\begin{enumerate}[label={(\arabic*)}, topsep=0pt]
-		\item Then for almost everywhere point $\vb{x_0} \in \real^n$,
+		\item Then for almost everywhere point $x_0 \in \real^n$,
 		\[
-			\frac{1}{\abs{B(\vb{x_0}, r)}} \int_{B(\vb{x_0},r)} f(\vb{x}) \dd{\vb{x}} \to f(\vb{x_0}) 
+			\frac{1}{\abs{B(x_0, r)}} \int_{B(x_0,r)} f(x) \dd{x} \to f(x_0) 
 			\quad \text{as } r \to 0
 		\]
-		\item In fact, for almost everywhere point $\vb{x_0} \in \real^n$,
+		\item In fact, for almost everywhere point $x_0 \in \real^n$,
 		\[
-			\frac{1}{\abs{B(\vb{x_0}, r)}} \int_{B(\vb{x_0},r)} \abs{f(\vb{x}) - f(\vb{x_0})} \dd{\vb{x}} \to 0 
+			\frac{1}{\abs{B(x_0, r)}} \int_{B(x_0,r)} \abs{f(x) - f(x_0)} \dd{x} \to 0 
 			\quad \text{as } r \to 0
 		\]		
 	\end{enumerate}

@@ -1,20 +1,43 @@
 
 \section{Ordinary Differential Equations}
 
-In this section we present the Picard--Lindelöf theorem which aids on proving the existence and uniqueness of solution to initial value problems involving ordinary differential equations (ODEs) initial value problems. We begin with the definition of a Lipschitz function:
+In this section we present a central theorem in basic Ordinary differential
+equations (ODE) theory regarding the existence and uniqueness of solution to
+initial value problems involving ODEs. 
+
+Recall that an ordinary differential equation is an equation
+\begin{equation}
+	g(t, x(t), x'(t), \ldots, x^{(n)}(t)) = 0
+\end{equation}
+where the unknown $x(t) = (x_1(t), \ldots, x_m(t))^\top$ is a function of $m$
+components and a variable $t \in \real$, $x' = \dfrac{\dd{x}}{\dd{t}}$ and $g(t,
+y_1, \ldots, y_{n+1})$ with $y_1, \ldots, y_{n+1} \in \real^m$ is a function of
+$1 + m(n+1)$ variables.
+
+\subsection{General theory}
+
+We begin with the definition of a Lipschitz function:
 
 \begin{definition}
-	A function $f \colon \Omega \subset \real^n \rightarrow \real^m$ is said to be Lipschitz or Lipschitz continuous if there exists a constant $L$ such that
+	A function $f \colon \Omega \subset \real^n \rightarrow \real^m$ is said to
+	be Lipschitz or Lipschitz continuous if there exists a constant $L$ such
+	that
 	\begin{equation}
-		\norm{f(\vb{x}) - f(\vb{y})} \leq L \norm{\vb{x} - \vb{y}}
+		\norm{f(x) - f(y)} \leq L \norm{x - y}
 	\end{equation}
-	for every $\vb{x}, \vb{y} \in \Omega$. The constant $L$ is called the Lipschitz constant of $f$ \cite{salsa2009chap1}.
+	for every $x, y \in \Omega$. The constant $L$ is called the
+	Lipschitz constant of $f$ \cite{salsa2009chap1}.
 \end{definition}
 
-It can be easily proven that every Lipschitz function on $\Omega$ is also a continuous function in the usual sense on $\Omega$. The converse is not true in general, and depends on the properties of $\Omega$. The Lipschitz continuity is actually a very restrictive condition, since it imposes that the function can grow at most as a linear function. 
+Every Lipschitz function on $\Omega$ is also a continuous function in the usual
+sense on $\Omega$. The converse is not true in general, and depends on $\Omega$.
+The Lipschitz continuity is actually a very restrictive condition, since it
+imposes that the function can grow at most as a linear function. 
 
 \begin{definition}
-	Let $(E, \norm{\cdot}_E)$ and $(F, \norm{\cdot}_F)$ be two finite dimensional normed vector spaces and let $A \colon E \rightarrow F$ be a linear mapping between them. The norm of $A$ is defined to be
+	Let $(E, \norm{\cdot}_E)$ and $(F, \norm{\cdot}_F)$ be two finite
+	dimensional normed vector spaces and let $A \colon E \rightarrow F$ be a
+	linear mapping between them. The norm of $A$ is defined to be
 	\begin{equation}
 		\norm{A}
 		\coloneqq
@@ -23,21 +46,30 @@ It can be easily proven that every Lipschitz function on $\Omega$ is also a cont
 \end{definition}
 
 \noindent
-It is a well known fact that $\norm{A}$ is finite. In some cases, proving that a function is Lipschitz continuous is a laborious task. In these situations we have the following theorems:
+It is a well known fact that $\norm{A}$ is finite. In some cases, proving that a
+function is Lipschitz continuous is a laborious task. In these situations we
+have the following theorems:
 
-\begin{theorem}[Corollary of the mean value theorem \cite{mazon2008calculo}] \label{teo:corollary_mean_value_theorem}
-	Let $\Omega \subset \real^n$ an open set and let $f \colon \Omega \subset \real^n \to \real^m$ a differentiable function on $\Omega$. Let $\vb{x}, \vb{y} \in \Omega$ such that the segment $\overline{\vb{x}\vb{y}} = \{ \lambda \vb{x} + (1 - \lambda) \vb{y} \mid \lambda \in [0, 1] \}$ is contained in $\Omega$. Then the following inequality holds:
+\begin{theorem}[Corollary of the mean value theorem \cite{mazon2008calculo}]
+	\label{teo:corollary_mean_value_theorem} Let $\Omega \subset \real^n$ an
+	open set and let $f \colon \Omega \subset \real^n \to \real^m$ a
+	differentiable function on $\Omega$. Let $x, y \in \Omega$ such
+	that the segment $\overline{xy} = \{ \lambda x + (1 -
+	\lambda) y \mid \lambda \in [0, 1] \}$ is contained in $\Omega$. Then
+	the following inequality holds:
 	\begin{equation}
-		\norm{f(\vb{x}) - f(\vb{y})} \leq \sup_{\vb{z} \in 
-		\overline{\vb{x}\vb{y}}} \norm{D f(\vb{z})} \norm{\vb{x} - \vb{y}}
+		\norm{f(x) - f(y)} \leq \sup_{z \in 
+		\overline{xy}} \norm{D f(z)} \norm{x - y}
 	\end{equation}
 \end{theorem}
 \begin{proof}
 	See \cite{mazon2008calculo}, page 78.
 \end{proof}
 
-\begin{theorem} \label{teo:c1_function_implies_lipschitz}
-	Let $\Omega \subset \real^n$ a compact convex set and let $f \equiv (f_1, \ldots, f_m) \colon \Omega \subset \real^n \to \real^m$ a $\mathcal{C}^1(\Omega)$ function. Then $f$ is Lipschitz in $\Omega$.
+\begin{theorem} \label{teo:c1_function_implies_lipschitz} Let $\Omega \subset
+	\real^n$ a compact convex set and let $f \equiv (f_1, \ldots, f_m) \colon
+	\Omega \subset \real^n \to \real^m$ a $\mathcal{C}^1(\Omega)$ function. Then
+	$f$ is Lipschitz in $\Omega$.
 \end{theorem}
 \begin{proof}
 	The differential of $D f$, given by
@@ -49,40 +81,133 @@ It is a well known fact that $\norm{A}$ is finite. In some cases, proving that a
 			\pdv{f_m}{x_1} & \cdots & \pdv{f_m}{x_n} \\
 		\end{pmatrix}
 	\end{equation}
-	is a linear mapping $D f \colon \real^n \rightarrow \real^m$. Since $f$ is $\mathcal{C}^1(\Omega)$ function, the partial derivatives $\pdv{f_1}{x_1}, \ldots, \pdv{f_m}{x_n}$ are continuous functions on $\Omega$. Moreover, the norm of the differential depends continuously on the partial derivatives $\pdv{f_1}{x_1}, \ldots, \pdv{f_m}{x_n}$ and on $\vb{z}$. As a consequence, $\norm{D f}$ is a continuous function on $\Omega$. By Weierstrass theorem, $\norm{D f}$ reaches a maximum $M$ on $\Omega$. Applying theorem \ref{teo:corollary_mean_value_theorem} we have 
+	is a linear mapping $D f \colon \real^n \rightarrow \real^m$. Since $f$ is
+	$\mathcal{C}^1(\Omega)$ function, the partial derivatives $\pdv{f_1}{x_1},
+	\ldots, \pdv{f_m}{x_n}$ are continuous functions on $\Omega$. Moreover, the
+	norm of the differential depends continuously on the partial derivatives
+	$\pdv{f_1}{x_1}, \ldots, \pdv{f_m}{x_n}$ and on $z$. As a consequence,
+	$\norm{D f}$ is a continuous function on $\Omega$. By Weierstrass theorem,
+	$\norm{D f}$ reaches a maximum $M$ on $\Omega$. Applying theorem
+	\ref{teo:corollary_mean_value_theorem} we have 
 	\begin{equation}
-		\norm{f(\vb{x}) - f(\vb{y})} \leq \sup_{\vb{z} \in 
-		\overline{\vb{x}\vb{y}}} \norm{D f(\vb{z})} \norm{\vb{x} - \vb{y}} \leq
-		M \norm{\vb{x} - \vb{y}}
+		\norm{f(x) - f(y)} \leq \sup_{z \in 
+		\overline{xy}} \norm{D f(z)} \norm{x - y} \leq
+		M \norm{x - y}
 	\end{equation}
-	for all $\vb{x}, \vb{y} \in \Omega$, hence $f$ is Lipschitz on $\overline{\Omega}$.
+	for all $x, y \in \Omega$, hence $f$ is Lipschitz on
+	$\overline{\Omega}$.
 \end{proof}
 
-%Let $(E, \norm{\cdot}_E)$ and $(F, \norm{\cdot}_F)$ be two finite dimensional normed vector spaces and let $A \colon E \rightarrow F$ be a linear mapping between them. It is a well known fact that $A$ is continuous and its norm, defined by
-%\begin{equation}
-%	\norm{A} \colon \sup_{\substack{x \in E} \\ \norm{x}_E \leq 1} \norm{A x}_F 
-%\end{equation}
-%is finite. 
-%
-%
-%Since the differential of $f$ is a linear mapping between two finite dimensional vector spaces, $D f \colon \real^n \rightarrow \real^m$, its norm which is defined by
-
-Finally we can state the Picard--Lindelöf theorem. Let $U$ be an open subset of $\real^{n+1}$ and let $f \in C(U, \real)$, $(t_0, \vb{x_0}) \in U$. Consider the following IVP:
+Finally we can state the Picard--Lindelöf theorem. Let $U$ be an open subset of
+$\real^{n+1}$ and let $f \in C(U, \real)$, $(t_0, x_0) \in U$. Consider the
+following IVP:
 \begin{equation} \label{eq:appendix_ode_ivp}
 	\left\{
 	\begin{aligned}
-		&\dot{\vb{x}}(t) = f(t, \vb{x}) \\
-		&\vb{x}(t_0) = \vb{x_0}
+		&\dot{x}(t) = f(t, x) \\
+		&x(t_0) = x_0
 	\end{aligned}
 	\right.
 \end{equation}
-The Picard--Lindelöf theorem gives us the existence and uniqueness of solution for \eqref{eq:appendix_ode_ivp}.
+The Picard--Lindelöf theorem gives us the existence and uniqueness of solution
+for \eqref{eq:appendix_ode_ivp}.
 
-\begin{theorem}[Picard--Lindelöf \cite{teschl2012odes}] \label{teo:picard_lindelof}
-	Suppose $f \in \mathcal{C}(U, \real^n)$, where $U$ is an open subset of $\real^{n+1}$, and $(t_0, \vb{x_0}) \in U$. If $f$ is locally Lipschitz continuous in the second argument, uniformly with respect to the first, then there exists a unique local solution $vb{x}(t) \in \mathcal{C}^1(I)$ of the initial value problem \eqref{eq:appendix_ode_ivp}, where $I$ is some interval around $t_0$. 
+\begin{theorem}[Picard--Lindelöf \cite{teschl2012odes}]
+	\label{teo:picard_lindelof} Suppose $f \in \mathcal{C}(U, \real^n)$, where
+	$U$ is an open subset of $\real^{n+1}$, and $(t_0, x_0) \in U$. If $f$
+	is locally Lipschitz continuous in the second argument, uniformly with
+	respect to the first, then there exists a unique local solution $x(t)
+	\in \mathcal{C}^1(I)$ of the initial value problem
+	\eqref{eq:appendix_ode_ivp}, where $I$ is some interval around $t_0$. 
 	
-	More specifically, if $V = [t_0, t_0 + T] \times \overline{B(\vb{x_0}, \delta)} \subset U$ and $M$ denotes the maximum of $\abs{f}$ on $V$, then the solution exists at least for $t \in [t_0, t_0 + T_0]$ and remains in $\overline{B(\vb{x_0}, \delta)}$ where $T_0 = \min{\left\{ T, \frac{\delta}{M} \right\}}$. The analogous result holds for the interval $[t_0 - T, t_0]$.
+	More specifically, if $V = [t_0, t_0 + T] \times \overline{B(x_0,
+	\delta)} \subset U$ and $M$ denotes the maximum of $\abs{f}$ on $V$, then
+	the solution exists at least for $t \in [t_0, t_0 + T_0]$ and remains in
+	$\overline{B(x_0, \delta)}$ where $T_0 = \min{\left\{ T,
+	\frac{\delta}{M} \right\}}$. The analogous result holds for the interval
+	$[t_0 - T, t_0]$.
 \end{theorem}
 \begin{proof}
 	See \cite{teschl2012odes}, page 38.
 \end{proof}
+
+
+\subsection{Linear equations}
+
+Let $\mathcal{M}_{n \times n}(\real)$ and $\mathcal{M}_{n \times n}(\cplex)$
+denote the space of $n \times n$ matrices with real or complex coefficients,
+respectively. Recall that an ODE or a system of ODEs is linear if it has the
+form
+\begin{equation} \label{eq:linear_ode}
+	\dot{x} = A(t) x + b(t)
+\end{equation}
+where $A(t) \in \mathcal{M}_{n \times n}(\real)$ (or $A(t) \in \mathcal{M}_{n
+\times n}(\cplex)$) and $b(t) \in \real^n$ for all $t \in I \subset \real$. The
+following theorem establishes the existence and uniqueness of initial value
+problems for linear ODEs.
+
+\begin{theorem} \label{teo:linear_ode}
+	Let $I \subset \real$ be an open interval and let $A \in \mathcal{C}(I,
+	\mathcal{M}_{n \times n}(\real))$ and $b \in \mathcal{C}(I, \real^n)$. Then
+	for all $(t_0, x_0) \in I \times \real^n$, the initial value problem
+	\begin{equation}
+		\left\{
+			\begin{aligned}
+				&\dot{x} = A(t) x + b(t) & &t \in I \\
+				&\dot{x}(t_0) = x_0
+			\end{aligned}
+		\right.
+	\end{equation}
+	has a unique solution $\varphi \colon I \rightarrow \real^n$.
+\end{theorem}
+\begin{proof}
+	\cite{pau2020ode}
+\end{proof}
+
+In order for theorem \ref{teo:linear_ode} to be useful for the project, we
+shall show that any $n$--th order linear ODE
+\begin{equation}
+	x^{(n)} + a_{n-1}(t) \, x^{(n-1)} + \cdots + a_1(t) \, x' + a_0(t) \, x = b(t) 
+\end{equation}
+can be casted into a linear system of ODEs such as \eqref{eq:linear_ode}. We
+define the functions
+\begin{equation}
+	y_1 = x, \ y_2 = x', \ldots, \ y_{n-1} = x^{(n-2)}, \ y_n = x^{(n-1)}
+\end{equation}
+thus
+\begin{equation}
+	\left\{
+		\begin{aligned}
+			y_1' &= x' = y_2 \\
+			y_2' &= x'' = y_3 \\
+			&\vdots \\
+			y_{n-1}' &= x^{(n-1)} = y_n \\
+			y_n' &= x^{(n)} = -a_0(t) \, x - a_1(t) \, x' - \cdots - a_{n-1}(t) \, x^{(n-1)} + b(t) \\
+			&= -a_0(t) \, y_1 - a_1(t) \, y_2 - \cdots - a_{n-1}(t) \, y_n + b(t)
+		\end{aligned}
+	\right.
+\end{equation}
+which in matrix form is rewritten as:
+\begin{equation} \label{eq:linear_ode_system}
+	\begin{pmatrix}
+		y_1' \\ y_2' \\ \vdots \\ y_{n-1}' \\ y_n'
+	\end{pmatrix} = 
+	\begin{pmatrix}
+		0 & 1 & 0 & \cdots & 0 \\
+		0 & 0 & 1 & \cdots & 0 \\
+		\vdots & \vdots & \vdots & \ddots & \vdots \\
+		0 & 0 & 0 & \cdots & 1 \\
+		-a_0(t) & -a_1(t) & -a_2(t) & \cdots & a_{n-1}(t)
+	\end{pmatrix}
+	\begin{pmatrix}
+		y_1 \\ y_2 \\ \vdots \\ y_{n-1} \\ y_n
+	\end{pmatrix} + 
+	\begin{pmatrix}
+		0 \\ 0 \\ \vdots \\ 0 \\ b(t)
+	\end{pmatrix}
+\end{equation}
+As long as $a_0, a_1, \ldots, a_{n-1}, b \colon I \subset \real \to \real$ are
+continuous functions, theorem \ref{teo:linear_ode} can be applied to system
+\eqref{eq:linear_ode_system}.
+
+
