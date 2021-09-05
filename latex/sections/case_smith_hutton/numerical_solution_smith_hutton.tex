@@ -1,10 +1,33 @@
 
 \subsection{Numerical solution}
 
-In this section we present the numerical solution to problem \eqref{eq:smith_hutton_cauchy_problem} for several values of the quotient $\rho / \Gamma$. The characteristic length taken is $L = 1 \ \meter$. The density is kept constant at $\rho = 1000 \ \kilo\gram / \meter^3$ and the diffusion coefficient $\Gamma$ is varied. A uniform mesh has been used to discretize the domain, with $N_x = 201$ nodes in the $x$--axis and $N_y = 101$ nodes in the $y$--axis. The tolerance to stop Gauss--Seidel's iteration has been of $10^{-12}$. The convective properties have been evaluated applying the Upwind--Difference Scheme (UDS). 
+In this section we present the numerical solution to problem
+\eqref{eq:smith_hutton_cauchy_problem} for several values of the quotient $\rho
+/ \Gamma$. The characteristic length taken is $L = 1 \ \meter$. The density is
+kept constant at $\rho = 1000 \ \kilo\gram / \meter^3$ and the diffusion
+coefficient $\Gamma$ is varied. A uniform mesh has been used to discretize the
+domain, with $N_x = 201$ nodes in the $x$--axis and $N_y = 101$ nodes in the
+$y$--axis. The tolerance to stop Gauss--Seidel's iteration has been of
+$10^{-12}$. The convective properties have been evaluated applying the
+Power law Scheme. 
 
-As it has been said, the characteristic length of the problem is $L = 1 \ \meter$, while the characteristic velocity is unknown. Nonetheless, it must be constant as the velocity field $\vb{v}$ is constant, hence Péclet's number depends on the quotient $\rho / \Gamma$. This means that $\rho / \Gamma$ gives an idea of the relation convection transport rate/diffusion transport rate.
+As it has been said, the characteristic length of the problem is $L = 1 \
+\meter$, while the characteristic velocity is unknown. Nonetheless, it must be
+constant as the velocity field $\vb{v}$ does not depend on time, hence Péclet's
+number depends on the quotient $\rho / \Gamma$. This implies that $\rho /
+\Gamma$ gives an idea of the relation convection transport rate/diffusion
+transport rate.
 
+Figure \ref{fig:smith_hutton_N201_Pe1.0e+00} shows the numerical solution to the
+Smith--Hutton case for $\rho / \Gamma = 1$. Both processes, transport and
+diffusion, apparently have a similar strength. There is clearly transport
+phenomena taking the information about $\phi$ from the inlet zone $(-1, 0]
+\times \{ 0 \}$ to the outlet zone $(0,1) \times \{ 0 \}$. For instance, the
+inlet zone with $\phi \approx 1.0$ (green zone) occupies a rather small part of
+the inlet around $x = -0.5 \ \meter$. However, as the transport occurs the band
+corresponding to $\phi \approx 1$ becomes wider due to the diffusion process.
+This influence of diffusion can also be ssen for $\phi \approx 0.5$ (light blue
+band) and for $\phi \approx 1.5$ (orange band).
 
 \begin{figure}[ht]
 	\centering
@@ -14,70 +37,111 @@ As it has been said, the characteristic length of the problem is $L = 1 \ \meter
 	\label{fig:smith_hutton_N201_Pe1.0e+00}
 \end{figure}
 
+\clearpage
+Figures \ref{fig:smith_hutton_N201_Pe1.0e+01} and
+\ref{fig:smith_hutton_N201_Pe1.0e+02} show the numerical solution to the
+Smith--Hutton problem for $\rho / \Gamma = 10$ and $\rho / \Gamma = 100$,
+respectively. Some differences between the solutions for $\rho / \Gamma = 1$ and
+$\rho / \Gamma = 10$, although not too obvious, can be spotted. Clearly the
+light blue, green and orange bands now occupy a larger portion of $\Omega$,
+while the smooth transitions between them are still present. In contrast to the
+$\rho / \Gamma = 10$ case, the change for $\rho / \Gamma = 100$ is more
+apparent. Now the transition zones between the different color bands are
+thinner, implying the diffusion process has lost strength with respect to the
+transport process. However there is still diffusion, since the green band widens
+along the streamlines.
+
 \begin{figure}[ht]
 	\centering
 	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+01.tex}}
 	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+01.tex}
 	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10$.}
 	\label{fig:smith_hutton_N201_Pe1.0e+01}
-\end{figure}
-
-\begin{figure}[ht]
-	\centering
-	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+02.tex}}
+	\vspace{1cm}
 	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+02.tex}
 	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10^2$.}
 	\label{fig:smith_hutton_N201_Pe1.0e+02}
 \end{figure}
 
+% \begin{figure}[ht]
+% 	\centering
+% 	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+01.tex}}
+% 	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+01.tex}
+% 	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10$.}
+% 	\label{fig:smith_hutton_N201_Pe1.0e+01}
+% \end{figure}
+
+% \begin{figure}[ht]
+% 	\centering
+% 	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+02.tex}}
+% 	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+02.tex}
+% 	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10^2$.}
+% 	\label{fig:smith_hutton_N201_Pe1.0e+02}
+% \end{figure}
+
+
+\clearpage
+Figures \ref{fig:smith_hutton_N201_Pe1.0e+04} and
+\ref{fig:smith_hutton_N201_Pe1.0e+09} show the numerical solution to the
+Smith--Hutton case for $\rho / \Gamma = 10^4$ and $10^9$ respectively. There is
+no apparent difference between two solution, what induces to think that for
+$\rho / \Gamma > 10^4$ the solution stays approximately the same. There are
+apparent discrepancies between the cases $\rho / \Gamma = 10^2$ and $\rho /
+\Gamma = 10^4$. In the latter transport clearly takes over diffusion, as the
+several color bands have approximately the same width, meaning diffusion has
+much less strength than transport. 
 
 \begin{figure}[ht]
 	\centering
-	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+04.tex}}
 	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+04.tex}
 	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10^4$.}
 	\label{fig:smith_hutton_N201_Pe1.0e+04}
-\end{figure}
-
-\begin{figure}[ht]
-	\centering
-	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+06.tex}}
+	\vspace{1cm}
 	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+09.tex}
 	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10^9$.}
 	\label{fig:smith_hutton_N201_Pe1.0e+09}
 \end{figure}
 
+
+% \begin{figure}[ht]
+% 	\centering
+% 	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+04.tex}}
+% 	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+04.tex}
+% 	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10^4$.}
+% 	\label{fig:smith_hutton_N201_Pe1.0e+04}
+% \end{figure}
+
+% \begin{figure}[ht]
+% 	\centering
+% 	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+06.tex}}
+% 	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+09.tex}
+% 	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10^9$.}
+% 	\label{fig:smith_hutton_N201_Pe1.0e+09}
+% \end{figure}
+
 % /////////////////////////////////////////////////////////////////////////////////////
+
+\clearpage
+
+Figures \ref{fig:smith_hutton_N201_Pe1.0e-01} and
+\ref{fig:smith_hutton_N201_Pe1.0e-09} show the solution to the Smith--Hutton
+case for $\rho / \Gamma = 10^{-1}$ and $\rho / \Gamma = 10^{-9}$, respectively.
+Although a quotient $\rho / \Gamma = 10^{-9}$ implies transport is much weaker
+than for $\rho / \Gamma = 10^{-1}$, the differences between both solution are
+difficult to detect. The only apparent discrepancy is the central zone of
+$\Omega$, where the transitions for $\rho / \Gamma = 10^{-9}$ are much smoother
+than for $\rho / \Gamma = 10^{-1}$, which implies transport has lost strength.
+
 \begin{figure}[ht]
 	\centering
 	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-01.tex}}
 	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-01.tex}
 	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10^{-1}$.}
 	\label{fig:smith_hutton_N201_Pe1.0e-01}
-\end{figure}
-
-\begin{figure}[ht]
-	\centering
-	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-02.tex}}
-	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-02.tex}
-	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10^{-2}$.}
-	\label{fig:smith_hutton_N201_Pe1.0e-02}
-\end{figure}
-
-\begin{figure}[ht]
-	\centering
-	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-04.tex}}
-	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-04.tex}
-	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10^{-4}$.}
-	\label{fig:smith_hutton_N201_Pe1.0e-04}
-\end{figure}
-
-\begin{figure}[ht]
-	\centering
-	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-06.tex}}
-	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-06.tex}
-	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10^{-6}$.}
-	\label{fig:smith_hutton_N201_Pe1.0e-06}
+	\vspace{1cm}
+	\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e-09.tex}
+	\caption{Numerical solution the the Smith--Hutton case for $\rho / \Gamma = 10^{-9}$.}
+	\label{fig:smith_hutton_N201_Pe1.0e-09}
 \end{figure}
 
 
