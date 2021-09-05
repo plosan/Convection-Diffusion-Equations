@@ -1,23 +1,260 @@
 
 \section{Numerical resolution of linear systems} \label{ap:numerical_resolution_linear_systems}
 
-In this appendix we present two algorithms to solve linear systems.
+In this section we present several iterative methods and the LU decomposition,
+all of them used to solve linear systems. The reference is
+\cite{golub2013matrix}.
 
 Let $\mathcal{M}_{n \times n}(\real)$ be the space of $n \times n$ matrices with
 real coefficients. We consider linear systems of the form $A x = b$, where $A
 \in \mathcal{M}_{n \times n}(\real)$ is the system matrix with $\det(A) \neq 0$
-and $b \in \real^n$ is the vector of independent terms. 
+and $b \in \real^n$ is the vector of independent terms. Recall the following
+definitions:
 
-\subsection{Iterative method: Gauss--Seidel's algorithm}
+\begin{definition}
+    Let $A = (a_{ij}) \in \mathcal{M}_{n \times n}(\real)$ be a matrix. Then:
+    \begin{enumerate}[label={(\roman*)}, topsep=0pt]
+        \item $A$ is symmetric if $a_{ij} = a_{ji}$ for all $1 \leq i, j \leq n$.
+        \item $A$ is positive definite if $c^\top A c > 0$ for all $c \in \real^n \setminus \{ 0 \}$.
+        \item $A$ is diagonally dominant if
+        \begin{equation}
+            \abs{a_{ii}} \geq \sum_{\substack{j = 1, j \neq i}}^n \abs{a_{ij}}, 
+            \quad 1 \leq i \leq n
+        \end{equation}
+        and strictly diagonally dominant if the previous inequality is strict.
+    \end{enumerate}
+\end{definition}
 
-Consider the linear system $A x = b$. A possible method to solve a linear system
-is to generate a sequence $\{ x^{(k)} \}_{k \geq 0} \subset \real^n$ such that
-$\lim_{k \to \infty} x^{(k)} = x$.  
+\subsection{Iterative methods}
+
+Consider the linear system $A x = b$ with $A = (a_{ij}) \in \mathcal{M}_{n
+\times n}(\real)$ a non--singular matrix, $b \in \real^n$ the vector of
+independent terms and $x = A^{-1} b \in \real^n$ the solution. Iterative methods
+for linear systems generate a sequence $\{ x^{(k)} \}_{k \geq 0} \subset
+\real^n$ that ideally converge to the solution, \ie $\lim_{k \to \infty} x^{(k)}
+= x$. 
+
+\subsubsection{Jacobi's method}
+
+Let $x^{(k)}$ be the current approximation of $x = A^{-1} b$ and assume $a_{ii}
+\neq 0$ for all $1 \leq n \leq n$. The first idea for an iterative method is to
+compute $x^{(k+1)}$ as
+\begin{equation} \label{eq:jacobi_method}
+    x_i^{(k+1)} = 
+    \frac{1}{a_{ii}} \left( b_i - \sum_{j=1}^n a_{ij} x_j^{(k)} \right), 
+    \quad 1 \leq i \leq n
+\end{equation}
+The method given by \eqref{eq:jacobi_method} is known as Jacobi's method. We
+have the following theorem about its convergence.
+
+\begin{theorem}
+    If $A \in \mathcal{M}_{n \times n}(\real)$ is strictly diagonally dominant,
+    the Jacobi's method converges to $x = A^{-1} b$. 
+\end{theorem}
+\begin{proof}
+    See \cite{golub2013matrix}, Ch. 11, pg. 615.
+\end{proof}
+
+\subsubsection{Gauss--Seidel's method}
+
+Notice that before prior to calculate $x_i^{(k+1)}$ in \eqref{eq:jacobi_method},
+the components $x_1^{(k+1)}, \ldots, x_{i-1}^{(k+1)}$ have had to be computed.
+Since these are already available once $x_i^{(k+1)}$ is being calculated, a
+natural improvement to Jacobi's method is the following:
+\begin{equation}
+    x_i^{(k+1)} = 
+    \frac{1}{a_{ii}} \left( b_i - \sum_{j=1}^{i-1} a_{ij} x_j^{(k+1)} - \sum_{j=i+1}^{n} a_{ij} x_j^{(k)} \right), 
+    \quad 1 \leq i \leq n
+\end{equation}
+
+Recall that $A$ is a positive definite matrix if $c^\top A c > 0$ for all $c \in
+\real^n \setminus \{ 0 \}$. We say that $A$ is a diagonally dominant matrix if
+it satisfies
+\begin{equation}
+    \abs{a_{ii}} \geq \sum_{\substack{j = 1 \\ j \neq i}}^n \abs{a_{ij}}, 
+    \quad 1 \leq i \neq n
+\end{equation}
+The following theorem gives us two sufficient conditions so that Gauss--Seidel's
+method converges.
 
 \begin{theorem}
     If $A$ is a positive definite symmetric matrix or it is strictly diagonally
     dominant by rows, then the Gauss--Seidel converges to the linear system
     solution.
 \end{theorem}
+\begin{proof}
+    See \cite{golub2013matrix}, Ch. 11, pg. 615.
+\end{proof}
 
-\subsection{Direct method: the LU factorization}
+\subsubsection{Relaxation method}
+
+From Gauss--Seidel's method we have
+\begin{equation}
+    x_i^{(k+1)} = 
+    \frac{1}{a_{ii}} 
+    \left( b_i - \sum_{j=1}^{i-1} a_{ij} x_j^{(k+1)} - \sum_{j=i+1}^{n} a_{ij} x_j^{(k)} \right)
+    x_i^{(k)} + 
+    \frac{1}{a_{ii}} \left( b_i - \sum_{j=1}^{i-1} a_{ij} x_j^{(k+1)} - \sum_{j=i}^{n} a_{ij} x_j^{(k)} \right)
+\end{equation}
+which means that $x_i^{(k+1)}$ is equal to $x_i^{(k)}$ plus a correction. The
+correction can be multiplied by a constant $\omega$
+\begin{equation} \label{eq:relaxation_method}
+    x_i^{(k+1)} = 
+    x_i^{(k)} + 
+    \frac{\omega}{a_{ii}} \left( b_i - \sum_{j=1}^{i-1} a_{ij} x_j^{(k+1)} - \sum_{j=i}^{n} a_{ij} x_j^{(k)} \right),
+    \quad 1 \leq i \leq n
+\end{equation}
+so as to accelerate the convergence. The constant $\omega$ is known as
+relaxation constant and the method given by \eqref{eq:relaxation_method} is
+known as relaxation method. In general, there are no results providing an
+optimal $\omega$ to improve the convergence velocity.
+
+\subsubsection{Stop criterion}
+
+An iterative method must stop at some point once the iteration $x^{(k)}$ is
+close enough to the solution $x$. The distance between $x^{(k)}$ and $x$ is
+given by $\norm{x^{(k)} - x}$. There are many norms in $\real^n$, thus a natural
+question is which one to use. The following theorem asserts that the election of
+norm is not relevant:
+
+\begin{theorem}
+    Any two norms $\norm{\cdot}_a$ and $\norm{\cdot}_b$ on $\real^n$ are
+    equivalent, \ie there exist constants $c, C > 0$ such that
+    \begin{equation}
+        c \norm{x}_a \leq \norm{x}_b \leq C \norm{x}_b
+    \end{equation}
+    for all $x \in \real^n$.
+\end{theorem}
+
+\noindent
+Hence any two norms on $\real^n$ provide the same notion of distance. A common
+choice for iterative methods due to its low computational cost is the supremum
+norm, given by
+\begin{equation}
+    \norm{x}_\infty = \max_{1 \leq i \leq n} \abs{x_i}
+\end{equation}
+To halt the iteration, one normally controls the norm $\norm{x^{(k+1)} -
+x^{(k)}}$. Given a constant $\delta > 0$ small enough so that the approximation
+of $x$ is good, the iteration is stopped when $\norm{x^{(k+1)} - x^{(k)}} <
+\delta$.
+
+
+\subsection{LU decomposition}
+
+Let $U$ be an upper triangular non--singular matrix, that is to say, a matrix of
+the form
+\begin{equation}
+	U = 
+	\begin{pmatrix}
+		u_{11} 	& u_{12} & \cdots & u_{1,n-1} & u_{1n} \\
+		0		& u_{22} & \cdots & u_{2,n-1} & u_{2n} \\
+		\vdots	& \vdots & \ddots & \vdots 	  & \vdots \\
+		0 		& 0		 & \cdots & u_{n-1,n-1} & u_{n-1,n} \\
+		0 	   	& 0		 & \cdots & 0 			& u_{nn}
+	\end{pmatrix},
+	\
+	u_{ii} \neq 0 \quad 1 \leq i \leq n
+\end{equation}
+or equivalently
+\begin{equation}
+	U = (u_{ij})_{i, j= 1 \divisionsymbol n} = 
+	\left\{
+	\begin{aligned}
+		&u_{ij} = 0 		& 	&\text{if } i > j \\
+		&u_{ij} \neq 0 		& 	&\text{if } i = j \\
+		&u_{ij} \in \real 	& 	&\text{otherwise} 
+	\end{aligned}
+	\right.
+\end{equation}
+Let $b \in \real^n$. The the linear system $U x = b$ can be easily solved with
+the backward substitution algorithm
+\begin{equation}
+	x_{n-i} =
+	\frac{1}{u_{n-i,n-i}}
+	\left(
+	b_{n-i} - \sum_{j=n-i+1}^{n} u_{n-i,j} \, x_j
+	\right),
+	\quad 0 \leq i \leq n-1
+\end{equation}
+
+Let $L$ be a lower triangular non--singular matrix,
+\begin{equation}
+	L = 
+	\begin{pmatrix}
+		\ell_{11} 		& 0 			& \cdots & 0 				& 0  \\
+		\ell_{21} 		& \ell_{22} 	& \cdots & 0 				& 0 \\
+		\vdots 			& \vdots 		& \ddots & \vdots 	  		& \vdots \\
+		\ell_{n-1,1} 	& \ell_{n-1,2} 	& \cdots & \ell_{n-1,n-1} 	& 0 \\
+		\ell_{n1} 		& \ell_{n,2} 	& \cdots & \ell_{n,n-1} 	& \ell_{nn}
+	\end{pmatrix},
+	\
+	\ell_{ii} \neq 0 \quad 1 \leq i \leq n
+\end{equation}
+or which is the same,
+\begin{equation}
+	L = (\ell_{ij}) = 
+	\left\{
+	\begin{aligned}
+		&\ell_{ij} = 0 			& 	&\text{if } i < j \\
+		&\ell_{ij} \neq 0 		& 	&\text{if } i = j \\
+		&\ell_{ij} \in \real 	& 	&\text{otherwise} 
+	\end{aligned}
+	\right.
+\end{equation}
+The system $L x = b$ can be solved with the forward substitution algorithm
+\begin{equation}
+	x_i = 
+	\frac{1}{\ell_{ii}} 
+	\left(
+	b_i - \sum_{j=1}^{i-1} \ell_{ij} \, x_j
+	\right),
+	\quad
+	1 \leq i \leq n
+\end{equation}
+
+\begin{theorem}
+	Let $A \in \mathcal{M}_{n \times n}(\real)$.
+	\begin{enumerate}[label={(\arabic*)}, topsep=0pt]
+		\item Assume that there exist a lower triangular matrix $L$ and an
+		upper triangular matrix $U$ such that $A = L U$. Then $L$ and $U$ are
+		unique.
+        \item If the $k$--th principal minor of $A$ is non--null for all $1 \leq
+        k \leq n$, that is to say, if
+        \begin{equation}
+            \begin{vmatrix}
+                a_{11} & \cdots & a_{1k} \\
+                \vdots & \ddots & \vdots \\
+                a_{k1} & \cdots & a_{kk}
+            \end{vmatrix} \neq 0
+        \end{equation}
+        then there exist $L$ and $U$ such that $A = L U$.
+        \item If the Gaussian elimination can be carried out on $A$, then $A = L U$ where
+		\[			
+			L = 
+			\begin{pmatrix}
+				1 				& 0 			& \cdots & 0 				& 0  \\
+				\ell_{21} 		& 1 			& \cdots & 0 				& 0 \\
+				\vdots 			& \vdots 		& \ddots & \vdots 	  		& \vdots \\
+				\ell_{n-1,1} 	& \ell_{n-1,2} 	& \cdots & 1 				& 0 \\
+				\ell_{n1} 		& \ell_{n,2} 	& \cdots & \ell_{n,n-1} 	& 1
+			\end{pmatrix}
+			\qquad			
+			U = 
+			\begin{pmatrix}
+				u_{11} 	& u_{12} & \cdots & u_{1,n-1} & u_{1n} \\
+				0		& u_{22} & \cdots & u_{2,n-1} & u_{2n} \\
+				\vdots	& \vdots & \ddots & \vdots 	  & \vdots \\
+				0 		& 0		 & \cdots & u_{n-1,n-1} & u_{n-1,n} \\
+				0 	   	& 0		 & \cdots & 0 			& u_{nn}
+			\end{pmatrix}			
+		\] 
+	\end{enumerate}
+\end{theorem}
+
+Certain matrices are not suitable for Gaussian elimination. In such cases it is
+necessary to permute the columns of $A$ during the elimination. This may be
+expressed with an invertible permutation matrix $P$, so that $A$ is decomposed
+as $P A = L U$ or $A = P^{-1} L U$. Once $A$ is decomposed, the linear system $P
+A x = b$ can be solved as two triangular systems with the previously seen
+algorithms. Indeed, since $P A x = L U x = b$, the systems to be solved are $L y
+= b$ and $U x = y$. 
