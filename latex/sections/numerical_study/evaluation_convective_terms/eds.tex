@@ -29,7 +29,7 @@ to theorem \ref{eq:linear_ode_system}, and is given by
 Péclet's number is defined as the ratio between of strengths of convection
 and diffusion \cite{patankar2008numerical},
 \begin{equation}
-	\mathrm{Pe} = 
+	\peclet = 
 	\frac{\text{convection transport rate}}{\text{diffusion transport rate}} = 
 	\frac{\rho u L}{\Gamma}
 \end{equation}
@@ -38,21 +38,21 @@ where $L$ is a characteristic length of the problem. Taking $d_{PE}$ as characte
 by EDS in terms of Péclet's number is written as
 \begin{equation} \label{eq:eds_e}
 	\phi_e - \phi_P = 
-	\frac{e^{\mathrm{Pe}_e \frac{d_{Pe}}{d_{PE}}} - 1}{e^{\mathrm{Pe}_e} - 1} (\phi_E - \phi_P)
+	\frac{e^{\peclet_e \frac{d_{Pe}}{d_{PE}}} - 1}{e^{\peclet_e} - 1} (\phi_E - \phi_P)
 \end{equation}
-The extension of \eqref{eq:eds_e} to the face $f$ is done by taking $d_{PF}$ as
-characteristic length, that is, if $f = w$, then the characteristic length is
-$d_{PW}$. Thereby EDS gives the following face values:
-\begin{align}
-	\phi_w &= 
-	\left( 1 - \frac{e^{\mathrm{Pe}_w \frac{d_{Ww}}{d_{PW}}} - 1}{e^{\mathrm{Pe}_w} - 1} \right)
-	 \phi_W + 
-	\frac{e^{\mathrm{Pe}_w \frac{d_{Ww}}{d_{PW}}} - 1}{e^{\mathrm{Pe}_w} - 1} \phi_P \\
-	\phi_n - \phi_P &= 
-	\frac{e^{\mathrm{Pe}_n \frac{d_{Pn}}{d_{PN}}} - 1}{e^{\mathrm{Pe}_n} - 1} (\phi_N - \phi_P) \\
-	\phi_s &= 
-	\left( 1 - \frac{e^{\mathrm{Pe}_s \frac{d_{Ss}}{d_{PS}}} - 1}{e^{\mathrm{Pe}_s} - 1} \right)
-	\phi_S + 
-	\frac{e^{\mathrm{Pe}_s \frac{d_{Ss}}{d_{PS}}} - 1}{e^{\mathrm{Pe}_s} - 1} \phi_P
-	\label{eq:eds_s}	
-\end{align}
+% The extension of \eqref{eq:eds_e} to the face $f$ is done by taking $d_{PF}$ as
+% characteristic length, that is, if $f = w$, then the characteristic length is
+% $d_{PW}$. Thereby EDS gives the following face values:
+% \begin{align}
+% 	\phi_w &= 
+% 	\left( 1 - \frac{e^{\peclet_w \frac{d_{Ww}}{d_{PW}}} - 1}{e^{\peclet_w} - 1} \right)
+% 	 \phi_W + 
+% 	\frac{e^{\peclet_w \frac{d_{Ww}}{d_{PW}}} - 1}{e^{\peclet_w} - 1} \phi_P \\
+% 	\phi_n - \phi_P &= 
+% 	\frac{e^{\peclet_n \frac{d_{Pn}}{d_{PN}}} - 1}{e^{\peclet_n} - 1} (\phi_N - \phi_P) \\
+% 	\phi_s &= 
+% 	\left( 1 - \frac{e^{\peclet_s \frac{d_{Ss}}{d_{PS}}} - 1}{e^{\peclet_s} - 1} \right)
+% 	\phi_S + 
+% 	\frac{e^{\peclet_s \frac{d_{Ss}}{d_{PS}}} - 1}{e^{\peclet_s} - 1} \phi_P
+% 	\label{eq:eds_s}	
+% \end{align}

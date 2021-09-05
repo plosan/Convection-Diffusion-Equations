@@ -6,6 +6,42 @@ calculus so that results on sections
 \ref{sec:the_convection_diffusion_equations} and \ref{sec:numerical_study} are
 well founded.
 
+Let $I \subset \real$ be a non--empty open interval and let $f \colon I \subset
+\real \to \real$ be a $n$ times continuously differentiable function, \ie $f \in
+\mathcal{C}^n(I)$. We would like to approximate the function $f$ around a point
+$x_0 \in I$ with a polynomial of degree $n$,
+\begin{equation} \label{eq:taylor_polynomial_1}
+    P_n(x) = c_0 + c_1 (x - x_0) + \cdots + c_n (x - x_0)^n
+\end{equation}
+It seems reasonable that by imposing $P_n^{(k)}(x_0) = f^{(k)}(x_0)$ for $0 \leq
+k \leq n$, the polynomial would be a good approximation of $f$ in a
+neighbourhood of $x_0$. Thereby,
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            P_n(x_0) &= c_0 = f(x_0) \\
+            P_n'(x_0) &= c_1 = f'(x_0) \\
+            &\vdots \\
+            P_n^{(n)}(x_0) &= c_n n! = f^{(n)}(x_0)
+         \end{aligned}
+    \right.
+\end{equation}
+thus the coefficient $c_k$ is given by
+\begin{equation}
+    c_k = \frac{f^{(k)}(x_0)}{k!}
+\end{equation}
+and the polynomial \eqref{eq:taylor_polynomial_1} is
+\begin{equation} \label{eq:taylor_polynomial_2}
+    P_n(x;x_0) = 
+    \sum_{k=0}^n \frac{f^{(k)}(x_0)}{k!} (x - x_0)^k = 
+    f(x_0) + f'(x_0) (x - x_0) + \cdots + \frac{f^{(n)}(x_0)}{n!} (x - x_0)
+\end{equation}
+
+\begin{definition}
+    The polynomial given by \eqref{eq:taylor_polynomial_2} is the Taylor
+    polynomial of order $k$ of $f$ at $x_0$.
+\end{definition}
+
 \begin{theorem}[Taylor's theorem]
 	
 \end{theorem}

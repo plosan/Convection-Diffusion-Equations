@@ -34,9 +34,9 @@ The velocity field is $\vb{v} = v_0 \cos(\alpha) \vb{i} + v_0 \sin(\alpha)
 	\frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} = 
 	\frac{\rho v_0 \cos(\alpha)}{\Gamma} \left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\} = 
 	\underbrace{\frac{\cos(\alpha)}{L}}_{\beta} 
-	\underbrace{\frac{\rho v_0 L}{\Gamma}}_{\mathrm{Pe}} 
+	\underbrace{\frac{\rho v_0 L}{\Gamma}}_{\peclet} 
 	\left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\} = 
-	\beta \, \mathrm{Pe} \left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\}
+	\beta \, \peclet \left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\}
 \end{align}
 The resulting Cauchy problem is gathered in
 \eqref{eq:diagonal_case_cauchy_problem} and summarized in figure
@@ -44,7 +44,7 @@ The resulting Cauchy problem is gathered in
 \begin{equation} \label{eq:diagonal_case_cauchy_problem}
 	\left\{
 	\begin{aligned}
-		&\Delta \phi - \beta \, \mathrm{Pe} \left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\} = 0 &
+		&\Delta \phi - \beta \, \peclet \left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\} = 0 &
 		&\text{in } \Omega \\
 		&\phi = g &
 		&\text{on } \partial \Omega
@@ -84,7 +84,7 @@ The resulting Cauchy problem is gathered in
 		\path[-latex] (bbc) edge[bend right] node [left] {} (bb);
 		% PDE
 		\node[] at ({0.5*\L},{0.5*\L}) 
-		{$\Delta{\phi} - \beta \, \mathrm{Pe} \left\{ \pdv{\phi}{x} + \pdv{\phi}{x} \right\} = 0$};
+		{$\Delta{\phi} - \beta \, \peclet \left\{ \pdv{\phi}{x} + \pdv{\phi}{x} \right\} = 0$};
 	\end{tikzpicture}
 	\caption{Cauchy problem for the diagonal flow case.}
 	\label{fig:diagonal_case_cauchy_problem}

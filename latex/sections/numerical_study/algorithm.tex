@@ -1,7 +1,9 @@
 
 \subsection{Solving algorithm}
 
-The procedure to solve of a transient convection--diffusion problem with 2D--cartesian mesh is shown in Algorithm \ref{algorithm:general_solving_algorithm}.
+The procedure to solve of a transient convection--diffusion problem with
+2D--cartesian mesh is shown in Algorithm
+\ref{algorithm:general_solving_algorithm}.
 
 \begin{algorithm}[ht]
 	\caption{Resolution of a transient convection--diffusion problem with 2D--cartesian mesh.}
@@ -46,18 +48,40 @@ The procedure to solve of a transient convection--diffusion problem with 2D--car
 	\end{algorithmic}
 \end{algorithm}
 
-Hereinafter, the term iteration will be used to refer to the iterative procedure to solve the linear system on step \ref{alg:algorithm2_linear_system}. It must not be confused with the next time instant term.
+Hereinafter, the term iteration will be used to refer to the iterative procedure
+to solve the linear system on step \ref{alg:algorithm2_linear_system}. It must
+not be confused with the next time instant term.
 
-On step \ref{alg:algorithm2_compute_new_time_step} the next time instant is computed. This is the most computationally expensive step in the algorithm, specially part \ref{alg:algorithm2_linear_system} where the resolution of the linear system of discretized equations is carried out. As a result of the convection--diffusion equations nature, the system matrix $A$ and the vector of independent terms $b$ change each time the convergence condition is not fulfilled on step \eqref{alg:algorithm2_convergence_condition}. Since $A$ and $b$ depend on the previous iteration value of $\phi$, that is to say, $A = A(\phi^\ast)$ and $b = b(\phi^\ast)$, the linear system of equations is
+On step \ref{alg:algorithm2_compute_new_time_step} the next time instant is
+computed. This is the most computationally expensive step in the algorithm,
+specially part \ref{alg:algorithm2_linear_system} where the resolution of the
+linear system of discretized equations is carried out. As a result of the
+convection--diffusion equations nature, the system matrix $A$ and the vector of
+independent terms $b$ change each time the convergence condition is not
+fulfilled on step \eqref{alg:algorithm2_convergence_condition}. Since $A$ and
+$b$ depend on the previous iteration value of $\phi$, that is to say, $A =
+A(\phi^\ast)$ and $b = b(\phi^\ast)$, the linear system of equations is
 \begin{equation} \label{eq:algorithm_linear_system}
 	A(\phi^\ast) \, \phi = b(\phi^\ast)
 \end{equation}
-In the case both $A$ and $b$ were constant, the algorithm needed to solve the linear system \eqref{eq:algorithm_linear_system} would be clear at first glance. Since each node is influenced only by the adjacent nodes, $A$ is a pentadiagonal by blocks matrix, therefore $A$ is sparse, \ie most of the elements are zero, hence an iterative method for solving the linear system would be convenient. Let $A_{ij}$ denote the element in the $i$-th row and $j$-th column of $A$. If $A$ is, in addition, a strictly diagonally dominant (SDD) matrix, that is to say,
+In the case both $A$ and $b$ were constant, the algorithm needed to solve the
+linear system \eqref{eq:algorithm_linear_system} would be clear at first glance.
+By looking at equations \eqref{eq:small_molecule_schemes} and
+\eqref{eq:large_molecule_schemes} (actually the same equation), the value of
+$\phi_P$ is only influenced by $\phi_E$, $\phi_W$, $\phi_S$ and $\phi_N$, hence
+$A$ is a pentadiagonal by blocks matrix, therefore $A$ is sparse, \ie most of
+the elements are zero. In this situation an iterative method for solving the
+linear system is convenient. 
+
+Let $A_{ij}$ denote the element in the $i$-th row and $j$-th column of $A$.
+Assume $A$ is a strictly diagonally dominant (SDD) matrix, that is to say,
 \begin{equation} \label{eq:sdd_matrix_1}
 	\abs{A_{ii}} \geq 
-	\sum_{\substack{j = 1 \\ j \neq i}}^n \abs{A_{ij}} 
+	\sum_{\substack{j = 1 \\ j \neq i}}^n \abs{A_{ij}}, \quad 1 \leq i \leq n
 \end{equation}
-then Gauss--Seidel algorithm is guaranteed to converge and eventually solve the system. In terms of the discretization coefficients, condition \eqref{eq:sdd_matrix_1} is written as
+where $n$ is the dimension of the matrix. Then the Gauss--Seidel algorithm is
+guaranteed to converge and eventually solve the system. In terms of the
+discretization coefficients, condition \eqref{eq:sdd_matrix_1} is written as
 \begin{equation}
 	\abs{a_P[i][j]} \geq 
 	\abs{a_W[i][j]} +
@@ -65,7 +89,18 @@ then Gauss--Seidel algorithm is guaranteed to converge and eventually solve the 
 	\abs{a_S[i][j]} +
 	\abs{a_N[i][j]}
 \end{equation}
-Nonetheless the SDD condition is not assured as a consequence of the discretization coefficients.
-
-As the execution of an iterative procedure to solve the linear system may diverge, arguably the most convenient is a direct method.
-
+Recall that in section \ref{sec:discretization_general_cde} we linearized the
+linear term as $\dot{\overline{s}}_\phi = S_C^\phi + S_P^\phi \phi_P$ and we
+asked $S_P^\phi$ to be non--positive, \ie, $S_P^\phi \leq 0$. By looking at
+coefficient $a_P$ for small molecule schemes given by
+\eqref{eq:small_molecule_ap}, we notice the following:
+\begin{equation}
+	a_P = 
+	a_E + a_W + a_N + a_S + \frac{\rho_P^0 V_P}{\Delta t} - S_P^\phi V_P \geq
+	a_E + a_W + a_N + a_S + \frac{\rho_P^0 V_P}{\Delta t}
+\end{equation}
+Therefore the fact that $S_P^\phi \leq 0$, although not being a sufficient
+conditions, helps the matrix $A$ to satisfy the SDD condition. In the case an
+iterative procedure diverges, a direct method to solve the linear system might
+be the most convenient option. Two methods for solving linear systems are
+discussed in appendix \ref{ap:numerical_resolution_linear_systems}.

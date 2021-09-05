@@ -1,0 +1,17 @@
+\subsection{Final form of the generalized convection--diffusion equation}
+
+The purpose of this subsection is to obtain a discretization equation of the
+form
+\begin{equation} \label{eq:final_form_1}
+	\mathcal{A}_P \phi_P + \sum_F \mathcal{A}_F \phi_F = \mathcal{Q}_P
+\end{equation}
+so that it can be easily implemented to be solved numerically, starting from
+equation \eqref{eq:general_cde_discretized_implicit} and the studied schemes to
+evaluate convective properties. Among the revised schemes, some use only the
+surrounding nodes, whilst others involve a larger amount of nodes. As a
+consequence of the different treatment needed, separate subsections are devoted
+to each type of scheme.
+
+\input{sections/numerical_study/discretization_general_cde_final/small_molecule.tex}
+\input{sections/numerical_study/discretization_general_cde_final/large_molecule.tex}
+

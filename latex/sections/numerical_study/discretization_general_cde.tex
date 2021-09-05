@@ -1,5 +1,6 @@
 
 \subsection{Discretization of the general convection--diffusion equation}
+\label{sec:discretization_general_cde}
 
 The generalized convection--diffusion for a real valued function $\phi \colon
 \Omega \times I \subset \real^n \times \real \rightarrow \real$ is
@@ -23,8 +24,8 @@ vector valued function actually comprises $n$ equations, one for each component
 function, we will only study the discretization for a real valued function.
 
 Integrating \eqref{eq:discretization_cde_equation_1} over $\cv{P} \times [t^n,
-t^{n+1}] \subset \Omega \times I$ and using Fubini's theorem
-(\colorbox{red}{Fubini's theorem}) to swap the order of integration
+t^{n+1}] \subset \Omega \times I$ and using Fubini's theorem to swap the order
+of integration
 \begin{multline}
 	\int_{t^n}^{t^{n+1}} \int_{\cv{P}} \pdv{(\rho \phi)}{t} \dd{x} \dd{t} + 
 	\int_{t^n}^{t^{n+1}} \int_{\cv{P}} \div(\rho \vb{v} \phi) \dd{x} \dd{t} = \\ = 
@@ -64,7 +65,7 @@ $\phi \approx \phi_i$. Therefore,
 	= \left\{ \beta \sum_i \dot{m}_i \phi_i + (1 - \beta) \sum_i \dot{m}_i^0 \phi_i^0 \right\} \Delta t	
 \end{multline}
 
-In regard to the diffusion term,
+In regards to the diffusion term,
 \begin{equation} \label{eq:discretization_cde_equation_2}
 	\int_{t^n}^{t^{n+1}} \int_{\cv{P}} \div(\Gamma_\phi \grad{\phi}) \dd{x} \dd{t} = 
 	\int_{t^n}^{t^{n+1}} \int_{\cs{P}} \Gamma_\phi \grad{\phi} \vdot \vb{n} \dd{S} \dd{t} = 
@@ -80,7 +81,7 @@ center, and partial derivatives will be approximated by a finite centered
 difference. In order to simplify the notation, we shall drop the subindex $\phi$ in the diffusion
 coefficient $\Gamma_\phi$ and define the coefficients
 \begin{align}
-	D_f &= \frac{\Gamma_f S_f}{d_{PF}} \\
+	D_f &= \frac{\Gamma_f S_f}{d_{PF}} \label{eq:coefficient_df} \\
 	D_f^0 &= \frac{\Gamma_f^0 S_f}{d_{PF}}
 \end{align}
 where $f$ and $F$ refer to the face and to the node, respectively. For a 2D--mesh, equation
@@ -169,7 +170,7 @@ In the case of a implicit integration scheme, \ie $\beta = 1$, equation
 	\big( S_C^\phi + S_P^\phi \phi_P \big) V_P
 \end{multline}
 An equivalent and more useful form of the discretization equation can be found
-by multiplying \eqref{eq:continuity_equation_2d_discretized} times $\phi_P$ and
+by multiplying \eqref{eq:continuity_equation_2d_discretized} by $\phi_P$ and
 subtracting it from \eqref{eq:general_cde_discretized_implicit}, which results
 in
 \begin{multline} \label{eq:general_cde_discretized_implicit_useful}

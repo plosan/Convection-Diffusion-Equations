@@ -1,6 +1,23 @@
 
-\section{Numerical resolution of linear systems}
+\section{Numerical resolution of linear systems} \label{ap:numerical_resolution_linear_systems}
 
-\subsection{Gauss--Seidel algorithm}
+In this appendix we present two algorithms to solve linear systems.
 
-\subsection{LU factorization}
+Let $\mathcal{M}_{n \times n}(\real)$ be the space of $n \times n$ matrices with
+real coefficients. We consider linear systems of the form $A x = b$, where $A
+\in \mathcal{M}_{n \times n}(\real)$ is the system matrix with $\det(A) \neq 0$
+and $b \in \real^n$ is the vector of independent terms. 
+
+\subsection{Iterative method: Gauss--Seidel's algorithm}
+
+Consider the linear system $A x = b$. A possible method to solve a linear system
+is to generate a sequence $\{ x^{(k)} \}_{k \geq 0} \subset \real^n$ such that
+$\lim_{k \to \infty} x^{(k)} = x$.  
+
+\begin{theorem}
+    If $A$ is a positive definite symmetric matrix or it is strictly diagonally
+    dominant by rows, then the Gauss--Seidel converges to the linear system
+    solution.
+\end{theorem}
+
+\subsection{Direct method: the LU factorization}

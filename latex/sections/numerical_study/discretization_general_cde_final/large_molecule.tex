@@ -1,110 +1,3 @@
-\subsection{Final form of the generalized convection--diffusion equation}
-
-The purpose of this subsection is to obtain a discretization equation of the
-form
-\begin{equation} \label{eq:final_form_1}
-	\mathcal{A}_P \phi_P + \sum_F \mathcal{A}_F \phi_F = \mathcal{Q}_P
-\end{equation}
-so that it can be easily implemented to be solved numerically, starting from
-equation \eqref{eq:general_cde_discretized_implicit} and the studied schemes to
-evaluate convective properties. Among the revised schemes, some use only the
-surrounding nodes, whilst others involve a larger amount of nodes. As a
-consequence of the different treatment needed, separate subsections are devoted
-to each type of scheme.
-
-\subsubsection{Small molecule schemes}
-
-Small molecule schemes are those which only involve adjacent nodes to the volume
-faces. That is, index $I$ in \eqref{eq:final_form_1} refers to nodes $E$, $W$,
-$N$ and $S$. As a result, these schemes can be introduced in a compact form as
-\colorbox{red}{Patankar} suggests \cite{patankar2008numerical}. However a
-different approach will be followed here. 
-
-As it can be noted from the expressions for schemes UDS (equations
-\eqref{eq:uds_e} to \eqref{eq:uds_s}), CDS (equations \eqref{eq:cds_e} to
-\eqref{eq:cds_s}) and EDS (equations \eqref{eq:eds_e} to \eqref{eq:eds_s}), once
-a face $f$ is chosen, the formula for $\phi_f$ has the following form
-\begin{equation} \label{eq:small_molecule_schemes_1}
-	\phi_f - \phi_P = A_f (\phi_F - \phi_P)
-\end{equation}
-where $A_f$ is a coefficient which depends on the face and the scheme.
-Particularizing for each face,
-\begin{align}	
-	\phi_e - \phi_P &= A_e (\phi_E - \phi_P) \label{eq:small_molecule_schemes_2} \\ 
-	\phi_w - \phi_P &= A_w (\phi_W - \phi_P) \\
-	\phi_n - \phi_P &= A_n (\phi_N - \phi_P) \\
-	\phi_s - \phi_P &= A_s (\phi_S - \phi_P) \label{eq:small_molecule_schemes_3} 
-\end{align}
-The values of $A_f$ and $B_f$ for each face and scheme are collected in table
-\ref{tab:small_molecule_schemes_coefficients}.
-
-\begin{table}[ht]
-	\centering
-	\renewcommand{\arraystretch}{1.5}
-	\begin{tabular}{lccc}
-		\toprule[0.5mm]
-		Face & UDS & CDS & EDS \\
-		\midrule[0.25mm]
-		East & $\dfrac{\dot{m}_e - \abs{\dot{m}_e}}{2 \dot{m}_e}$ &
-		$\dfrac{d_{Pe}}{d_{PE}}$ & $\dfrac{e^{\mathrm{Pe}_e
-		\frac{d_{Pe}}{d_{PE}}} - 1}{e^{\mathrm{Pe}_e} - 1}$,  
-		$\mathrm{Pe}_e = \dfrac{\rho_e u_e d_{PE}}{\Gamma_e}$ \\
-		
-		West & $\dfrac{\dot{m}_w + \abs{\dot{m}_w}}{2 \dot{m}_w}$ &
-		$\dfrac{d_{Pw}}{d_{PW}}$ & $\mathrm{Pe}_w = \dfrac{\rho_w u_w
-		d_{PW}}{\Gamma_w}$ \\
-		
-		North & $\dfrac{\dot{m}_n - \abs{\dot{m}_n}}{2 \dot{m}_n}$ &
-		$\dfrac{d_{Pn}}{d_{PN}}$ & $\dfrac{e^{\mathrm{Pe}_n
-		\frac{d_{Pn}}{d_{PN}}} - 1}{e^{\mathrm{Pe}_n} - 1}$,  
-		$\mathrm{Pe}_n = \dfrac{\rho_n v_n d_{PN}}{\Gamma_n}$ \\
-		
-		South & $\dfrac{\dot{m}_s + \abs{\dot{m}_s}}{2 \dot{m}_s}$ &
-		$\dfrac{d_{Ps}}{d_{PS}}$ & $\mathrm{Pe}_s = \dfrac{\rho_s v_s
-		d_{PS}}{\Gamma_s}$ \\
-		\bottomrule[0.5mm]
-	\end{tabular}
-	\captionsetup{width=0.7\linewidth}
-	\caption{Coefficient $A_f$ of equation $\phi_f - \phi_P = A_f (\phi_F - \phi_P)$ for east, west, north and south faces, and for schemes UDS, CDS and EDS.}
-	\label{tab:small_molecule_schemes_coefficients}
-\end{table}
-
-\noindent
-Introducing equations \eqref{eq:small_molecule_schemes_2} through
-\eqref{eq:small_molecule_schemes_3} in
-\eqref{eq:general_cde_discretized_implicit_useful}, a general discretization
-equation comprising UDS, CDS and EDS can be obtained:
-\begin{align} 
-	&\left\{
-	D_e - \dot{m}_e A_e +
-	D_w + \dot{m}_w A_w +
-	D_n - \dot{m}_n A_n +
-	D_s + \dot{m}_s A_s + 
-	\frac{\rho_P^0 V_P}{\Delta t} - S_P^\phi V_P
-	\right\} \phi_P \nonumber \\
-	&= 
-	\Big\{ D_e - \dot{m}_e A_e \Big\} \phi_E + 
-	\Big\{ D_w + \dot{m}_w A_w \Big\} \phi_W + 
-	\Big\{ D_n - \dot{m}_n A_n \Big\} \phi_N + 
-	\Big\{ D_s + \dot{m}_s A_s \Big\} \phi_S \nonumber \\
-	&+ \left\{ S_C^\phi + \frac{\rho_P^0 \phi_P^0}{\Delta t} \right\} V_P \label{eq:discretization_equation_uds_cds_eds}
-\end{align}
-In order to make \eqref{eq:discretization_equation_uds_cds_eds} more tractable,
-the following discretization coefficients are defined:
-\begin{gather}
-	\begin{align}
-		a_E &= D_e - \dot{m}_e A_e \\
-		a_W &= D_w + \dot{m}_w A_w \\
-		a_N &= D_n - \dot{m}_n A_n \\
-		a_S &= D_s + \dot{m}_s A_s
-	\end{align} \\
-	a_P = a_W + a_E + a_S + a_N + \frac{\rho_P^0 V_P}{\Delta t} - S_P^\phi V_P \\
-	b_P = S_C^\phi V_P + \frac{\rho_P^0 \phi_P^0}{\Delta t} V_P
-\end{gather}
-Thereby the discretization equation is:
-\begin{equation} \label{eq:small_molecule_schemes_4}
-	a_P \phi_P = a_W \phi_W + a_E \phi_E + a_S \phi_S + a_N \phi_N + b_P
-\end{equation}
 
 \subsubsection{Large molecule schemes}
 
@@ -113,7 +6,7 @@ adjacent nodes to the faces but also the most upstream nodes, that is to say,
 involve a larger molecule. Since a larger molecule increases the memory usage
 and the computational effort, it is desirable to keep it as low as possible.
 Therefore, the aim is to obtain a discretization equation such as
-\eqref{eq:small_molecule_schemes_4}, where only the surrounding nodes
+\eqref{eq:small_molecule_schemes}, where only the surrounding nodes
 participate, while upstream nodes are computed by different means and collected
 in $b_P$. 
 
@@ -174,7 +67,7 @@ and using relation \eqref{eq:large_molecule_schemes_1}
 \end{multline}
 Replacing the corresponding terms with expressions \eqref{eq:uds_e} through
 \eqref{eq:uds_s} and rearranging terms, the desired expression is found
-\begin{equation}
+\begin{equation} \label{eq:large_molecule_schemes}
 	a_P \phi_P = a_W \phi_W + a_E \phi_E + a_S \phi_S + a_N \phi_N + b_P
 \end{equation}
 with the following coefficients:

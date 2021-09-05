@@ -2,6 +2,8 @@
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
 \usepackage{enumitem}
+\usepackage{stmaryrd}
+\SetSymbolFont{stmry}{bold}{U}{stmry}{m}{n}
 \usepackage{amsthm, amsmath, amssymb, amsfonts, mathtools, mathrsfs}
 \usepackage{graphicx, calc}
 \usepackage{empheq}
@@ -89,6 +91,11 @@
 \newcommand{\cs}[1]{\mathcal{S}_{#1}}
 \newcommand{\cvt}{{\mathcal{V}(t)}} 
 \newcommand{\cst}{{\mathcal{S}(t)}} 
+
+% Adimensional numbers
+\newcommand{\peclet}{\mathrm{Pe}}
+
+\newcommand{\maxf}[2]{\left\llbracket #1, #2 \right\rrbracket}
 
 % Comandos grupos
 \newcommand{\generated}[1]{\langle #1 \rangle}

@@ -1,18 +1,27 @@
 
 \subsection{Analytical solution}
 
-Unlike the diagonal case, in the Smith--Hutton problem there is no clear choice for a fluid velocity to compute Péclet's number. The average velocity of the flow field given by
+Unlike the diagonal case, in the Smith--Hutton problem there is no clear choice
+for a fluid velocity to compute Péclet's number. The average velocity of the
+flow field given by
 \begin{equation}
 	\overline{v} = 
 	\dfrac{\displaystyle \iint_\Omega \norm{\vb{v}} \dd{x} \dd{y}}{\displaystyle \iint_\Omega 1 \dd{x} \dd{y}} = 
 	\frac{1}{2 L^2}
 	\iint_\Omega \left\{ 4 y^2 (1 - x^2)^2 + 4 x^2 (1 - y^2)^2 \right\} \dd{x} \dd{y}
 \end{equation}
-could be chosen as a representative velocity. However, it is unclear whether or not it is important for the behaviour of the solution. In view of the PDE from \eqref{eq:smith_hutton_cauchy_problem}, it seems that the solution shall be governed by the quotient $\rho / \Gamma$. Due to the nature of the problem, the velocity field and the mixed boundary conditions (both Dirichlet and Neumann)
+could be chosen as a representative velocity. However, it is unclear whether or
+not it is important for the behaviour of the solution. In view of the PDE from
+\eqref{eq:smith_hutton_cauchy_problem}, it seems that the solution shall be
+governed by the quotient $\rho / \Gamma$. Due to the nature of the problem, the
+velocity field and the mixed boundary conditions (both Dirichlet and Neumann)
 
-\subsubsection{Analytical solution for \texorpdfstring{$\rho / \Gamma = \infty$}{infinite rho/Gamma quotient}}
+\subsubsection{Analytical solution for \texorpdfstring{$\rho / \Gamma =
+\infty$}{infinite rho/Gamma quotient}}
 
-As in the diagonal case, when $\rho / \Gamma = \infty$ we have $\mathrm{Pe} = \infty$. Dividing the PDE by Péclet's number results in the following transport problem:
+As in the diagonal case, when $\rho / \Gamma = \infty$ we have $\peclet =
+\infty$. Dividing the PDE by Péclet's number results in the following transport
+problem:
 \begin{equation} \label{eq:smith_hutton_cauchy_problem_infinite_peclet} 
 	\left\{
 	\begin{aligned}
@@ -25,7 +34,12 @@ As in the diagonal case, when $\rho / \Gamma = \infty$ we have $\mathrm{Pe} = \i
 	\end{aligned}
 	\right.
 \end{equation}
-We shall follow the method of characteristics again in order to give a solution of problem \eqref{eq:smith_hutton_cauchy_problem_infinite_peclet}. However, we will be less rigorous and we will not check the boundary conditions nor the uniqueness. Let $I \subset \real$ be an open interval and let $h \colon I \subset \real \to \real^2$, $s \mapsto h(s) = (x(s), y(s))$ be a mapping satisfying the following:
+We shall follow the method of characteristics again in order to give a solution
+of problem \eqref{eq:smith_hutton_cauchy_problem_infinite_peclet}. However, we
+will be less rigorous and we will not check the boundary conditions nor the
+uniqueness. Let $I \subset \real$ be an open interval and let $h \colon I
+\subset \real \to \real^2$, $s \mapsto h(s) = (x(s), y(s))$ be a mapping
+satisfying the following:
 \begin{equation} \label{eq:smith_hutton_cauchy_problem_infinite_peclet_characteristics_1} 
 	\left\{
 	\begin{aligned}
@@ -34,19 +48,60 @@ We shall follow the method of characteristics again in order to give a solution 
 	\end{aligned}
 	\right.
 \end{equation}
-Notice that \eqref{eq:smith_hutton_cauchy_problem_infinite_peclet_characteristics_1} is the same ODE system as \eqref{eq:velocity_smith_hutton_odes}, which implies the curves satisfying \eqref{eq:smith_hutton_cauchy_problem_infinite_peclet_characteristics_1} are streamlines. Hereinafter, we will use the terms streamline and characteristic as synonyms. We claim we already know all the characteristics in $\Omega$. Indeed, we have the following facts:
-\begin{enumerate}[label={(\roman*)}, topsep=0pt] \label{lab:smith_hutton_cauchy_problem_infinite_peclet_i}
-	\item When $x = \pm 1$ we have $u(\pm 1, y) = 0$ for all $y \in (0, 1)$ (there is only $y$--component of velocity). \label{lab:smith_hutton_cauchy_problem_infinite_peclet_x}
-	\item When $y = 1$ we have $v(x, 1) = 0$ for all $x \in (-1,1)$ (there is only $x$--component of velocity). \label{lab:smith_hutton_cauchy_problem_infinite_peclet_y}
-	\item When $y = 0$ we have $u(x,0) = 0$ for all $x \in (-1,1)$ and the $y$--component vanishes nowhere expect at $(0,0)$, but this point does not belong to $\Omega$. \label{lab:smith_hutton_cauchy_problem_infinite_peclet_iv}
-	\item Any two streamlines cannot cross each other. Each point in $\Omega$ belongs to a single streamline. \label{lab:smith_hutton_cauchy_problem_infinite_peclet_v}
+Notice that
+\eqref{eq:smith_hutton_cauchy_problem_infinite_peclet_characteristics_1} is the
+same ODE system as \eqref{eq:velocity_smith_hutton_odes}, which implies the
+curves satisfying
+\eqref{eq:smith_hutton_cauchy_problem_infinite_peclet_characteristics_1} are
+streamlines. Hereinafter, we will use the terms streamline and characteristic as
+synonyms. We claim we already know all the characteristics in $\Omega$. Indeed,
+we have the following facts:
+\begin{enumerate}[label={(\roman*)}, topsep=0pt]
+\label{lab:smith_hutton_cauchy_problem_infinite_peclet_i}
+	\item When $x = \pm 1$ we have $u(\pm 1, y) = 0$ for all $y \in (0, 1)$
+	(there is only $y$--component of velocity).
+	\label{lab:smith_hutton_cauchy_problem_infinite_peclet_x}
+	\item When $y = 1$ we have $v(x, 1) = 0$ for all $x \in (-1,1)$ (there is
+	only $x$--component of velocity).
+	\label{lab:smith_hutton_cauchy_problem_infinite_peclet_y}
+	\item When $y = 0$ we have $u(x,0) = 0$ for all $x \in (-1,1)$ and the
+	$y$--component vanishes nowhere expect at $(0,0)$, but this point does not
+	belong to $\Omega$.
+	\label{lab:smith_hutton_cauchy_problem_infinite_peclet_iv}
+	\item Any two streamlines cannot cross each other. Each point in $\Omega$
+	belongs to a single streamline.
+	\label{lab:smith_hutton_cauchy_problem_infinite_peclet_v}
 	\item The velocity field is non--zero at each point of $\Omega$.
 \end{enumerate}
-Facts \ref{lab:smith_hutton_cauchy_problem_infinite_peclet_x}, \ref{lab:smith_hutton_cauchy_problem_infinite_peclet_y} and \ref{lab:smith_hutton_cauchy_problem_infinite_peclet_v} imply that characteristics cannot exit $\Omega$ through the curve $C_2 = \left( \{ -L \} \times (0,L) \right) \cup \left( [-L,L] \times \{ L \} \right) \cup \left( \{ L \} \times [0,L) \right)$. Fact \eqref{lab:smith_hutton_cauchy_problem_infinite_peclet_iv} means that the velocity field ``pushes upwards'' on the curve $(-1,1) \times \{ 0 \}$, so characteristics cannot exit $\Omega$ through it either. Finally, fact \ref{lab:smith_hutton_cauchy_problem_infinite_peclet_y} implies that any two streamlines cannot die at the same point. Because all streamlines are contained in $\Omega$ and through each point passes a single streamlines, all characteristics begin at some point in $(-1,0) \times \{ 0 \}$ and finish at some point in $(0,1) \times \{ 0 \}$. At $(0,0)$ there is no characteristic starting or ending since the velocity field vanishes there. As a result, the initial value problem for characteristics is given by \eqref{eq:velocity_smith_hutton_ivp}, whose existence and uniqueness of solution we have already proved. 
+Facts \ref{lab:smith_hutton_cauchy_problem_infinite_peclet_x},
+\ref{lab:smith_hutton_cauchy_problem_infinite_peclet_y} and
+\ref{lab:smith_hutton_cauchy_problem_infinite_peclet_v} imply that the
+characteristic curves cannot exit $\Omega$ through the curve
+$C_2 = \left( \{ -L \} \times (0,L) \right) \cup \left( [-L,L] \times \{ L \}
+\right) \cup \left( \{ L \} \times [0,L) \right)$. Fact
+\ref{lab:smith_hutton_cauchy_problem_infinite_peclet_iv} means that the
+velocity field ``pushes upwards'' on the curve $(-1,1) \times \{ 0 \}$, so
+characteristics cannot exit $\Omega$ through it either. Finally, fact
+\ref{lab:smith_hutton_cauchy_problem_infinite_peclet_y} implies that any two
+streamlines cannot die at the same point. Because all streamlines are contained
+in $\Omega$ and through each point passes a single streamlines, all
+characteristics begin at some point in $(-1,0) \times \{ 0 \}$ and finish at
+some point in $(0,1) \times \{ 0 \}$. At $(0,0)$ there is no characteristic
+starting or ending since the velocity field vanishes there. As a result, the
+initial value problem for characteristics is given by
+\eqref{eq:velocity_smith_hutton_ivp}, whose existence and uniqueness of solution
+we have already proved. 
 
-Until now, we have taken points in the segment $(-1,1) \times \{ 0 \}$ although these do not belong to $\Omega$. Now we shall formalize this. Since the characteristics are solutions to the initial value problem \eqref{eq:velocity_smith_hutton_ivp}, these must be at least $\mathcal{C}^1$ curves in $\real^2$, hence must be continuous functions that admit a continuous extension to the segment $(-1,1) \times \{ 0 \}$.
+Until now, we have taken points in the segment $(-1,1) \times \{ 0 \}$ although
+these do not belong to $\Omega$. Now we shall formalize this. Since the
+characteristics are solutions to the initial value problem
+\eqref{eq:velocity_smith_hutton_ivp}, these must be at least $\mathcal{C}^1$
+curves in $\real^2$, hence must be continuous functions that admit a continuous
+extension to the segment $(-1,1) \times \{ 0 \}$.
 
-Finally we find the solution to the transport problem. Consider the function $\varphi = \phi \circ h \colon I \subset \real \to \real$. By the chain rule we have
+Finally we find the solution to the transport problem. Consider the function
+$\varphi = \phi \circ h \colon I \subset \real \to \real$. By the chain rule we
+have
 \begin{multline}
 	\frac{\dd}{\dd{s}} \varphi(s) = 
 	\frac{\dd}{\dd{s}} \phi(x(s), y(s)) = 
@@ -55,14 +110,30 @@ Finally we find the solution to the transport problem. Consider the function $\v
 	u(x(s),y(s)) \frac{\partial \phi}{\partial x} + 
 	v(x(s),y(s)) \frac{\partial \phi}{\partial y} = 0
 \end{multline}
-where the last equality is true because of the PDE. This means, as we already know, that the restriction of $\phi$ to the characteristics is a constant function. Recall that the value of $\phi$ at the boundary segment $(-1,0) \times \{ 0 \}$ is given by $g$. If $C \subset \Omega$ is a characteristic, then the value of $\phi$ at each point $(x,y) \in C$ must the value that $g$ takes at the point of $(-1,0) \cup \{ 0 \}$ that $C$ intersects. In order to give an explicit form of the solution, we shall define a new function. Let $p = (x,y) \in \Omega$ and let $C \subset \Omega \cup ((-1,0) \times \{ 0 \})$ be the only characteristic containing $p$. Let $q \in ((-1,0) \times \{ 0 \})$ be the only point contained in the intersection $C \cap ((-1,0) \times \{ 0 \})$. We define the following mapping:
+where the last equality is true because of the PDE. This means, as we already
+know, that the restriction of $\phi$ to the characteristics is a constant
+function. Recall that the value of $\phi$ at the boundary segment $(-1,0) \times
+\{ 0 \}$ is given by $g$. If $C \subset \Omega$ is a characteristic, then the
+value of $\phi$ at each point $(x,y) \in C$ must the value that $g$ takes at the
+point of $(-1,0) \cup \{ 0 \}$ that $C$ intersects. In order to give an explicit
+form of the solution, we shall define a new function. Let $p = (x,y) \in \Omega$
+and let $C \subset \Omega \cup ((-1,0) \times \{ 0 \})$ be the only
+characteristic containing $p$. Let $q \in ((-1,0) \times \{ 0 \})$ be the only
+point contained in the intersection $C \cap ((-1,0) \times \{ 0 \})$. We define
+the following mapping:
 \begin{equation}
 	\begin{aligned}
 		\alpha \colon \Omega \subset \real^2 &\longrightarrow \real^2 \\
 		p &\longmapsto \alpha(p) = q
 	\end{aligned}
 \end{equation}
-The mapping $\alpha$ takes any point in $\Omega$ and applies it into the only point contained in the intersection of the characteristic $C$ containing $p$ and the segment $(-1,0) \times \{ 0 \}$. Intuitively, two nearby points $p_1, p_2 \in \Omega$ are contained in two characteristics $C_1, C_2$ that are close, so the image of $p_1, p_2$ by $\alpha$ are two nearby points as well. It could be argued that $\alpha$ is also a $\mathcal{C}^1$ mapping. A possible solution to the problem \eqref{eq:smith_hutton_cauchy_problem_infinite_peclet} is given by
+The mapping $\alpha$ takes any point in $\Omega$ and applies it into the only
+point contained in the intersection of the characteristic $C$ containing $p$ and
+the segment $(-1,0) \times \{ 0 \}$. Intuitively, two nearby points $p_1, p_2
+\in \Omega$ are contained in two characteristics $C_1, C_2$ that are close, so
+the image of $p_1, p_2$ by $\alpha$ are two nearby points as well. It could be
+argued that $\alpha$ is also a $\mathcal{C}^1$ mapping. A possible solution to
+the problem \eqref{eq:smith_hutton_cauchy_problem_infinite_peclet} is given by
 \begin{equation}
 	\phi(x,y) = 
 	\left\{
