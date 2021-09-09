@@ -1,22 +1,4 @@
-
-\subsection{Analytical solution}
-
-Unlike the diagonal case, in the Smith--Hutton problem there is no clear choice
-for a fluid velocity to compute Péclet's number. The average velocity of the
-flow field given by
-\begin{equation}
-	\overline{v} = 
-	\dfrac{\displaystyle \iint_\Omega \norm{\vb{v}} \dd{x} \dd{y}}{\displaystyle \iint_\Omega 1 \dd{x} \dd{y}} = 
-	\frac{1}{2 L^2}
-	\iint_\Omega \left\{ 4 y^2 (1 - x^2)^2 + 4 x^2 (1 - y^2)^2 \right\} \dd{x} \dd{y}
-\end{equation}
-could be chosen as a representative velocity. However, it is unclear whether or
-not it is important for the behaviour of the solution. In view of the PDE from
-\eqref{eq:smith_hutton_cauchy_problem}, it seems that the solution shall be
-governed by the quotient $\rho / \Gamma$. Due to the nature of the problem, the
-velocity field and the mixed boundary conditions (both Dirichlet and Neumann)
-
-\subsubsection{Analytical solution for \texorpdfstring{$\rho / \Gamma =
+\subsubsection{Classical solution for \texorpdfstring{$\rho / \Gamma =
 \infty$}{infinite rho/Gamma quotient}}
 
 As in the diagonal case, when $\rho / \Gamma = \infty$ we have $\peclet =
@@ -145,4 +127,6 @@ the problem \eqref{eq:smith_hutton_cauchy_problem_infinite_peclet} is given by
 	\quad (x,y) \in \overline{\Omega}
 \end{equation}
 
-\subsubsection{General problem}
+\begin{theorem}
+	If a classical solution exists, then it is unique.
+\end{theorem}

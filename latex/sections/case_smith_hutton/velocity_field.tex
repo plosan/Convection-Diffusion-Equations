@@ -1,0 +1,99 @@
+
+\subsection{Velocity field}
+
+The velocity field for the Smith-Hutton case is given by $\vb{v} = 2 y (1 - x^2)
+\vb{i} - 2 x (1 - y^2) \vb{j}$. It verifies the incompressibility condition
+since it is divergence--free, \ie $\div{\vb{v}} = 0$. The only points where
+$\vb{v}$ vanishes are $(0,0)$ and $(\pm 1, \pm 1)$. In the case of $L < 1$, only
+$(0,0)$ belongs to $\overline{\Omega}$. Otherwise, $(0,0)$, $(-1,1)$ and $(1,1)$
+the first three points belong to $\overline{\Omega}$. 
+
+Recall that the
+stream function is a mapping $\psi \colon U \subset \real^2 \to \real$, where
+$U$ is some open subset of $\real^2$ containing $\Omega$, such that
+\begin{equation} \label{eq:stream_function_definition}
+	u = \pdv{\psi}{y}, \quad
+	v = -\pdv{\psi}{x}
+\end{equation}
+By choosing $u$ and $v$ to be the components of the velocity field $\vb{v}$ and
+integrating, one finds the function $\psi(x,y) = x^2 + y^2 (1 - x^2) + C$ where
+$C \in \real$ is a constant. Since the constant vanishes when differentiating,
+we may choose $C = -1$ so that we obtain the more nice looking
+\begin{equation}
+	\psi(x,y) = -(1 - x^2)(1 - y^2)
+\end{equation}
+
+\colorbox{red}{In this and in the forthcoming sections we shall assume $L = 1$. }
+
+In order to find the analytical solution to problem
+\eqref{eq:smith_hutton_cauchy_problem} when $\Gamma = 0$, it will be useful to
+know how the streamlines are. Recall that the streamlines are defined as the
+curves tangent to the vector field $\vb{v}$ at each point. If $\alpha \colon I
+\subset \real \to \Omega$, $s \mapsto \alpha(s) = (x(s), y(s))$ is the
+parametrization of a curve in $\Omega$, then it is a streamline provided it
+satisifes the following system of ODEs:
+\begin{equation} \label{eq:velocity_smith_hutton_odes}
+	\left\{
+	\begin{aligned}
+		x' &= 2 y (1 - x^2) \\
+		y' &= - 2 x (1 - y^2)
+	\end{aligned}
+	\right.
+\end{equation}
+Equivalently, the streamlines are the curves with normal vector $\grad{\psi}$
+at every point. In order to find the streamlines, we can specify an initial
+condition and then pose an initial value problem. Consider the mapping $f \colon
+\real^2 \longrightarrow \real^2$ defined by
+\begin{equation}
+	f(x,y) = 
+	\begin{pmatrix}
+		u(x,y) \\ v(x,y)
+	\end{pmatrix} =
+	\begin{pmatrix}
+		2 y (1 - x^2) \\ - 2 x (1 - y^2)
+	\end{pmatrix}
+\end{equation}
+Then the initial value problem for a streamline with initial condition $(x_0,y_0) \in \overline{\Omega}$ is
+\begin{equation} \label{eq:vel_smith_hutton_ivp}
+	\left\{
+		\begin{aligned}
+			\alpha' &= f(\alpha(s)) \\
+			\alpha(0) &= (x_0, y_0)
+		\end{aligned}
+	\right.
+\end{equation}
+
+\begin{prop}
+	The solution to the initial value problem \eqref{eq:vel_smith_hutton_ivp}
+	exists and is unique for every $(x_0, y_0) \in \overline{\Omega}$.
+\end{prop}
+\begin{proof}
+	Let $U = B(0,2L)$, thus $\overline{\Omega} \subset U$. Since both $u$ and
+	$v$ are $\mathcal{C}^\infty(\real^2)$ functions, $f$ is
+	$\mathcal{C}^\infty(\real^2)$. The restriction of $f$ to $\overline{U}$ is,
+	in particular, a $\mathcal{C}^1(\overline{U})$ mapping. By theorem
+	\ref{teo:c1_function_implies_lipschitz}, $f$ is Lipschitz on $\overline{U}$.
+	Now by the Picard--Lindelöf theorem (Theorem \ref{teo:picard_lindelof}) we
+	deduce the existence and uniqueness of solution to
+	\eqref{eq:vel_smith_hutton_ivp}.
+\end{proof}
+
+Finding the explicit solution to \eqref{eq:vel_smith_hutton_ivp} might be
+difficult as the system is non--linear. Nonetheless we can solve it numerically
+so as to find the appearance of the streamlines. This is precisely what has been
+done to produce figure \eqref{fig:smith_hutton_N201_streamlines}. The RK4
+algorithm was applied to the IVP \eqref{eq:vel_smith_hutton_ivp} for $L = 1 \
+\meter$ and initial conditions $x_0 = 0.10, \ 0.20, \ 0.30, \ 0.40, \ 0.50, \
+0.60, \ 0.70, \ 0.80, \ 0.90, \ 0.99 \ \meter$ and $y_0 = 0$.
+
+\begin{figure}[ht]
+	\centering
+	%	\fbox{\input{figures/case_smith_hutton/smith_hutton_N201_Pe1.0e+02.tex}}
+	\input{figures/case_smith_hutton/smith_hutton_N201_streamlines.tex}
+	\captionsetup{width=0.75\textwidth}
+	\caption{Norm of the Smith--Hutton velocity field and streamlines for $x_0 =
+	0.10, \ 0.20, \ 0.30, \ 0.40, \ 0.50, \ 0.60, \ 0.70, \ 0.80, \ 0.90$ and
+	$0.99 \ \meter$. The vectors tangent to the streamlines are normalized and
+	then scaled down by a factor of $\sqrt{2}/50$.}
+	\label{fig:smith_hutton_N201_streamlines}
+\end{figure}

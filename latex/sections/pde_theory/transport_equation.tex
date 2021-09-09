@@ -1,7 +1,26 @@
 
 \subsection{The transport equation}
 
+The transport equation with constant coefficients is the following first--order
+linear partial differential equation
+\begin{equation}
+    \frac{\partial u}{\partial t} + b \vdot D u = 0 \quad \text{in } \real^n \times (0,\infty)
+\end{equation}
+where $b = (b_1, \ldots, b_n)^\top \in \real^n$ is a fixed vector and $u \colon
+\real^n \times [0,\infty) \rightarrow \real$ is the unknown function, $u =
+u(x_1, \ldots, x_n, t) = u(x,t)$. $D u$ is the gradient vector with respect to
+the spatial variables, $D u = (\partial_{x_1} u, \ldots, \partial_{x_n} u)$.
 
+The initial value problem for the transport equation is
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            &\dfrac{\partial u}{\partial t} + b \vdot D u = 0 & &\text{in } \real^n \times (0,\infty) \\
+            &u = g & &\text{on} \real^n \times \{ t = 0 \}
+        \end{aligned}
+    \right.
+\end{equation}
+where $g \colon \real^n \to \real$ is a given function. 
 
 
 

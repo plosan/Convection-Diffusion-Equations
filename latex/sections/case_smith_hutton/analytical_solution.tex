@@ -1,0 +1,25 @@
+
+\subsection{Analytical solution}
+
+Unlike the diagonal case, in the Smith--Hutton problem there is no clear choice
+for a fluid velocity to compute Péclet's number. The average velocity of the
+flow field given by
+\begin{equation}
+	\overline{v} = 
+	\dfrac{\displaystyle \iint_\Omega \norm{\vb{v}} \dd{x} \dd{y}}{\displaystyle \iint_\Omega 1 \dd{x} \dd{y}} = 
+	\frac{1}{2 L^2}
+	\iint_\Omega \sqrt{4 y^2 (1 - x^2)^2 + 4 x^2 (1 - y^2)^2} \dd{x} \dd{y}
+\end{equation}
+could be chosen as a representative velocity. However, it is unclear whether or
+not it is relevant for the behaviour of the solution. In view of the PDE from
+\eqref{eq:smith_hutton_cauchy_problem}, it seems that the solution shall be
+governed by the quotient $\rho / \Gamma$.
+
+\input{sections/case_smith_hutton/analytical_solution/rg_inf_classical.tex}
+\input{sections/case_smith_hutton/analytical_solution/rg_fin.tex}
+
+
+
+
+
+\subsubsection{General problem}

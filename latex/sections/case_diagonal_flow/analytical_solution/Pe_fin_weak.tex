@@ -1,0 +1,176 @@
+
+\subsubsection{Weak solution for \texorpdfstring{$0 \leq \peclet <
+\infty$}{finite Péclet's number}}
+
+The theory that studies the existence and uniqueness of weak solutions to Cauchy
+problems involving second--order elliptic equations requires some prior
+knowledge in measure theory and functional analysis. The interested reader can
+consult appendix \ref{ap:measure_theory}. Rather than focusing on problem
+\eqref{eq:diagonal_case_cauchy_problem}, we shall study the theory for a general
+second--order elliptic equation and then particularize to our case. The
+reference for this subsection is Lawrence C. Evans' excellent book on Partial
+Differential Equations \cite{evans1998pde}, in particular chapter 6.
+
+\subsubsection*{General theory for weak solutions}
+
+Consider the Cauchy problem
+\begin{equation} \label{eq:second_order_elliptic_problem}
+	\left\{
+		\begin{aligned}
+			L u &= f & &\text{in } U \\
+			u &= 0 & &\text{on } \partial U
+		\end{aligned}
+	\right.
+\end{equation}
+where $U \subset \real^n$ is an open bounded subset, $u \colon \overline{U}
+\rightarrow \real$ is the unknown function (shall not be confused with the
+$x$--component of the velocity field) and $f \colon U \rightarrow \real$ is a
+given function. $L$ is a second--order partial differential operator having one
+of the two following forms
+\begin{gather}
+	L u = - \sum_{i,j=1}^n (a^{ij}(x) u_{x_i})_{x_j} + \sum_{i=1}^n b^i(x) u_{x_i} + c(x) u \label{eq:divergence_form}\\
+	L u = - \sum_{i,j=1}^n a^{ij}(x) u_{x_i x_j} + \sum_{i=1}^n b^i(x) u_{x_i} + c(x) u	
+	\label{eq:nondivergence_form}
+\end{gather}
+being $a^{ij}, \, b^i, \, c$ for $1 \leq i, j \leq n$ given functions.
+Aditionally, we shall assume $a^{ij}, \, b^i, \, c \in L^\infty(U)$ for all $1
+\leq i, j \leq n$ and $f \in L^2(U)$. When $L$ is given by
+\eqref{eq:divergence_form} we say the operator is in divergence form, and we say
+it is in non--divergence form when is given by \eqref{eq:nondivergence_form}. In
+the case of $a^{ij} \in \mathcal{C}^1(U)$ for all $1 \leq i, j \leq n$, an
+operator in non--divergence form can be rewritten in divergence form. We assume
+the symmetry condition $a^{ij} = a^{ji}$ for all $i, j$.
+
+Before giving the definition of weak solution, we shall gain some intuition
+about it. Suppose $L$ is given in divergence form. Let us assume that $u$ is a
+smooth solution to \eqref{eq:second_order_elliptic_problem}, \ie $u$ is a
+differentiable enough function. Let $v \in \mathcal{C}_c^\infty(U)$ be a smooth
+test function, being $\mathcal{C}_c^\infty(U)$ te set of infinitely
+differentiable functions with compact support in $U$. We multiply the PDE $L u =
+f$ by $v$ and integrate over $U$, that is to say,
+\begin{equation} \label{eq:second_order_elliptic_by_parts_1}
+	\int_U - \sum_{i,j=1}^n (a^{ij}(x) u_{x_i})_{x_j} v \dd{x} + 
+	\int_U \sum_{i=1}^n b^i(x) u_{x_i} v \dd{x} + 
+	\int_U c(x) u v \dd{x} = 
+	\int_U f v \dd{x}
+\end{equation}
+We rewrite the first term on the left--hand side integrating by parts
+\begin{align}
+	\int_U - \sum_{i,j=1}^n (a^{ij}(x) u_{x_i})_{x_j} v \dd{x} &= 
+	\int_U \sum_{i,j=1}^n a^{ij}(x) u_{x_i} v_{x_j} \dd{x} - 
+	\int_{\partial U} \sum_{i,j=1}^n a^{ij}(x) u_{x_i} v \nu^j \dd{\sigma} \nonumber \\
+	&= \int_U \sum_{i,j=1}^n a^{ij}(x) u_{x_i} v_{x_j} \dd{x} \label{eq:second_order_elliptic_by_parts_2}
+\end{align}
+In \eqref{eq:second_order_elliptic_by_parts_2}, $\nu^j$ denotes the $j$--th
+component of the exterior normal vector to $\partial U$ and $\dd{\sigma}$ is the
+``surface'' element of $\partial U$. The integral over $\partial U$ is zero
+because $v$ vanishes on it as a consequence of being $\mathcal{C}^\infty_c(U)$.
+Introducing \eqref{eq:second_order_elliptic_by_parts_2} in
+\eqref{eq:second_order_elliptic_by_parts_1} yields
+\begin{equation} \label{eq:second_order_elliptic_by_parts_3}
+	\int_U \sum_{i,j=1}^n a^{ij} u_{x_i} v_{x_j} + \sum_{i=1}^n b^i u_{x_i} v + c u v \dd{x} =
+	\int_U f v \dd{x}
+\end{equation}
+The left--hand side of \eqref{eq:second_order_elliptic_by_parts_3} is the
+bilinear form
+\begin{equation}
+	B[u,v] = 
+	\int_U \sum_{i,j=1}^n a^{ij} u_{x_i} v_{x_j} + \sum_{i=1}^n b^i u_{x_i} v + c u v \dd{x}
+\end{equation}
+for $u, v \in H^1_0(U)$, and is associated to the operator $L$ in divergence
+form. Thus equality \eqref{eq:second_order_elliptic_by_parts_3} is rewritten as
+\begin{equation}
+	B[u,v] = (f, v)
+\end{equation}
+where $(f, v) = \int_U f v \dd{x}$ is the scalar product in $L^2(U)$. Once we
+have introduced $B[\cdot,\cdot]$, we can define the concept of weak solution.
+
+\begin{definition} \label{def:weak_solution}
+	A function $u \in H^1_0(U)$ is weak solution of the boundary value problem
+	\eqref{eq:second_order_elliptic_problem} if
+	\begin{equation} \label{eq:definition_weak_solution}
+		B[u,v] = (f,v) \quad \text{for all } v \in H^1_0(U)
+	\end{equation}
+\end{definition}
+
+\noindent
+The intuition behind the definition of weak solution is the following: when a
+function $u \in H^1_0(U)$ is fixed, and equality
+\eqref{eq:definition_weak_solution} holds for any other function $v \in
+H^1_0(U)$, following the development we have made, necessarily $u$ is a solution
+to $L u = f$ in $U \subset \real^n$. 
+
+Before stating the theorem on the existence and uniqueness of solution to
+\eqref{eq:second_order_elliptic_problem}, other results such as the Lax--Milgram
+theorem or energy estimates are necessary. Nonetheless we shall not present them
+here so as not to complicate the exposition. The following is Theorem 4 from
+section 6.2 of Evan's book.
+
+\begin{theorem}[Second Existence Theorem for weak solutions] \label{teo:weak_solution}	
+	\begin{enumerate}[label={(\arabic*)}, topsep=0pt]
+		\item[]
+		\item Precisely one of the following statements holds:
+		\begin{enumerate}[label={(1.\arabic*)}, topsep=0pt]
+			\item For each $f \in L^2(U)$ there exists a unique weak solution $u$ of
+			the boundary value problem \label{item:alpha}
+			\begin{equation} \label{eq:boundary_value_problem_alpha}
+				\left\{
+					\begin{aligned}
+						L u &= f & &\text{in } U \\
+						u &= 0 & &\text{on } \partial U
+					\end{aligned}
+				\right.
+			\end{equation}
+			\item There exists a weak solution $u \not\equiv 0$ of the homogeneous
+			problem \label{item:beta}
+			\begin{equation} \label{eq:boundary_value_problem_beta}
+				\left\{
+					\begin{aligned}
+						L u &= 0 & &\text{in } U \\
+						u &= 0 & &\text{on } \partial U
+					\end{aligned}
+				\right.
+			\end{equation}
+		\end{enumerate}
+		\item Furthermore, should assertion \ref{item:beta} hold, the dimension
+		of the subspace $N \subset H_0^1(U)$ of weak solutions of
+		\eqref{eq:boundary_value_problem_beta} is finite and equals the
+		dimension of the subspace $N^\ast \subset H_0^1(U)$ of weak solutions of
+		\begin{equation}			
+			\left\{
+				\begin{aligned}
+					L^\ast v &= 0 & &\text{in } U \\
+					v &= 0 & &\text{on } \partial U
+				\end{aligned}
+			\right.
+		\end{equation}
+		\item Finally, the boundary--value problem
+		\eqref{eq:boundary_value_problem_alpha} has a weak solution if and only if 
+		\begin{equation}
+			(f, v) = 0 \quad \text{for all } v \in N^\ast
+		\end{equation}
+	\end{enumerate}
+\end{theorem}
+
+
+\begin{theorem}[Infinite differentiability in the interior]
+	Assume
+	\[
+		a^{ij}, \, b^i, \, c \in \mathcal{C}^\infty(U) \quad 
+		(i,j = 1, \ldots, n)	
+	\]
+	and
+	\[
+		f \in \mathcal{C}^\infty(U)
+	\]
+	Suppose $u \in H^1(U)$ is a weak solution of the elliptic PDE
+	\[
+		\begin{aligned}
+			L u &= f & &\text{in } U
+		\end{aligned}	
+	\]
+	Then
+	\[
+		u \in \mathcal{C}^\infty(U)
+	\]
+\end{theorem}

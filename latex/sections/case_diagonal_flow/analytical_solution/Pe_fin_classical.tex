@@ -1,0 +1,27 @@
+\subsubsection{Classical solution for \texorpdfstring{$0 \leq \peclet <
+\infty$}{finite Péclet's number}}
+
+Now we focus in problem \eqref{eq:diagonal_case_cauchy_problem} with $0 \leq
+\peclet < \infty$ and $\phi_\text{low} < \phi_\text{high}$. The PDE we are
+dealing with is a second--order elliptic equation with constant coefficients.
+First of all, we would like to know whether a classical solution exists:
+
+\begin{definition}
+	A classical solution to problem
+	\eqref{eq:diagonal_case_cauchy_problem_infinite_peclet} is a function $\phi
+	\colon \overline{\Omega} \rightarrow \real$ such that:
+	\begin{enumerate}[label={(\roman*)}, topsep=0pt]
+		\item $\phi \in \mathcal{C}^2(\overline{\Omega})$, \ie $\phi$ is a
+		$\mathcal{C}^2(\Omega)$ function that admits a $\mathcal{C}^2$ extension
+		to an open neighbourhood of every point in $\partial \Omega$,
+		\item $\phi$ satisfies the PDE and
+		\item $\phi$ satisfies the boundary conditions.
+	\end{enumerate}
+\end{definition}
+
+\noindent
+The function $g$ giving the boundary condition is not continuous at $(0,0)$ nor
+at $(L, L)$ unless $\phi_\text{low} = \phi_\text{high}$. Therefore problem
+\eqref{eq:diagonal_case_cauchy_problem} cannot have a classical solution,
+however it might have a solution in the weak sense.
+

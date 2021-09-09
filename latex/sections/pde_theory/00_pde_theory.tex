@@ -1,5 +1,47 @@
 
-\section{PDE theory}
+\section{Two important Partial Differential Equations}
+
+In this section we introduce two important partial differential equations,
+namely, the transport equation and the diffusion equation. We shall not deduce
+them nor work out the solution to an initial value problem, but rather gain
+physical intuition about the problem they model and the solution, as well as
+discuss their relation to the convection--diffusion equations. The references
+for this section are \cite{salsa2009pde} and \cite{evans1998pde}.
+
+We will start by introducing some notation:
+\begin{itemize}[topsep=0pt]
+    \item A vector $\alpha = (\alpha_1, \ldots, \alpha_n)$ such that $\alpha_1,
+    \ldots, \alpha_n \geq 0$ is called a multiindex of order $\abs{\alpha} =
+    \alpha_1 + \cdots + \alpha_n$.
+    \item Given a multiindex $\alpha$ and a sufficiently differentiable function
+    $u$, we define
+    \begin{equation}
+        D^\alpha u = 
+        \frac{\partial^{\abs{\alpha}} u}{\partial x_1^{\alpha_1} \cdots \partial x_n^{\alpha_n}} =
+        \partial_{x_1}^{\alpha_1} \cdots \partial_{x_n}^{\alpha_n} u
+    \end{equation}
+    \item If $k \in \z_{\geq 0}$, we denote by
+    \begin{equation}
+        D^k u(x) = \left\{ D^{\alpha} u(x) \mid \abs{\alpha} = k \right\}
+    \end{equation}
+    the set of all partial derivatives of order $k$. For $k = 1$ we have the
+    gradient vector $D u = \grad{u} = \left(\partial_{x_1} u, \ldots,
+    \partial_{x_n} u \right)^\top$ and for $k = 2$ we have the Hessian matrix,
+    \begin{equation}
+        D^2 u = 
+        \begin{pmatrix}
+            \partial_{x_1}^2 u & \cdots & \partial_{x_1} \partial_{x_n} u \\
+            \vdots & \ddots & \vdots \\
+            \partial_{x_n} \partial_{x_1} u & \cdots & \partial_{x_n}^2 u \\
+        \end{pmatrix}
+    \end{equation}
+    \item The symbol $\Delta$ denotes Laplace's operator, \ie $\Delta u =
+    \sum_{i=1}^n \partial_{x_i}^2 u$.
+\end{itemize}
+
+Informally, a partial differential equation (PDE) is an equation involving an
+unknown multivariable function and its partial derivatives. Hereinafter, let $U$
+be an open subset of $\real^n$,  
 
 \input{sections/pde_theory/transport_equation.tex}
 \input{sections/pde_theory/heat_equation.tex}
