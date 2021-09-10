@@ -3,9 +3,11 @@
 \infty$}{finite Péclet's number}}
 
 The theory that studies the existence and uniqueness of weak solutions to Cauchy
-problems involving second--order elliptic equations requires some prior
-knowledge in measure theory and functional analysis. The interested reader can
-consult appendix \ref{ap:measure_theory}. Rather than focusing on problem
+problems involving second--order elliptic equations requires a prior knowledge
+in measure theory and functional analysis. The interested reader can consult
+appendix \ref{ap:measure_theory} for a quick reference in some basic concepts of
+measure theory. We will not introduce functional analysis concepts in order not
+to complicate the exposition needlessly. Rather than focusing on problem
 \eqref{eq:diagonal_case_cauchy_problem}, we shall study the theory for a general
 second--order elliptic equation and then particularize to our case. The
 reference for this subsection is Lawrence C. Evans' excellent book on Partial
@@ -32,29 +34,70 @@ of the two following forms
 	L u = - \sum_{i,j=1}^n a^{ij}(x) u_{x_i x_j} + \sum_{i=1}^n b^i(x) u_{x_i} + c(x) u	
 	\label{eq:nondivergence_form}
 \end{gather}
-being $a^{ij}, \, b^i, \, c$ for $1 \leq i, j \leq n$ given functions.
-Aditionally, we shall assume $a^{ij}, \, b^i, \, c \in L^\infty(U)$ for all $1
-\leq i, j \leq n$ and $f \in L^2(U)$. When $L$ is given by
-\eqref{eq:divergence_form} we say the operator is in divergence form, and we say
-it is in non--divergence form when is given by \eqref{eq:nondivergence_form}. In
-the case of $a^{ij} \in \mathcal{C}^1(U)$ for all $1 \leq i, j \leq n$, an
-operator in non--divergence form can be rewritten in divergence form. We assume
-the symmetry condition $a^{ij} = a^{ji}$ for all $i, j$.
+being $a^{ij}, \, b^i, \, c$ for $i, j = 1, \ldots, n$ given functions.
+Aditionally, we shall assume $a^{ij}, \, b^i, \, c \in L^\infty(U)$ for all $i,
+j = 1, \ldots, n$ and $f \in L^2(U)$. We say $L$ is in divergence form when is
+given by \eqref{eq:divergence_form}, whereas $L$ is in non--divergence form when
+expressed by \eqref{eq:nondivergence_form}.
 
-Before giving the definition of weak solution, we shall gain some intuition
-about it. Suppose $L$ is given in divergence form. Let us assume that $u$ is a
-smooth solution to \eqref{eq:second_order_elliptic_problem}, \ie $u$ is a
-differentiable enough function. Let $v \in \mathcal{C}_c^\infty(U)$ be a smooth
-test function, being $\mathcal{C}_c^\infty(U)$ te set of infinitely
-differentiable functions with compact support in $U$. We multiply the PDE $L u =
-f$ by $v$ and integrate over $U$, that is to say,
+\begin{prop}
+	Whenever $a^{ij} \in \mathcal{C}^1(U)$ for $i, j = 1, \ldots, n$, a partial
+	differential operator in divergence form can be rewritten in non--divergence
+	form and viceversa.
+\end{prop}
+\begin{proof}
+	Assume $L$ is given in divergence form, then
+	\begin{align*}
+		L u &= -\sum_{i,j=1}^n (a^{ij}(x) u_{x_i})x_j + \sum_{i=1}^n b^i(x) u_{x_i} + c(x) u \\
+		&=
+		-\sum_{i,j=1}^n \left\{ a^{ij}(x) u_{x_i x_j} + a_{x_j}^{ij}(x) u_{x_i} \right\} + \sum_{i=1}^n b^i(x) u_{x_i} + c(x) u \\
+		&= 
+		-\sum_{i,j=1}^na^{ij}(x) u_{x_i x_j} + \sum_{i=1}^n \left\{ b^i(x) - \sum_{j=1}^n a_{x_j}^{ij}(x) \right\} u_{x_i} + c(x) u
+	\end{align*}
+	which is in non--divergence form. Conversely, assume $L$ is given in non--divergence form, thus
+	\begin{align*}		
+		L u &= - \sum_{i,j=1}^n a^{ij}(x) u_{x_i x_j} + \sum_{i=1}^n b^i(x) u_{x_i} + c(x) u \\
+		&=
+		- \sum_{i,j=1}^n \left\{ a^{ij}(x) u_{x_i x_j} + a_{x_j}^{ij}(x) u_{x_i} - a_{x_j}^{ij}(x) u_{x_i} \right\}
+		+ \sum_{i=1}^n b^i(x) u_{x_i} + c(x) u \\
+		&=
+		- \sum_{i,j=1}^n (a^{ij}(x) u_{x_i})_{x_j} + \sum_{i=1}^n \left\{ b^i(x) + \sum_{j=1}^n a_{x_j}^{ij}(x) \right\} u_{x_i} + c(x) u \\
+	\end{align*}
+	giving the divergence form of $L$.
+\end{proof}
+
+\begin{definition}
+	\begin{enumerate}[label={(\roman*)}, topsep=0pt]
+		\item[]
+		\item We say the partial differential operator $L$ is symmetric provided 
+		\begin{equation} \label{eq:operator_L_symmetry}
+			a^{ij} = a^{ji}
+		\end{equation}
+		for all $i, j = 1, \ldots, n$.
+		\item We say the partial differential operator $L$ is (uniformly)
+		elliptic if there exists a constant $\theta > 0$ such that
+		\begin{equation} \label{eq:operator_L_uniformly_elliptic}
+			\sum_{i,j=1}^n a^{ij}(x) \, \xi_i \xi_j \geq \theta \norm{\xi}^2
+		\end{equation}
+	\end{enumerate}
+	for a.e. $x \in U$ and all $\xi \in \real^n$.
+\end{definition}
+
+Hereinafter we will assume operator $L$ satisfies both the symmetry and the
+uniform ellipticity conditions. Before giving the definition of weak solution,
+we shall gain some intuition about it. Suppose $L$ is given in divergence form.
+Let us assume that $u$ is a smooth solution to
+\eqref{eq:second_order_elliptic_problem}, \ie $u$ is a differentiable enough
+function. Let $v \in \mathcal{C}_c^\infty(U)$ be a smooth test function, where
+$\mathcal{C}_c^\infty(U)$ is the set of infinitely differentiable functions with
+compact support in $U$. We multiply $L u = f$ by $v$ and integrate over $U$:
 \begin{equation} \label{eq:second_order_elliptic_by_parts_1}
 	\int_U - \sum_{i,j=1}^n (a^{ij}(x) u_{x_i})_{x_j} v \dd{x} + 
 	\int_U \sum_{i=1}^n b^i(x) u_{x_i} v \dd{x} + 
 	\int_U c(x) u v \dd{x} = 
 	\int_U f v \dd{x}
 \end{equation}
-We rewrite the first term on the left--hand side integrating by parts
+We may rewrite the first term on the left--hand side integrating by parts
 \begin{align}
 	\int_U - \sum_{i,j=1}^n (a^{ij}(x) u_{x_i})_{x_j} v \dd{x} &= 
 	\int_U \sum_{i,j=1}^n a^{ij}(x) u_{x_i} v_{x_j} \dd{x} - 
@@ -63,8 +106,8 @@ We rewrite the first term on the left--hand side integrating by parts
 \end{align}
 In \eqref{eq:second_order_elliptic_by_parts_2}, $\nu^j$ denotes the $j$--th
 component of the exterior normal vector to $\partial U$ and $\dd{\sigma}$ is the
-``surface'' element of $\partial U$. The integral over $\partial U$ is zero
-because $v$ vanishes on it as a consequence of being $\mathcal{C}^\infty_c(U)$.
+``surface'' element of $\partial U$. The integral over $\partial U$ is zero as
+$v$ vanishes on it as a consequence of being in $\mathcal{C}^\infty_c(U)$.
 Introducing \eqref{eq:second_order_elliptic_by_parts_2} in
 \eqref{eq:second_order_elliptic_by_parts_1} yields
 \begin{equation} \label{eq:second_order_elliptic_by_parts_3}
@@ -98,13 +141,15 @@ The intuition behind the definition of weak solution is the following: when a
 function $u \in H^1_0(U)$ is fixed, and equality
 \eqref{eq:definition_weak_solution} holds for any other function $v \in
 H^1_0(U)$, following the development we have made, necessarily $u$ is a solution
-to $L u = f$ in $U \subset \real^n$. 
+to $L u = f$ in $U \subset \real^n$. The theorem that makes this intuition
+precise, although some further hypothesis on $B$ are necessary, is the
+Lax--Milgram theorem. 
 
 Before stating the theorem on the existence and uniqueness of solution to
-\eqref{eq:second_order_elliptic_problem}, other results such as the Lax--Milgram
-theorem or energy estimates are necessary. Nonetheless we shall not present them
-here so as not to complicate the exposition. The following is Theorem 4 from
-section 6.2 of Evan's book.
+\eqref{eq:second_order_elliptic_problem}, other results such as Lax--Milgram's
+theorem or energy estimates are necessary, however we shall not present them
+here so as not to complicate the exposition. The interested reader can refer to
+\cite{evans1998pde}. The following is Theorem 4 from section 6.2 of Evan's book.
 
 \begin{theorem}[Second Existence Theorem for weak solutions] \label{teo:weak_solution}	
 	\begin{enumerate}[label={(\arabic*)}, topsep=0pt]
@@ -174,3 +219,63 @@ section 6.2 of Evan's book.
 		u \in \mathcal{C}^\infty(U)
 	\]
 \end{theorem}
+
+\subsubsection*{Weak solution for \texorpdfstring{$0 \leq \peclet <
+\infty$}{finite Péclet's number}}
+
+Now we shall apply the previous theory to problem
+\eqref{eq:diagonal_case_cauchy_problem}. Observe that the PDE is equivalent to
+\begin{equation} \label{eq:weak_solution_pde_1}
+	-\Delta \phi + (\phi_x + \phi_y) \beta \, \peclet = 
+	-\phi_{xx} - \phi_{yy} + (\phi_x + \phi_y) \beta \, \peclet = 0
+\end{equation}
+So as to express \eqref{eq:weak_solution_pde_1} with an operator $L$ such as the
+ones described above, we define
+\begin{equation} \label{eq:weak_solution_pde_2}
+	\begin{aligned}
+		a^{11} &= 1 	& 	a^{12} &= 0 	& 	b^1 &= \beta \, \peclet	& 	c &= 0 \\
+		a^{21} &= 0 	& 	a^{22} &= 1 	& 	b^2 &= \beta \, \peclet
+	\end{aligned}
+\end{equation}
+therefore the operator $L$ encoding \eqref{eq:weak_solution_pde_1} is simply
+\begin{equation} \label{eq:weak_solution_pde_3}
+	L \phi = 
+	-\sum_{i,j=1}^2 (a^{ij} \phi_{x_i})_{x_j} + \sum_{i=1}^n b^i \phi_{x_i} + c \phi =
+	-\phi_{xx} - \phi_{yy} + (\phi_x + \phi_y) \beta \, \peclet 
+\end{equation}
+where $x_1 \equiv x, \, x_2 \equiv y$. Moreover, since the functions in
+\eqref{eq:weak_solution_pde_2} are constant, these belong to $L^\infty(\Omega)$
+and the divergence form and non--divergence form of
+\eqref{eq:weak_solution_pde_3} are the same. It is obvious that $L$ is
+symmetric, as $a^{12} = a^{21} = 0$, and it is uniformly elliptic with $\theta = 1$ as a result of
+\begin{equation}
+	\sum_{i,j=1}^2 a^{ij} \xi_i \xi_j = 
+	{\xi_1}^2 + {\xi_2}^2 = \theta \norm{\xi}^2
+\end{equation}
+for all $\xi \in \real^2$.
+
+Now we shall transform the boundary--value problem
+\eqref{eq:diagonal_case_cauchy_problem} into a problem having the form
+\eqref{eq:second_order_elliptic_problem}. Observe that the boundary condition in
+\eqref{eq:second_order_elliptic_problem} is homogeneous, \ie $u = 0$ on
+$\partial U$, whilst in \eqref{eq:diagonal_case_cauchy_problem} this is not
+true. Assume $\phi$ is a weak solution to
+\eqref{eq:diagonal_case_cauchy_problem}, then $\tilde{\phi} = \phi - g$ is a solution to
+\begin{equation} \label{eq:weak_solution_pde_4}
+	\left\{
+		\begin{aligned}
+			L \tilde{\phi} &= 0 & &\text{in } \Omega \\
+			\tilde{\phi} &= 0 	& &\text{on } \partial \Omega 
+		\end{aligned}
+	\right.
+\end{equation}
+since $L \tilde{\phi} = L \phi - L g = L \phi$.
+
+\begin{remark}
+	
+\end{remark}
+
+By theorem \ref{teo:weak_solution}, problem \eqref{eq:weak_solution_pde_4} has a
+weak solution. Nonetheless, we cannot specify whether there is unique solution
+or not due to dichotomy \ref{item:alpha}--\ref{item:beta}, which is known as the
+Fredholm alternative.
