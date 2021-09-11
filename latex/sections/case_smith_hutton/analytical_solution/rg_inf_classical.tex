@@ -68,27 +68,27 @@ characteristics begin at some point in $(-1,0) \times \{ 0 \}$ and finish at
 some point in $(0,1) \times \{ 0 \}$. At $(0,0)$ there is no characteristic
 starting or ending since the velocity field vanishes there. As a result, the
 initial value problem for characteristics is given by
-\eqref{eq:velocity_smith_hutton_ivp}, whose existence and uniqueness of solution
+\eqref{eq:vel_smith_hutton_ivp}, whose existence and uniqueness of solution
 we have already proved. 
 
 Until now, we have taken points in the segment $(-1,1) \times \{ 0 \}$ although
 these do not belong to $\Omega$. Now we shall formalize this. Since the
 characteristics are solutions to the initial value problem
-\eqref{eq:velocity_smith_hutton_ivp}, these must be at least $\mathcal{C}^1$
+\eqref{eq:vel_smith_hutton_ivp}, these must be at least $\mathcal{C}^1$
 curves in $\real^2$, hence must be continuous functions that admit a continuous
 extension to the segment $(-1,1) \times \{ 0 \}$.
 
 Finally we find the solution to the transport problem. Consider the function
 $\varphi = \phi \circ h \colon I \subset \real \to \real$. By the chain rule we
 have
-\begin{multline}
+\begin{multline*}
 	\frac{\dd}{\dd{s}} \varphi(s) = 
 	\frac{\dd}{\dd{s}} \phi(x(s), y(s)) = 
 	\frac{\partial \phi}{\partial x} (x(s), y(s)) \, x'(s) + 
 	\frac{\partial \phi}{\partial y} (x(s), y(s)) \, y'(s) = \\ =
 	u(x(s),y(s)) \frac{\partial \phi}{\partial x} + 
 	v(x(s),y(s)) \frac{\partial \phi}{\partial y} = 0
-\end{multline}
+\end{multline*}
 where the last equality is true because of the PDE. This means, as we already
 know, that the restriction of $\phi$ to the characteristics is a constant
 function. Recall that the value of $\phi$ at the boundary segment $(-1,0) \times
@@ -100,12 +100,12 @@ and let $C \subset \Omega \cup ((-1,0) \times \{ 0 \})$ be the only
 characteristic containing $p$. Let $q \in ((-1,0) \times \{ 0 \})$ be the only
 point contained in the intersection $C \cap ((-1,0) \times \{ 0 \})$. We define
 the following mapping:
-\begin{equation}
+\begin{equation*}
 	\begin{aligned}
 		\alpha \colon \Omega \subset \real^2 &\longrightarrow \real^2 \\
 		p &\longmapsto \alpha(p) = q
 	\end{aligned}
-\end{equation}
+\end{equation*}
 The mapping $\alpha$ takes any point in $\Omega$ and applies it into the only
 point contained in the intersection of the characteristic $C$ containing $p$ and
 the segment $(-1,0) \times \{ 0 \}$. Intuitively, two nearby points $p_1, p_2
@@ -113,7 +113,7 @@ the segment $(-1,0) \times \{ 0 \}$. Intuitively, two nearby points $p_1, p_2
 the image of $p_1, p_2$ by $\alpha$ are two nearby points as well. It could be
 argued that $\alpha$ is also a $\mathcal{C}^1$ mapping. A possible solution to
 the problem \eqref{eq:smith_hutton_cauchy_problem_infinite_peclet} is given by
-\begin{equation}
+\begin{equation*}
 	\phi(x,y) = 
 	\left\{
 	\begin{aligned}
@@ -122,7 +122,7 @@ the problem \eqref{eq:smith_hutton_cauchy_problem_infinite_peclet} is given by
 	\end{aligned}
 	\right.
 	\quad (x,y) \in \overline{\Omega}
-\end{equation}
+\end{equation*}
 
 \begin{theorem}
 	If a classical solution exists, then it is unique.

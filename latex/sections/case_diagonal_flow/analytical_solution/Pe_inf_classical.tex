@@ -30,7 +30,7 @@ unnecessary due to the geometric properties of the PDE as we shall see. In order
 to obtain a problem we can solve, take the curve $C = \left( [0,L] \times \{ 0
 \} \right) \cup \left( \{ 0 \} \times (0,L] \right)$, and let $\tilde{g} \colon
 C \subset \real^2 \rightarrow \real$ be
-\begin{equation}
+\begin{equation*}
 	\tilde{g}(x,y) = 
 	\left\{
 	\begin{aligned}
@@ -38,7 +38,7 @@ C \subset \real^2 \rightarrow \real$ be
 		&\phi_\text{high} 	& &\text{if } (x,y) \in \{ 0 \} \times (0,L] \\
 	\end{aligned}
 	\right.
-\end{equation}
+\end{equation*}
 which is the restriction of $g$ to $C$, that is to say, $\tilde{g} = g
 \rvert_C$. The resulting Cauchy problem is
 \begin{equation} \label{eq:diagonal_case_cauchy_problem_infinite_peclet}
@@ -65,7 +65,7 @@ occurs. Nonetheless problem
 domain $(0, L) \times (0, L)$ which is a cylinder as well, hence the $y$
 variable can be regarded as a time variable and solve the equation.}
 
-\begin{definition}
+\begin{definition*}
 	A classical solution to problem
 	\eqref{eq:diagonal_case_cauchy_problem_infinite_peclet} is a function $\phi
 	\colon \overline{\Omega} \rightarrow \real$ such that:
@@ -76,7 +76,7 @@ variable can be regarded as a time variable and solve the equation.}
 		\item $\phi$ satisfies the PDE and
 		\item $\phi$ satisfies the boundary conditions.
 	\end{enumerate}
-\end{definition}
+\end{definition*}
 \noindent
 In order to find the solution to
 \eqref{eq:diagonal_case_cauchy_problem_infinite_peclet}, we will assume $\phi$
@@ -118,11 +118,11 @@ first--order linear and use the chain rule to rewrite
 Consider a $\mathcal{C}^1$ mapping $\alpha(s) = (\alpha_1(s), \alpha_2(s))$ such
 that $\alpha_1' = \alpha_2' = 1$ for all $s$. Since $\alpha$ is a mapping from
 some subset of $\real$ to $\real^2$, its image
-\begin{equation}
+\begin{equation*}
 	A = 
 	\image \alpha = 
 	\left\{ (x,y) \in \real^2 \mid x = \alpha_1(s), \ y = \alpha_2(s), \ s \in \real \right\}
-\end{equation}
+\end{equation*}
 can be thought of as a $\mathcal{C}^1$ curve. Moreover, we may choose the curve to
 pass through $\Omega \cup C$ as we shall see in a moment. The restriction of $\phi$
 to $A$, given by the composition $\varphi = \phi \circ \alpha \colon I \subset
@@ -141,12 +141,12 @@ $\phi$ is constant on every connected component of $A \cap
 \Omega$, thereby proving our claim. 
 
 The following step is to find the curve $A$. Consider the mapping 
-\begin{equation}
+\begin{equation*}
 	\begin{aligned}
 		f \colon \real^3 &\longrightarrow \real^2 \\
 		(s,x,y) &\longmapsto f(s,x,y) = (1,1)
 	\end{aligned}
-\end{equation}
+\end{equation*}
 By taking a point $(x_0, y_0) \in \Omega \cup C$, we can find the curve $A$
 passing by $(x_0, y_0)$:
 \begin{equation} \label{eq:diagonal_case_cauchy_problem_infinite_peclet_characteristics_problem}
@@ -232,12 +232,12 @@ boundaries of $\Omega$ as shown in figure
 0$ and $\delta > 0$ to be some constants to be determined and let $V = [0, T]
 \times \overline{B((x_0,y_0), \delta)} \subset \real^3$. Since $f$ is a constant
 function, we have
-\begin{equation}
+\begin{equation*}
 	M = 
 	\sup_{(s,x,y) \in V} \norm{f(s,x,y)} = 
 	\max_{(s,x,y) \in V} \norm{f(s,x,y)} = 
 	\sqrt{2}
-\end{equation} 
+\end{equation*} 
 Again, by the Picard--Lindelöf theorem, the solution
 \eqref{eq:diagonal_case_cauchy_problem_infinite_peclet_characteristics_solution}
 exists for $s \in I = [0, T_0] \subset \real$ and remains in

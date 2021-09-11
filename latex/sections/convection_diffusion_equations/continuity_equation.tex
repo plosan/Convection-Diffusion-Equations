@@ -6,9 +6,9 @@ considered, mass is a property preserved over time. Let $\cv{} \subset \real^n$
 be a control volume, which may depend on time, and let $\rho = \rho(x, t)$ be
 the mass density defined over $\cv{}$ for each time $t \in I$. The mass
 enclosed by $\cv{}$ at time $t$ is
-\begin{equation}
+\begin{equation*}
 	m(t) = \int_\cvt \rho(x, t) \dd{x} = \int_\cvt \rho \dd{x}
-\end{equation}
+\end{equation*}
 and as a result of the mass conservation principle
 \begin{equation} \label{eq:cde_continuity_2}
 	\frac{\dd}{\dd{t}} m(t) = 
@@ -16,10 +16,10 @@ and as a result of the mass conservation principle
 \end{equation}
 Now applying Reynolds Transport Theorem to \eqref{eq:cde_continuity_2} setting
 $\vb{b} = \vb{v}$,
-\begin{equation}
+\begin{equation*}
 	\int_\cvt \frac{\partial \rho}{\partial t} \dd{x} + 
 	\int_\cst \rho \vb{v} \vdot \vb{n} \dd{S} = 0
-\end{equation}
+\end{equation*}
 We apply the divergence theorem on the surface integral to transform it into a
 volume integral,
 \begin{equation} \label{eq:cde_continuity_4}
@@ -30,9 +30,9 @@ volume integral,
 We claim that the integrand in equation \eqref{eq:cde_continuity_4} vanishes at
 every point in space and time. Indeed, assume there exists a time $t_0$ and a
 point $x_0 \in \cv{}(t_0)$ such that
-\begin{equation}
+\begin{equation*}
 	\left. \left\{ \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right\} \right\rvert_{(x_0,t_0)} > 0
-\end{equation}
+\end{equation*}
 Recall that we assumed the physical magnitudes are differentiable functions as
 many times as necessary. In particular, by fixing $t = t_0$, $(\partial_t \rho +
 \div(\rho \vb{v}))(\cdot, t_0)$ is a continuous function of $x$. Since
@@ -40,20 +40,20 @@ $\cv{}(t_0)$ is open, there exists $\tilde{\delta} > 0$ such that $B(x_0,
 \tilde{\delta}) \subset \cv{}(t_0)$. By continuity we can take $\delta > 0$,
 with $\delta < \tilde{\delta}$ such that for all $y \in B(x_0, \delta) \subset
 \cv{}(t_0)$,
-\begin{equation}
+\begin{equation*}
 	\left. \left\{ \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right\} \right\rvert_{(y,t_0)} > 0
-\end{equation}
+\end{equation*}
 Hence integrating on $B(x_0, \delta)$ yields
-\begin{equation}
+\begin{equation*}
 	\int_{B(x_0, \delta)} \left\{ \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right\} \dd{x} > 0
-\end{equation}
+\end{equation*}
 a contradiction as it should be zero according to equation \eqref{eq:cde_continuity_4}. The same contradiction is reached if we assume the existence of
 a point $x_0$ and a time $t_0$ where
-\begin{equation}
+\begin{equation*}
 	\left. \left\{ \frac{\partial \rho}{\partial t} + \div(\rho \vb{v}) \right\} \right\rvert_{(x_0,t_0)} < 0
-\end{equation}
+\end{equation*}
 thereby proving our claim. Because this is true for each $x_0 \in \mathcal{V}(t_0)$ and $t_0 \in I$ is
 arbitrary, we obtain the continuity equation
-\begin{equation}
+\begin{equation} \label{eq:continuity_equation}
 	\pdv{\rho}{t} + \div(\rho \vb{v}) = 0
 \end{equation}

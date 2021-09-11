@@ -10,27 +10,27 @@ found at \cite{patankar2008numerical}.
 
 Recall that the mass flow rates through the faces of $\cv{P}$ are calculated
 as
-\begin{equation}
+\begin{equation*}
 	\dot{m}_e = (\rho u)_e \, S_e, \quad
 	\dot{m}_w = (\rho u)_w \, S_w, \quad
 	\dot{m}_n = (\rho v)_s \, S_n, \quad
 	\dot{m}_s = (\rho v)_s \, S_s
-\end{equation}
+\end{equation*}
 In equation \eqref{eq:coefficient_df} we defined $D_f$, which particularized for
 each face results in the following coefficients:
-\begin{equation}
+\begin{equation*}
 	D_e = \frac{\Gamma_e S_e}{d_{PE}}, \quad
 	D_w = \frac{\Gamma_w S_w}{d_{PW}}, \quad
 	D_n = \frac{\Gamma_n S_n}{d_{PN}}, \quad
 	D_s = \frac{\Gamma_s S_s}{d_{PS}}
-\end{equation}
+\end{equation*}
 Using $\dot{m}_f$ and $D_f$, Péclet's numbers at faces can be computed as follows:
-\begin{equation}
+\begin{equation*}
 	\peclet_e = \frac{F_e}{D_e}, \quad
 	\peclet_w = \frac{F_w}{D_w}, \quad
 	\peclet_n = \frac{F_n}{D_n}, \quad
 	\peclet_s = \frac{F_s}{D_s}
-\end{equation}
+\end{equation*}
 In addition, we define the operator $\maxf{\cdot}{\cdot} \colon \real^2 \to
 \real$ as $\maxf{x}{y} = \max{\{x, y\}}$. According to Patankar, the discretized
 version of the generalized convection--diffusion equation
@@ -79,91 +79,4 @@ law schemes which we have not studied.
 	\caption{Function $A(\abs{\peclet})$ for different schemes\cite{patankar2008numerical}.}
 	\label{tab:small_molecule_schemes_coefficients}
 \end{table}
-
-% \clearpage
-% As it can be noted from the expressions for schemes UDS (equations
-% \eqref{eq:uds_e} to \eqref{eq:uds_s}), CDS (equations \eqref{eq:cds_e} to
-% \eqref{eq:cds_s}) and EDS (equations \eqref{eq:eds_e} to \eqref{eq:eds_s}), once
-% a face $f$ is chosen, the formula for $\phi_f$ has the following form
-% \begin{equation} \label{eq:small_molecule_schemes_1}
-% 	\phi_f - \phi_P = A_f (\phi_F - \phi_P)
-% \end{equation}
-% where $A_f$ is a coefficient which depends on the face and the scheme.
-% Particularizing for each face,
-% \begin{align}	
-% 	\phi_e - \phi_P &= A_e (\phi_E - \phi_P) \label{eq:small_molecule_schemes_2} \\ 
-% 	\phi_w - \phi_P &= A_w (\phi_W - \phi_P) \\
-% 	\phi_n - \phi_P &= A_n (\phi_N - \phi_P) \\
-% 	\phi_s - \phi_P &= A_s (\phi_S - \phi_P) \label{eq:small_molecule_schemes_3} 
-% \end{align}
-% The values of $A_f$ and $B_f$ for each face and scheme are collected in table
-% \ref{tab:small_molecule_schemes_coefficients}.
-
-% \begin{table}[ht]
-% 	\centering
-% 	\renewcommand{\arraystretch}{1.5}
-% 	\begin{tabular}{lccc}
-% 		\toprule[0.5mm]
-% 		Face & UDS & CDS & EDS \\
-% 		\midrule[0.25mm]
-% 		East & $\dfrac{\dot{m}_e - \abs{\dot{m}_e}}{2 \dot{m}_e}$ &
-% 		$\dfrac{d_{Pe}}{d_{PE}}$ & $\dfrac{e^{\peclet_e
-% 		\frac{d_{Pe}}{d_{PE}}} - 1}{e^{\peclet_e} - 1}$,  
-% 		$\peclet_e = \dfrac{\rho_e u_e d_{PE}}{\Gamma_e}$ \\
-		
-% 		West & $\dfrac{\dot{m}_w + \abs{\dot{m}_w}}{2 \dot{m}_w}$ &
-% 		$\dfrac{d_{Pw}}{d_{PW}}$ & $\peclet_w = \dfrac{\rho_w u_w
-% 		d_{PW}}{\Gamma_w}$ \\
-		
-% 		North & $\dfrac{\dot{m}_n - \abs{\dot{m}_n}}{2 \dot{m}_n}$ &
-% 		$\dfrac{d_{Pn}}{d_{PN}}$ & $\dfrac{e^{\peclet_n
-% 		\frac{d_{Pn}}{d_{PN}}} - 1}{e^{\peclet_n} - 1}$,  
-% 		$\peclet_n = \dfrac{\rho_n v_n d_{PN}}{\Gamma_n}$ \\
-		
-% 		South & $\dfrac{\dot{m}_s + \abs{\dot{m}_s}}{2 \dot{m}_s}$ &
-% 		$\dfrac{d_{Ps}}{d_{PS}}$ & $\peclet_s = \dfrac{\rho_s v_s
-% 		d_{PS}}{\Gamma_s}$ \\
-% 		\bottomrule[0.5mm]
-% 	\end{tabular}
-% 	\captionsetup{width=0.7\linewidth}
-% 	\caption{Coefficient $A_f$ of equation $\phi_f - \phi_P = A_f (\phi_F - \phi_P)$ for east, west, north and south faces, and for schemes UDS, CDS and EDS.}
-% \end{table}
-
-% \noindent
-% Introducing equations \eqref{eq:small_molecule_schemes_2} through
-% \eqref{eq:small_molecule_schemes_3} in
-% \eqref{eq:general_cde_discretized_implicit_useful}, a general discretization
-% equation comprising UDS, CDS and EDS can be obtained:
-% \begin{align} 
-% 	&\left\{
-% 	D_e - \dot{m}_e A_e +
-% 	D_w + \dot{m}_w A_w +
-% 	D_n - \dot{m}_n A_n +
-% 	D_s + \dot{m}_s A_s + 
-% 	\frac{\rho_P^0 V_P}{\Delta t} - S_P^\phi V_P
-% 	\right\} \phi_P \nonumber \\
-% 	&= 
-% 	\Big\{ D_e - \dot{m}_e A_e \Big\} \phi_E + 
-% 	\Big\{ D_w + \dot{m}_w A_w \Big\} \phi_W + 
-% 	\Big\{ D_n - \dot{m}_n A_n \Big\} \phi_N + 
-% 	\Big\{ D_s + \dot{m}_s A_s \Big\} \phi_S \nonumber \\
-% 	&+ \left\{ S_C^\phi + \frac{\rho_P^0 \phi_P^0}{\Delta t} \right\} V_P \label{eq:discretization_equation_uds_cds_eds}
-% \end{align}
-% In order to make \eqref{eq:discretization_equation_uds_cds_eds} more tractable,
-% the following discretization coefficients are defined:
-% \begin{gather}
-% 	\begin{align}
-% 		a_E &= D_e - \dot{m}_e A_e \\
-% 		a_W &= D_w + \dot{m}_w A_w \\
-% 		a_N &= D_n - \dot{m}_n A_n \\
-% 		a_S &= D_s + \dot{m}_s A_s
-% 	\end{align} \\
-% 	a_P = a_W + a_E + a_S + a_N + \frac{\rho_P^0 V_P}{\Delta t} - S_P^\phi V_P \\
-% 	b_P = S_C^\phi V_P + \frac{\rho_P^0 \phi_P^0}{\Delta t} V_P
-% \end{gather}
-% Thereby the discretization equation is:
-% \begin{equation} \label{eq:small_molecule_schemes_4}
-% 	a_P \phi_P = a_W \phi_W + a_E \phi_E + a_S \phi_S + a_N \phi_N + b_P
-% \end{equation}
-
 

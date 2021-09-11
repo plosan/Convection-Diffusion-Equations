@@ -2,8 +2,8 @@
 \section{Numerical resolution of linear systems} \label{ap:numerical_resolution_linear_systems}
 
 In this section we present several iterative methods and the LU decomposition,
-all of them used to solve linear systems. The reference is
-\cite{golub2013matrix}.
+all of them used to solve linear systems. The reference is Matrix Computations
+by Gene H. Golub \cite{golub2013matrix}.
 
 Let $\mathcal{M}_{n \times n}(\real)$ be the space of $n \times n$ matrices with
 real coefficients. We consider linear systems of the form $A x = b$, where $A
@@ -11,19 +11,19 @@ real coefficients. We consider linear systems of the form $A x = b$, where $A
 and $b \in \real^n$ is the vector of independent terms. Recall the following
 definitions:
 
-\begin{definition}
+\begin{definition*}
     Let $A = (a_{ij}) \in \mathcal{M}_{n \times n}(\real)$ be a matrix. Then:
     \begin{enumerate}[label={(\roman*)}, topsep=0pt]
         \item $A$ is symmetric if $a_{ij} = a_{ji}$ for all $1 \leq i, j \leq n$.
         \item $A$ is positive definite if $c^\top A c > 0$ for all $c \in \real^n \setminus \{ 0 \}$.
         \item $A$ is diagonally dominant if
-        \begin{equation}
+        \begin{equation*}
             \abs{a_{ii}} \geq \sum_{\substack{j = 1, j \neq i}}^n \abs{a_{ij}}, 
             \quad 1 \leq i \leq n
-        \end{equation}
+        \end{equation*}
         and strictly diagonally dominant if the previous inequality is strict.
     \end{enumerate}
-\end{definition}
+\end{definition*}
 
 \subsection{Iterative methods}
 
@@ -52,7 +52,7 @@ have the following theorem about its convergence.
     the Jacobi's method converges to $x = A^{-1} b$. 
 \end{theorem}
 \begin{proof}
-    See \cite{golub2013matrix}, Ch. 11, pg. 615.
+    See \cite{golub2013matrix}, Chap. 11, pg. 615.
 \end{proof}
 
 \subsubsection{Gauss--Seidel's method}
@@ -61,19 +61,19 @@ Notice that before prior to calculate $x_i^{(k+1)}$ in \eqref{eq:jacobi_method},
 the components $x_1^{(k+1)}, \ldots, x_{i-1}^{(k+1)}$ have had to be computed.
 Since these are already available once $x_i^{(k+1)}$ is being calculated, a
 natural improvement to Jacobi's method is the following:
-\begin{equation}
+\begin{equation*}
     x_i^{(k+1)} = 
     \frac{1}{a_{ii}} \left( b_i - \sum_{j=1}^{i-1} a_{ij} x_j^{(k+1)} - \sum_{j=i+1}^{n} a_{ij} x_j^{(k)} \right), 
     \quad 1 \leq i \leq n
-\end{equation}
+\end{equation*}
 
 Recall that $A$ is a positive definite matrix if $c^\top A c > 0$ for all $c \in
 \real^n \setminus \{ 0 \}$. We say that $A$ is a diagonally dominant matrix if
 it satisfies
-\begin{equation}
+\begin{equation*}
     \abs{a_{ii}} \geq \sum_{\substack{j = 1 \\ j \neq i}}^n \abs{a_{ij}}, 
     \quad 1 \leq i \neq n
-\end{equation}
+\end{equation*}
 The following theorem gives us two sufficient conditions so that Gauss--Seidel's
 method converges.
 
@@ -83,19 +83,19 @@ method converges.
     solution.
 \end{theorem}
 \begin{proof}
-    See \cite{golub2013matrix}, Ch. 11, pg. 615.
+    See \cite{golub2013matrix}, Chap. 11, pg. 615.
 \end{proof}
 
 \subsubsection{Relaxation method}
 
 From Gauss--Seidel's method we have
-\begin{equation}
+\begin{equation*}
     x_i^{(k+1)} = 
     \frac{1}{a_{ii}} 
     \left( b_i - \sum_{j=1}^{i-1} a_{ij} x_j^{(k+1)} - \sum_{j=i+1}^{n} a_{ij} x_j^{(k)} \right) =
     x_i^{(k)} + 
     \frac{1}{a_{ii}} \left( b_i - \sum_{j=1}^{i-1} a_{ij} x_j^{(k+1)} - \sum_{j=i}^{n} a_{ij} x_j^{(k)} \right)
-\end{equation}
+\end{equation*}
 which means that $x_i^{(k+1)}$ is equal to $x_i^{(k)}$ plus a correction. The
 correction can be multiplied by a constant $\omega$
 \begin{equation} \label{eq:relaxation_method}
@@ -120,9 +120,9 @@ norm is not relevant:
 \begin{theorem}
     Any two norms $\norm{\cdot}_a$ and $\norm{\cdot}_b$ on $\real^n$ are
     equivalent, \ie there exist constants $c, C > 0$ such that
-    \begin{equation}
+    \begin{equation*}
         c \norm{x}_a \leq \norm{x}_b \leq C \norm{x}_b
-    \end{equation}
+    \end{equation*}
     for all $x \in \real^n$.
 \end{theorem}
 
@@ -130,9 +130,9 @@ norm is not relevant:
 Hence any two norms on $\real^n$ provide the same notion of distance. A common
 choice for iterative methods due to its low computational cost is the supremum
 norm, given by
-\begin{equation}
+\begin{equation*}
     \norm{x}_\infty = \max_{1 \leq i \leq n} \abs{x_i}
-\end{equation}
+\end{equation*}
 To halt the iteration, one normally controls the norm $\norm{x^{(k+1)} -
 x^{(k)}}$. Given a constant $\delta > 0$ small enough so that the approximation
 of $x$ is good, the iteration is stopped when $\norm{x^{(k+1)} - x^{(k)}} <
@@ -143,7 +143,7 @@ of $x$ is good, the iteration is stopped when $\norm{x^{(k+1)} - x^{(k)}} <
 
 Let $U$ be an upper triangular non--singular matrix, that is to say, a matrix of
 the form
-\begin{equation}
+\begin{equation*}
 	U = 
 	\begin{pmatrix}
 		u_{11} 	& u_{12} & \cdots & u_{1,n-1} & u_{1n} \\
@@ -154,9 +154,9 @@ the form
 	\end{pmatrix},
 	\
 	u_{ii} \neq 0 \quad 1 \leq i \leq n
-\end{equation}
+\end{equation*}
 or equivalently
-\begin{equation}
+\begin{equation*}
 	U = (u_{ij})_{i, j= 1 \divisionsymbol n} = 
 	\left\{
 	\begin{aligned}
@@ -165,20 +165,20 @@ or equivalently
 		&u_{ij} \in \real 	& 	&\text{otherwise} 
 	\end{aligned}
 	\right.
-\end{equation}
+\end{equation*}
 Let $b \in \real^n$. The the linear system $U x = b$ can be easily solved with
 the backward substitution algorithm
-\begin{equation}
+\begin{equation*}
 	x_{n-i} =
 	\frac{1}{u_{n-i,n-i}}
 	\left(
 	b_{n-i} - \sum_{j=n-i+1}^{n} u_{n-i,j} \, x_j
 	\right),
 	\quad 0 \leq i \leq n-1
-\end{equation}
+\end{equation*}
 
 Let $L$ be a lower triangular non--singular matrix,
-\begin{equation}
+\begin{equation*}
 	L = 
 	\begin{pmatrix}
 		\ell_{11} 		& 0 			& \cdots & 0 				& 0  \\
@@ -189,9 +189,9 @@ Let $L$ be a lower triangular non--singular matrix,
 	\end{pmatrix},
 	\
 	\ell_{ii} \neq 0 \quad 1 \leq i \leq n
-\end{equation}
+\end{equation*}
 or which is the same,
-\begin{equation}
+\begin{equation*}
 	L = (\ell_{ij}) = 
 	\left\{
 	\begin{aligned}
@@ -200,9 +200,9 @@ or which is the same,
 		&\ell_{ij} \in \real 	& 	&\text{otherwise} 
 	\end{aligned}
 	\right.
-\end{equation}
+\end{equation*}
 The system $L x = b$ can be solved with the forward substitution algorithm
-\begin{equation}
+\begin{equation*}
 	x_i = 
 	\frac{1}{\ell_{ii}} 
 	\left(
@@ -210,7 +210,7 @@ The system $L x = b$ can be solved with the forward substitution algorithm
 	\right),
 	\quad
 	1 \leq i \leq n
-\end{equation}
+\end{equation*}
 
 \begin{theorem}
 	Let $A \in \mathcal{M}_{n \times n}(\real)$.
@@ -220,16 +220,16 @@ The system $L x = b$ can be solved with the forward substitution algorithm
 		unique.
         \item If the $k$--th principal minor of $A$ is non--null for all $1 \leq
         k \leq n$, that is to say, if
-        \begin{equation}
+        \begin{equation*}
             \begin{vmatrix}
                 a_{11} & \cdots & a_{1k} \\
                 \vdots & \ddots & \vdots \\
                 a_{k1} & \cdots & a_{kk}
             \end{vmatrix} \neq 0
-        \end{equation}
+        \end{equation*}
         then there exist $L$ and $U$ such that $A = L U$.
         \item If the Gaussian elimination can be carried out on $A$, then $A = L U$ where
-		\[			
+        \begin{equation*}
 			L = 
 			\begin{pmatrix}
 				1 				& 0 			& \cdots & 0 				& 0  \\
@@ -246,8 +246,8 @@ The system $L x = b$ can be solved with the forward substitution algorithm
 				\vdots	& \vdots & \ddots & \vdots 	  & \vdots \\
 				0 		& 0		 & \cdots & u_{n-1,n-1} & u_{n-1,n} \\
 				0 	   	& 0		 & \cdots & 0 			& u_{nn}
-			\end{pmatrix}			
-		\] 
+			\end{pmatrix}	
+		\end{equation*}
 	\end{enumerate}
 \end{theorem}
 

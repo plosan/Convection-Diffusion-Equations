@@ -8,9 +8,9 @@ $L > 0$ is a constant length. Both density and diffusion coefficient are assumed
 to be constant and known values. In $\Omega$ the steady state version of the
 general convection--diffusion equation with no source term is considered, that
 is,
-\begin{equation} \label{eq:smith_hutton_case_pde}
+\begin{equation*}
 	\frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} = \Delta{\phi}
-\end{equation}
+\end{equation*}
 On the boundary of $\Omega$ the following conditions are prescribed:
 \begin{itemize}[topsep=0pt]
 	\item $\phi = 1 + \tanh(10(2x+1))$ on $C_1 = [-L,0] \times \{ 0 \}$ (inlet
@@ -24,7 +24,7 @@ On the boundary of $\Omega$ the following conditions are prescribed:
 Notice that the curves $C_1, C_2, C_3$ give a partition of $\partial \Omega$. To
 encode the first two boundary conditions in a compact manner, we define the
 function $g \colon C_1 \cup C_2 \rightarrow \real$ by
-\begin{equation}
+\begin{equation*}
 	g(x,y) = 
 	\left\{
 	\begin{aligned}
@@ -32,10 +32,9 @@ function $g \colon C_1 \cup C_2 \rightarrow \real$ by
 		&1 - \tanh(10) 			& &\text{if } (x,y) \in C_2
 	\end{aligned}
 	\right.
-\end{equation}
+\end{equation*}
 The velocity field is given by $u = 2 y (1 - x^2)$ and $v = -2 x (1 - y^2)$. The
-Cauchy problem resulting from the PDE \eqref{eq:smith_hutton_case_pde} and the
-boundary conditions is given by \eqref{eq:smith_hutton_cauchy_problem} and is
+resulting Cauchy problem is given by \eqref{eq:smith_hutton_cauchy_problem} and
 summarized in figure \ref{fig:smith_hutton_cauchy_problem}.
 \begin{equation} \label{eq:smith_hutton_cauchy_problem} 
 	\left\{

@@ -2,9 +2,9 @@
 \subsection{Discretization of the continuity equation}
 
 As we have previously seen, the continuity equation in differential form is
-\begin{equation}
+\begin{equation*}
 	\pdv{\rho}{t} + \div(\rho \vb{v}) = 0 \quad (x,t) \in \Omega \times I
-\end{equation}
+\end{equation*}
 Since the above relation is true in $\Omega \times I$, fixing one time $t \in I$
 and integrating over a control volume $\cv{P} \subset \Omega$ gives
 \begin{equation} \label{eq:discretization_continuity_equation_1}
@@ -20,9 +20,9 @@ equation \eqref{eq:discretization_continuity_equation_1},
 So as to simplify the first term of
 \eqref{eq:discretization_continuity_equation_2}, we define the average density of the
 control volume as
-\begin{equation}
+\begin{equation*}
 	\overline{\rho}_P = \frac{1}{V_P} \int_{\cv{P}} \rho \dd{x}
-\end{equation}
+\end{equation*}
 Introducing this relation in equation
 \eqref{eq:discretization_continuity_equation_2},
 \begin{equation} \label{eq:discretization_continuity_equation_3}
@@ -49,18 +49,18 @@ and $\vb{n}_s = -\vb{j}$. Since $\vb{v} = u \vb{i} + v \vb{j}$, the dot products
 are $\vb{v} \vdot \vb{n}_e = u$, $\vb{v} \vdot \vb{n}_w = -u$ and so on.
 Moreover, the integrand $(\rho \vb{v} \vdot \vb{n})_f$ can be approximated by
 the value each term takes at the face center, \ie
-\begin{equation}
+\begin{equation*}
 	(\rho \vb{v} \vdot \vb{n})_f \approx \rho_f (\vb{v} \vdot \vb{n})_f
-\end{equation}
+\end{equation*}
 Therefore the integral over $\cs{Pe}$ on equation
 \eqref{eq:discretization_continuity_equation_7} is simplified as follows:
-\begin{align}
+\begin{equation*}
 	\int_{\cs{Pe}} \rho \vb{v} \vdot \vb{n} \dd{S} \approx
 	\int_{\cs{Pe}} (\rho \vb{v} \vdot \vb{n})_e \dd{S} \approx
 	\int_{\cs{Pe}} \rho_e (\vb{v} \vdot \vb{n})_e) \dd{S} = 
 	\int_{\cs{Pe}} \rho_e u_e \dd{S} = 
 	\rho_e u_e S_{Pe} \eqqcolon \dot{m}_e
-\end{align}
+\end{equation*}
 The same simplifications are applied to the other integrals. Defining
 $\dot{m}_w$ and $\dot{m}_s$ as the negative integral makes the mass flow terms
 be positive in the positive coordinate direction. Introducing these in
@@ -80,13 +80,11 @@ t^{n+1}]$ gives
 The first term of \eqref{eq:discretization_continuity_equation_5} has a
 straightforward simplification applying a corollary of the fundamental theorem
 of calculus. Regarding the second term, numerical integration is used,
-\begin{align} 
+\begin{align*} 
 	(\rho_P^{n+1} - \rho_P^n) V_P
-	&+ \beta (\dot{m}_e^{n+1} - \dot{m}_w^{n+1} + \dot{m}_n^{n+1} - \dot{m}_s^{n+1}) (t^{n+1} - t^n) 
-	\nonumber \\
+	&+ \beta (\dot{m}_e^{n+1} - \dot{m}_w^{n+1} + \dot{m}_n^{n+1} - \dot{m}_s^{n+1}) (t^{n+1} - t^n) \\
 	&+ (1 - \beta) (\dot{m}_e^n - \dot{m}_w^n + \dot{m}_n^n - \dot{m}_s^n) (t^{n+1} - t^n) = 0
-	\label{eq:discretization_continuity_equation_6}
-\end{align}
+\end{align*}
 where $\beta \in \{ 0, \frac{1}{2}, 1 \}$ depends on the chosen integration
 scheme. For the sake of simplicity, superindex $n+1$ shall be dropped and the
 time instant $n$ will be denoted by the superindex $0$. Since we assume a

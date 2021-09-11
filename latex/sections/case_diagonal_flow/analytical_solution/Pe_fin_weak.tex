@@ -1,6 +1,6 @@
 
 \subsubsection{Weak solution for \texorpdfstring{$0 \leq \peclet <
-\infty$}{finite Péclet's number}}
+\infty$}{finite Péclet's number}} \label{sec:diagonal_Pe_fin_weak}
 
 The theory that studies the existence and uniqueness of weak solutions to Cauchy
 problems involving second--order elliptic equations requires a prior knowledge
@@ -30,7 +30,7 @@ $x$--component of the velocity field) and $f \colon U \rightarrow \real$ is a
 given function. $L$ is a second--order partial differential operator having one
 of the two following forms
 \begin{gather}
-	L u = - \sum_{i,j=1}^n (a^{ij}(x) u_{x_i})_{x_j} + \sum_{i=1}^n b^i(x) u_{x_i} + c(x) u \label{eq:divergence_form}\\
+	L u = - \sum_{i,j=1}^n (a^{ij}(x) u_{x_i})_{x_j} + \sum_{i=1}^n b^i(x) u_{x_i} + c(x) u \label{eq:divergence_form}	\\
 	L u = - \sum_{i,j=1}^n a^{ij}(x) u_{x_i x_j} + \sum_{i=1}^n b^i(x) u_{x_i} + c(x) u	
 	\label{eq:nondivergence_form}
 \end{gather}
@@ -66,22 +66,22 @@ expressed by \eqref{eq:nondivergence_form}.
 	giving the divergence form of $L$.
 \end{proof}
 
-\begin{definition}
+\begin{definition*}
 	\begin{enumerate}[label={(\roman*)}, topsep=0pt]
 		\item[]
 		\item We say the partial differential operator $L$ is symmetric provided 
-		\begin{equation} \label{eq:operator_L_symmetry}
+		\begin{equation*} \label{eq:operator_L_symmetry}
 			a^{ij} = a^{ji}
-		\end{equation}
+		\end{equation*}
 		for all $i, j = 1, \ldots, n$.
 		\item We say the partial differential operator $L$ is (uniformly)
 		elliptic if there exists a constant $\theta > 0$ such that
-		\begin{equation} \label{eq:operator_L_uniformly_elliptic}
+		\begin{equation*} \label{eq:operator_L_uniformly_elliptic}
 			\sum_{i,j=1}^n a^{ij}(x) \, \xi_i \xi_j \geq \theta \norm{\xi}^2
-		\end{equation}
+		\end{equation*}
 	\end{enumerate}
 	for a.e. $x \in U$ and all $\xi \in \real^n$.
-\end{definition}
+\end{definition*}
 
 Hereinafter we will assume operator $L$ satisfies both the symmetry and the
 uniform ellipticity conditions. Before giving the definition of weak solution,
@@ -116,25 +116,25 @@ Introducing \eqref{eq:second_order_elliptic_by_parts_2} in
 \end{equation}
 The left--hand side of \eqref{eq:second_order_elliptic_by_parts_3} is the
 bilinear form
-\begin{equation}
+\begin{equation*}
 	B[u,v] = 
 	\int_U \sum_{i,j=1}^n a^{ij} u_{x_i} v_{x_j} + \sum_{i=1}^n b^i u_{x_i} v + c u v \dd{x}
-\end{equation}
+\end{equation*}
 for $u, v \in H^1_0(U)$, and is associated to the operator $L$ in divergence
 form. Thus equality \eqref{eq:second_order_elliptic_by_parts_3} is rewritten as
-\begin{equation}
+\begin{equation*}
 	B[u,v] = (f, v)
-\end{equation}
+\end{equation*}
 where $(f, v) = \int_U f v \dd{x}$ is the scalar product in $L^2(U)$. Once we
 have introduced $B[\cdot,\cdot]$, we can define the concept of weak solution.
 
-\begin{definition} \label{def:weak_solution}
+\begin{definition*}
 	A function $u \in H^1_0(U)$ is weak solution of the boundary value problem
 	\eqref{eq:second_order_elliptic_problem} if
 	\begin{equation} \label{eq:definition_weak_solution}
 		B[u,v] = (f,v) \quad \text{for all } v \in H^1_0(U)
 	\end{equation}
-\end{definition}
+\end{definition*}
 
 \noindent
 The intuition behind the definition of weak solution is the following: when a
@@ -181,19 +181,19 @@ here so as not to complicate the exposition. The interested reader can refer to
 		of the subspace $N \subset H_0^1(U)$ of weak solutions of
 		\eqref{eq:boundary_value_problem_beta} is finite and equals the
 		dimension of the subspace $N^\ast \subset H_0^1(U)$ of weak solutions of
-		\begin{equation}			
+		\begin{equation*}			
 			\left\{
 				\begin{aligned}
 					L^\ast v &= 0 & &\text{in } U \\
 					v &= 0 & &\text{on } \partial U
 				\end{aligned}
 			\right.
-		\end{equation}
+		\end{equation*}
 		\item Finally, the boundary--value problem
 		\eqref{eq:boundary_value_problem_alpha} has a weak solution if and only if 
-		\begin{equation}
+		\begin{equation*}
 			(f, v) = 0 \quad \text{for all } v \in N^\ast
-		\end{equation}
+		\end{equation*}
 	\end{enumerate}
 \end{theorem}
 
@@ -248,10 +248,10 @@ where $x_1 \equiv x, \, x_2 \equiv y$. Moreover, since the functions in
 and the divergence form and non--divergence form of
 \eqref{eq:weak_solution_pde_3} are the same. It is obvious that $L$ is
 symmetric, as $a^{12} = a^{21} = 0$, and it is uniformly elliptic with $\theta = 1$ as a result of
-\begin{equation}
+\begin{equation*}
 	\sum_{i,j=1}^2 a^{ij} \xi_i \xi_j = 
 	{\xi_1}^2 + {\xi_2}^2 = \theta \norm{\xi}^2
-\end{equation}
+\end{equation*}
 for all $\xi \in \real^2$.
 
 Now we shall transform the boundary--value problem

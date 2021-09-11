@@ -123,10 +123,10 @@ $(\partial_x \phi)_P d_{Pe}$, which is proportional to the distance between $P$
 and the face $\cs{Pe}$. This term resembles to a diffusion flux given, for
 instance, by Fourier's or Fick's laws of diffusion. The same result is obtained
 when $E$ is the upstream node,
-\begin{equation}
+\begin{equation*}
 	\phi_e = 
 	\phi_E - \left(\pdv{\phi}{x}\right)_E d_{Ee} + \left(\pdv[2]{\phi}{x}\right)_{\xi_2} \frac{d_{Ee}^2}{2}
-\end{equation}
+\end{equation*}
 whence it can be deduced that the error is bounded by $\max\{ \abs{(\partial_x
 \phi)_E d_{Pe}}, \abs{(\partial_x \phi)_E d_{Ee}}\}$. The numerical diffusion
 issue is magnified in multidimensional problems, where peaks of rapid variation

@@ -109,9 +109,9 @@ $\phi$ at nodes $C$ and $U$. The two possible situations are pictured in figures
 \noindent
 On the one hand, when $(\vb{v} \vdot \vb{n})_e > 0$, the line between points
 $(x_W, \phi_W)$ and $(x_P, \phi_P)$ is given by
-\begin{equation}
+\begin{equation*}
 	\phi(x) = \phi_W + \frac{\phi_P - \phi_W}{d_{PW}} (x - x_W)
-\end{equation}
+\end{equation*}
 and substituting at $x = x_e$, the formula for $\phi_e$ is obtained:
 \begin{equation} \label{eq:suds_1_1}
 	\phi_e =
@@ -120,9 +120,9 @@ and substituting at $x = x_e$, the formula for $\phi_e$ is obtained:
 \end{equation}
 On the other hand, in the case of $(\vb{v} \vdot \vb{n})_e < 0$, the line
 between points $(x_E, \phi_E)$ and $(x_{EE}, \phi_{EE})$ is
-\begin{equation}
+\begin{equation*}
 	\phi(x) = \phi_E + \frac{\phi_{EE} - \phi_E}{d_{E,EE}} (x - x_E)
-\end{equation}
+\end{equation*}
 and the approximation of $\phi_e$ is
 \begin{equation} \label{eq:suds_2_1}
 	\phi_e =
@@ -131,25 +131,25 @@ and the approximation of $\phi_e$ is
 \end{equation}
 Using the DCU notation, \eqref{eq:suds_1_1} and \eqref{eq:suds_2_1} are both
 rewritten in the following manner:
-\begin{equation}
+\begin{equation*}
 	\phi_f - \phi_C = \frac{d_{Cf}}{d_{CU}} (\phi_C - \phi_U)
-\end{equation}
+\end{equation*}
 
 In order to prove that SUDS is a second order scheme when a uniform mesh
 is used and $(\vb{v} \vdot \vb{n})_e > 0$, consider the Taylor expansion up to
 $2^{nd}$ degree of $\phi$ about point $x_W$,
-\begin{equation}
+\begin{equation*}
 	\phi_e = 
 	\phi_W + 
 	\left( \pdv{\phi}{x} \right)_W d_{We} + 
 	\left( \pdv[2]{\phi}{x} \right)_{\xi_1} \frac{d_{We}^2}{2}
-\end{equation}
+\end{equation*}
 The first derivative of $\phi$ with respect to $x$ can be replaced by its first
 order approximation, namely,
-\begin{equation}
+\begin{equation*}
 	\left(\pdv{\phi}{x}\right)_W = 
 	\frac{\phi_P - \phi_W}{d_{PW}} - \left(\pdv[2]{\phi}{x}\right)_{\xi_2} \frac{d_{PW}}{2}
-\end{equation}
+\end{equation*}
 thereby,
 \begin{align}
 	\phi_e 
@@ -169,13 +169,13 @@ The scheme retains the two first terms on the right--hand side of
 \eqref{eq:suds_error}, therefore the error is composed by the last two terms.
 The uniform mesh hypothesis implies $d_{PW} = 2 d_{Pe} = L$, therefore the error
 term is multiplied by $L^2$,
-\begin{equation}
+\begin{equation*}
 	\phi_e = 
 	\phi_P + \frac{d_{Pe}}{d_{PW}} (\phi_P - \phi_W) + 
 	\frac{3 L^2}{4}
 	\left\{
 	3 \left( \pdv[2]{\phi}{x} \right)_{\xi_1} - \left( \pdv[2]{\phi}{x} \right)_{\xi_2}
 	\right\}
-\end{equation}
+\end{equation*}
 whence the second order of SUDS is deduced. The proof in the case of $(\vb{v}
 \vdot \vb{n})_e < 0$ is analogous.

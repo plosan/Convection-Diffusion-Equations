@@ -1,6 +1,6 @@
 \subsection{Treatment of boundary conditions}
 
-In Cauchy problems involving Partial Differential Equations (PDEs), there exist
+In Cauchy problems involving Partial Differential Equations, there exist
 several kinds of boundary conditions which must be prescribed in order to
 guarantee the existence and uniqueness of solution, although in this project
 we will only consider two types. So as to illustrate how these conditions are set,
@@ -30,7 +30,7 @@ The boundary conditions considered are:
 	\times (0,\infty) \rightarrow \real$, $(x, t) \mapsto d(x, t)$
 	describes the boundary condition, then
 	\eqref{eq:boundary_conditions_problem} is written as
-	\begin{equation}
+	\begin{equation*}
 		\left\{
 		\begin{aligned}
 			&u_t - \Delta u = f(x, t) & &\text{in } U \times (0,\infty) \\
@@ -38,7 +38,7 @@ The boundary conditions considered are:
 			&u = d & &\text{on } \partial U \times (0,\infty)
 		\end{aligned}
 		\right.
-	\end{equation}
+	\end{equation*}
 	When \eqref{eq:boundary_conditions_heat_equation} is thought of as
 	describing the propagation of heat, then $d$ fixes the temperature at the
 	boundary of $U$ for each time.
@@ -47,7 +47,7 @@ The boundary conditions considered are:
 	\colon \partial U \times (0,\infty) \rightarrow \real$ describes the
 	boundary condition, then \eqref{eq:boundary_conditions_problem} is written
 	as
-	\begin{equation}
+	\begin{equation*}
 		\left\{
 		\begin{aligned}
 			&u_t - \Delta u = f(x, t) 	& &\text{in } U \times (0,\infty) \\
@@ -55,7 +55,7 @@ The boundary conditions considered are:
 			&\partial_{\nu} u = n 			& &\text{on } \partial U \times (0,\infty)
 		\end{aligned}
 		\right.
-	\end{equation}
+	\end{equation*}
 	where $\nu$ is the outer normal vector to $\partial U$. In terms of heat,
 	this boundary condition sets the conduction heat transfer through $U$ for
 	each time.
@@ -70,9 +70,9 @@ prescribed value at boundary, that is,
 	\phi_e = \phi_E
 \end{equation}
 and flux per unit of surface can be easily computed as
-\begin{equation}
+\begin{equation*}
 	j_e = -\Gamma_P \frac{\phi_e - \phi_P}{d_{Pe}}
-\end{equation}
+\end{equation*}
 In contrast, when a Neumann boundary condition with flux $j_e$ is imposed, the value at
 face is
 \begin{equation}

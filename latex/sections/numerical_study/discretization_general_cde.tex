@@ -12,11 +12,11 @@ The generalized convection--diffusion for a real valued function $\phi \colon
 whereas for a vector valued function $\phi = (\phi_1, \ldots, \phi_n) \colon
 \Omega \times I \subset \real^n \times \real \rightarrow \real^n$ it is written
 as
-\begin{equation}
+\begin{equation*}
 	\pdv{(\rho \phi)}{t} + \div(\rho \vb{v} \otimes \phi) = 
 	\div(\Gamma_\phi \grad{\phi}) + \dot{s}_\phi,
 	\quad (x, t) \in \Omega \times I
-\end{equation}
+\end{equation*}
 where $\otimes$ denotes the outer product of $\vb{v} \colon \Omega \times I
 \subset \real^n \times \real \rightarrow \real^n$ and $\phi$, which is a $n
 \times n$ matrix. Since the generalized convection--diffusion equation for a
@@ -26,46 +26,46 @@ function, we will only study the discretization for a real valued function.
 Integrating \eqref{eq:discretization_cde_equation_1} over $\cv{P} \times [t^n,
 t^{n+1}] \subset \Omega \times I$ and using Fubini's theorem to swap the order
 of integration
-\begin{multline}
+\begin{multline*}
 	\int_{t^n}^{t^{n+1}} \int_{\cv{P}} \pdv{(\rho \phi)}{t} \dd{x} \dd{t} + 
 	\int_{t^n}^{t^{n+1}} \int_{\cv{P}} \div(\rho \vb{v} \phi) \dd{x} \dd{t} = \\ = 
 	\int_{t^n}^{t^{n+1}} \int_{\cv{P}} \div(\Gamma_\phi \grad{\phi}) \dd{x} \dd{t} +
 	\int_{t^n}^{t^{n+1}} \int_{\cv{P}} \dot{s}_\phi \dd{x} \dd{t}	
-\end{multline}
+\end{multline*}
 The simplification of the first term is analogous to that of the continuity
 equation. The average value of $\rho \phi$ on $\cv{P}$ at time $t$ is defined by
-\begin{equation}
+\begin{equation*}
 	(\rho \phi)_P = \frac{1}{V_P} \int_{\cv{P}} \rho \phi \dd{x}
-\end{equation}
+\end{equation*}
 although the following approximation is needed:
-\begin{equation}
+\begin{equation*}
 	(\rho \phi)_P \approx \rho_P \phi_P
-\end{equation}
+\end{equation*}
 Then the transient term is:
-\begin{equation}
+\begin{equation*}
 	\int_{t^n}^{t^{n+1}} \int_{\cv{P}} \pdv{(\rho \phi)}{t} \dd{x} \dd{t} = 
 	\int_{t^n}^{t^{n+1}} \frac{\dd}{\dd{t}} \int_{\cv{P}} \rho \phi \dd{x} \dd{t} =  
 	\int_{t^n}^{t^{n+1}} \frac{\dd(\rho \phi)_P}{\dd{t}} V_P \dd{t} \approx 
 	\left\{ \rho_P \phi_P - \rho_P^0 \phi_P^0 \right\} V_P
-\end{equation}
+\end{equation*}
 
 Divergence theorem must be applied to simplify the convective term,
-\begin{equation} 
+\begin{equation*} 
 	\int_{t^n}^{t^{n+1}} \int_{\cv{P}} \div(\rho \vb{v} \phi) \dd{x} \dd{t} = 
 	\int_{t^n}^{t^{n+1}} \int_{\cs{P}} \rho \phi \vb{v} \vdot \vb{n} \dd{S} \dd{t} = 
 	\int_{t^n}^{t^{n+1}} \sum_i \int_{\cs{Pi}} \rho \phi \vb{v} \vdot \vb{n} \dd{S} \dd{t}
-\end{equation}
+\end{equation*}
 The value that $\phi$ takes on $\cs{Pi}$ can be approximated by its value at a
 representative point, for instance, the point at face center, that is to say,
 $\phi \approx \phi_i$. Therefore,
-\begin{multline}
+\begin{multline*}
 	\int_{t^n}^{t^{n+1}} \sum_i \int_{\mathcal{S}_i} \rho \phi \vb{v} \vdot \vb{n} \dd{S} \dd{t} \approx 
 	\int_{t^n}^{t^{n+1}} \sum_i \int_{\mathcal{S}_i} \rho \phi_i \vb{v} \vdot \vb{n} \dd{S} \dd{t} =
 	\int_{t^n}^{t^{n+1}} \sum_i \dot{m}_i \phi_i \dd{t} = \\
 	= \left\{ \beta \sum_i \dot{m}_i \phi_i + (1 - \beta) \sum_i \dot{m}_i^0 \phi_i^0 \right\} \Delta t	
-\end{multline}
+\end{multline*}
 
-In regards to the diffusion term,
+Regarding the diffusion term,
 \begin{equation} \label{eq:discretization_cde_equation_2}
 	\int_{t^n}^{t^{n+1}} \int_{\cv{P}} \div(\Gamma_\phi \grad{\phi}) \dd{x} \dd{t} = 
 	\int_{t^n}^{t^{n+1}} \int_{\cs{P}} \Gamma_\phi \grad{\phi} \vdot \vb{n} \dd{S} \dd{t} = 
@@ -86,59 +86,59 @@ coefficient $\Gamma_\phi$ and define the coefficients
 \end{align}
 where $f$ and $F$ refer to the face and to the node, respectively. For a 2D--mesh, equation
 \eqref{eq:discretization_cde_equation_2} results in
-\begin{align}
+\begin{align*}
 	&\int_{t^n}^{t^{n+1}} \sum_i \int_{\cs{Pi}} \Gamma_\phi \grad{\phi} \vdot \vb{n} \dd{S} \dd{t} 
-	\approx \nonumber \\ 
+	\approx \\ 
 	&\approx 
 	\int_{t^n}^{t^{n+1}}
 	\Big\{ 
 	D_e (\phi_E - \phi_P) - D_w (\phi_P - \phi_W) + D_n (\phi_N - \phi_P) - D_s (\phi_P - \phi_S) 
-	\Big\} \dd{t} \approx \nonumber \\
+	\Big\} \dd{t} \approx \\
 	&\approx
 	\beta 
 	\left\{ 
 		D_e (\phi_E - \phi_P) - D_w (\phi_P - \phi_W) + D_n (\phi_N - \phi_P) - D_s (\phi_P - \phi_S) 
-	\right\} \Delta t + \nonumber \\
+	\right\} \Delta t + \\
 	&+ (1 - \beta)
 	\Big\{ 
 		D_e^0 (\phi_E - \phi_P) - D_w^0 (\phi_P - \phi_W) + D_n^0 (\phi_N - \phi_P) - D_s^0 (\phi_P - \phi_S) 
 	\Big\} \Delta t
-\end{align}
+\end{align*}
 In the case of a 3D--mesh, the contributions of top and bottom faces must be
 accounted for.
 
 So as to discretize the source term, the mean value of the source function in
 $\cv{P}$ at time $t$ is given by
-\begin{equation}
+\begin{equation*}
 	\overline{\dot{s}}_\phi = 
 	\frac{1}{V_P} \int_{\cv{P}} \dot{s}_\phi \dd{x}
-\end{equation}
+\end{equation*}
 If the value of $s_\phi$ is known, the relation $\overline{\dot{s}}_\phi =
 \dot{\overline{s}}_\phi$ is true. Indeed, applying differentiation under the
 integral sign (Theorem \ref{theo:differentiation_under_the_integral_sign})
-\begin{equation}
+\begin{equation*}
 	\dot{\overline{s}}_\phi = 
 	\frac{\dd}{\dd{t}} \overline{s}_\phi = 
 	\frac{1}{V_P} \frac{\dd}{\dd{t}} \int_{\cv{P}} s_\phi \dd{x} = 
 	\frac{1}{V_P} \int_{\cv{P}} \dot{s}_\phi \dd{x} = 
 	\overline{\dot{s}}_\phi
-\end{equation}
+\end{equation*}
 In most cases, the dependence of $\dot{\overline{s}}_\phi$ on $\phi$ is
 complicated. Since the equations obtained until now are linear, the relation
 between the source term and the variable would ideally be linear. This linearity
 is imposed as follows
-\begin{equation}
+\begin{equation*}
 	\dot{\overline{s}}_\phi = S_C^\phi + S_P^\phi \phi_P
-\end{equation}
+\end{equation*}
 where the values of $S_C^\phi$ and $S_P^\phi$ may vary with $\phi$
 \cite{patankar2008numerical}. Making use of these relations, the source term
 integral is discretized as
-\begin{equation}
+\begin{equation*}
 	\int_{t^n}^{t^{n+1}} \int_{\cv{P}} \dot{s}_\phi \dd{x} \dd{t} = 
 	\int_{t^n}^{t^{n+1}} 
 	\dot{\overline{s}}_{\phi P} V_P \Delta t = 
 	\left( S_C^\phi + S_P^\phi \phi_P \right) V_P \Delta t
-\end{equation}
+\end{equation*}
 As we shall discuss later, the term $S_P^\phi$ must be non--positive.
 
 The discretization of the 2D generalized convection--diffusion equation is
@@ -184,7 +184,7 @@ in
 \end{multline}
 The 3D analog of \eqref{eq:general_cde_discretized_implicit_useful} includes the
 top and bottom faces contributions:
-\begin{align} \label{eq:general_cde_discretized_implicit_useful_3d}
+\begin{align}
 	\rho_P^0 \frac{\phi_P - \phi_P^0}{\Delta t} V_P
 	&+ \dot{m}_e (\phi_e - \phi_P) - \dot{m}_w (\phi_w - \phi_P)  + \dot{m}_n (\phi_n - \phi_P) 
 	\nonumber \\

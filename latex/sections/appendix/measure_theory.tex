@@ -1,11 +1,18 @@
 
 \section{Measure Theory} \label{ap:measure_theory}
 
-In this appendix we gather 
+In this appendix we present the basic definitions and results in measure theory
+needed to define Lebesgue's integral and $L^p$ spaces. It is not intended to be
+a full explanation on the topic, but rather a quick exposition so that the
+reader with no previous background can understand the topics presented in
+section \ref{sec:diagonal_Pe_fin_weak}. The main reference for this section is
+``Apunts d'Anàlisi Real'' by Batlle and Fossas \cite{fossas2020real}. Another
+good reference for interested readers to broaden their knowledge in the topic is
+Real and Complex Analysis by Walter Rudin \cite{rudin1987real}.
 
 \subsection{Measurable spaces and measurable functions}
 
-In this appendix, $X$ will denote an arbitrary set.
+Let $X$ be an arbitrary set.
 
 \begin{definition*}
 	A $\sigma$--algebra of sets of $X$ is a family $\mathcal{A}$ of subsets of $X$,
@@ -151,7 +158,7 @@ volume.
 \begin{definition*}
 	Let $(X, \mathcal{A}, \mu)$ be a measure space.
 	\begin{enumeratedef}
-		\item A set $E \in \mathcal{A}$ is said to be a null set if $\mu(E) = 0$.
+		\item A set $E \in \mathcal{A}$ is said to be a null set or a set of measure zero provided $\mu(E) = 0$.
 		\item Let $P$ be a proposition. We say $P$ is true $\mu$--almost
 		everywhere ($\mu$--a.e.) if there exists $N \in \mathcal{A}$ such that
 		$\mu(N) = 0$ and $P$ is true on $N^c = X \setminus N$.
@@ -257,6 +264,27 @@ negative values.
 	whenever $E \in \mathcal{A}$. We denote the set of integrable functions by $L(X, \mathcal{A}, \mu)$.
 \end{definition*}
 
+\begin{theorem}
+	Let $f, g \in L(X, \mathcal{A}, \mu)$ and $\alpha \in \real$, then:
+	\begin{enumerateprop}
+		\item $\alpha f \in L(X, \mathcal{A}, \mu)$.
+		\item $f + g \in L(X, \mathcal{A}, \mu)$.
+	\end{enumerateprop}
+	This implies that Lebesgue's integral is a linear functional on $L(X, \mathcal{A}, \mu)$.
+\end{theorem}
+
+\begin{theorem}
+	Consider the measure space $(\real, \mathcal{B}, \lambda)$ and let $f \colon
+	[a, b] \rightarrow \real$ be a Riemann--integrable function. Then:
+	\begin{enumerateprop}
+		\item $f \mathbb{I}_{[a,b]} \in L(X, \mathcal{A}, \mu)$.
+		\item Lebesgue's and Riemann's integral of $f$ over $[a,b]$ coincide, \ie
+		\[
+			\int_\real f \mathbb{I}_{[a,b]} \dd{\lambda} = \int_a^b f(x) \dd{x}	
+		\]
+	\end{enumerateprop}
+\end{theorem}
+
 \subsection{\texorpdfstring{$L^p$}{L--p} spaces}
 
 Let $(X, \mathcal{A}, \mu)$ be a measure space. Our aim is to define a norm on
@@ -286,10 +314,10 @@ which satisfies the following:
 	\item $N_\mu(f + g) \leq N_\mu(f) + N_\mu(g)$.
 \end{enumerateprop}
 Nonetheless, $N_\mu(f) = 0$ does not imply $f \equiv 0$ in $X$. The reason for
-this is that $f$ may take values different from $0$ in null sets, that is to
+this is that $f$ may take values different from $0$ in measure zero sets, that is to
 say, $N_\mu(f) = 0$ as long as $f = 0$ $\mu$--a.e. We say that $N_\mu$ is a
 seminorm. Observe that redefining a function $f \in L(X, \mathcal{A}, \mu)$ in a
-null set does not change $\int_X f \dd{\mu}$. Therefore, in order to make
+measure zero set does not change $\int_X f \dd{\mu}$. Therefore, in order to make
 $N_\mu$ into a norm, we shall relate the functions in $L(X, \mathcal{A}, \mu)$
 that differ only in null sets.
 
@@ -306,13 +334,14 @@ that differ only in null sets.
 \begin{proof}
 	Reflexivity and symmetry are trivially satisfied by $\sim_\mu$. Regarding
 	the transitivity, assume $f \sim_\mu g$ and $g \sim_\mu h$. Let $N_1 \in
-	\mathcal{A}$ be the null set where $f$ and $g$ differ. Similarly, let $N_2
-	\in \mathcal{A}$ be the null set where $g$ and $h$ differ. Then $f$ and $h$
+	\mathcal{A}$ be the measure zero set where $f$ and $g$ differ. Similarly, let $N_2
+	\in \mathcal{A}$ be the measure zero set where $g$ and $h$ differ. Then $f$ and $h$
 	differ in a measurable set $N \subset N_1 \cup N_2$, thus $\mu(N) \leq
 	\mu(N_1 \cup N_2) \leq \mu(N_1) + \mu(N_2) = 0$, which implies $f \sim_\mu h$.
 \end{proof}
 
-Finally we can start defining the celebrated $L^p$ spaces:
+Bu using the equivalence relation \eqref{eq:equivalence_relation}, we can make
+$L(X, \mathcal{A}, \mu)$ into a space where $N_\mu$ will be a norm:
 
 \begin{definition*}
 	We define the space $L^1(X, \mathcal{A}, \mu)$ or Lebesgue space by
@@ -335,7 +364,7 @@ Finally we can start defining the celebrated $L^p$ spaces:
 	\abs{g} \dd{\mu}$.
 \end{prop}
 \begin{proof}
-	Let $N \in \mathcal{A}$ be the null set where $f$ and $g$ differ, \ie $f
+	Let $N \in \mathcal{A}$ be the measure zero set where $f$ and $g$ differ, \ie $f
 	\neq g$ in $N \in \mathcal{A}$ and $\mu(N) = A$. Let $M = X \setminus N$,
 	then
 	\begin{align*}
@@ -364,10 +393,10 @@ The elements of $L^1(X)$ are the equivalence classes of $L(X, \mathcal{A}, \mu)$
 given by the equivalence relation \eqref{eq:equivalence_relation}. However,
 proposition \ref{eq:integral_does_not_depend_on_representative} tells us that
 the integral does not depend on the representative of the class, hence we shall
-become less formal and treat the elements of  $L^1(X)$ as functions.
+become less rigorous and treat the elements of  $L^1(X)$ as functions.
 
 Now we shall study the generalization of Lebesgue's space. Let $p \in (1,\infty)$
-and consider the measurable functions $f \colon X \rightarrow \real$ such that
+and consider the set of measurable functions $f \colon X \rightarrow \real$ such that
 \[
 	\int_X \abs{f}^p \dd{\mu} < \infty	
 \]
@@ -404,23 +433,13 @@ vector space, \ie a Banach space, so we can do analysis on it.
 In the definition of $L^p(X)$, we have asked for $1 \leq p < \infty$.
 Nonetheless, when $p = \infty$, we encounter the $L^\infty(X)$ space, formed by
 the essentially bounded functions, \ie functions that are bounded almost
-everywhere except maybe on a null set. The $L^\infty$--norm on $L^\infty(X)$ is given by
+everywhere except maybe on a measure zero set. The $L^\infty$--norm on $L^\infty(X)$ is given by
 \[
 	\norm{f}_{L^\infty(X)} = 
 	\norm{f}_\infty = 
 	\inf{\{ C \geq 0 \mid \abs{f} \leq C \ \mu\text{--almost everywhere} \}}
 \]
 As it could be anticipated, $(L^\infty(X), \norm{\cdot}_\infty)$ is also a Banach space.
-
-\clearpage
-\subsection{Differentiation under the integral sign}
-
-In this appendix we gather two important theorems needed to justify some steps
-in the derivation of conservation laws in section
-\ref{sec:the_convection_diffusion_equations}. Despite these results are basic, a
-previous study of real analysis is required in order to understand and prove
-them. A good reference for the interested reader is Real and Complex Analysis of
-Walter Rudin \cite{rudin1987real}. 
 
 \subsection{Differentiation under the integral sign}
 
@@ -429,7 +448,7 @@ an integral of a function of two parameters in a simple way. It is needed, for
 instance, when the mass conservation law or the heat diffusion equation are
 derived. 
 
-Let $(X, \mathcal{A}, \mu)$ be a measure space and let $[a, b] \subset \real$.
+Let $(X, \mathcal{A}, \mu)$ be a measure space and $[a, b] \subset \real$.
 Hereinafter we deal with functions $f \colon X \times [a,b] \rightarrow \real$,
 where $t \in [a, b]$ is the parameter on which $f$ depends. We assume that
 $f(\cdot, t)$ is a measurable function for each $t \in [a, b]$.
@@ -452,49 +471,48 @@ $f(\cdot, t)$ is a measurable function for each $t \in [a, b]$.
 	\]
 \end{theorem}
 
-For the applications needed in this project, $X = \real^m$ with $1 \leq m \leq
-3$, $\mathcal{A}$ is the Borel $\sigma$--algebra on $\real^m$ and $\mu$ is
-Lebesgue's measure on $\real^m$, which for most of the ``natural'' sets of
-$\mathcal{A}$ coincides with the usual notion of $m$--dimensional volume.
+For the applications needed in this project, $X = \real^n$, $\mathcal{A}$ is
+Borel's $\sigma$--algebra on $\real^n$ and $\mu = \lambda_n$ is Lebesgue's
+measure.
 
-\subsection{Lebesgue's differentiation lemma}
+% \subsection{Lebesgue's differentiation lemma}
 
-A common way to derive a conservation law is to integrate some functions in a
-control volume, then apply Differentiation under the integral sign to obtain an
-integral equation and finally get to a differential equation using Lebesgue's
-differentiation lemma. 
+% A common way to derive a conservation law is to integrate some functions in a
+% control volume, then apply Differentiation under the integral sign to obtain an
+% integral equation and finally get to a differential equation using Lebesgue's
+% differentiation lemma. 
 
-An intuitive way to understand and to motivate Lebesgue's differentiation lemma
-is the following. Let $f \colon \real \to \real$ be a continuous function, let
-$a \in \real$ be a fixed point and let $F(x) = \int_a^x f(y) \dd{y}$, which is a
-differentiable function. Due to a corollary of the Fundamental Theorem of
-Calculus, we have $F'(x) = f(x)$. Using the definition of derivative,
-\[
-	F'(x) = 
-	\lim_{h \to 0} \frac{F(x + h) - F(x)}{h} = 
-	\lim_{h \to 0} \frac{1}{h} \left\{ \int_a^{x + h} f(y) \dd{y} - \int_a^{x} f(y) \dd{y} \right\} = 
-	\lim_{h \to 0} \frac{1}{h} \int_x^{x + h} f(y) \dd{y} = f(x)
-\]
-Notice that the integral is divided by the length of the interval $[x, x+h]$,
-otherwise the limit would be zero. Lebesgue's lemma generalizes the previous
-equality by considering functions $f \colon \real^n \to \real$ and integrating
-them on open balls $B(x_0, r) = \{ x \in \real^n \mid \norm{x -
-x_0} < r\}$. Furthermore, the integral is divided by the $n$--dimensional
-volume of $B(x_0, r)$, which is denoted by $\abs{B(x_0, r)}$.
+% An intuitive way to understand and to motivate Lebesgue's differentiation lemma
+% is the following. Let $f \colon \real \to \real$ be a continuous function, let
+% $a \in \real$ be a fixed point and let $F(x) = \int_a^x f(y) \dd{y}$, which is a
+% differentiable function. Due to a corollary of the Fundamental Theorem of
+% Calculus, we have $F'(x) = f(x)$. Using the definition of derivative,
+% \[
+% 	F'(x) = 
+% 	\lim_{h \to 0} \frac{F(x + h) - F(x)}{h} = 
+% 	\lim_{h \to 0} \frac{1}{h} \left\{ \int_a^{x + h} f(y) \dd{y} - \int_a^{x} f(y) \dd{y} \right\} = 
+% 	\lim_{h \to 0} \frac{1}{h} \int_x^{x + h} f(y) \dd{y} = f(x)
+% \]
+% Notice that the integral is divided by the length of the interval $[x, x+h]$,
+% otherwise the limit would be zero. Lebesgue's lemma generalizes the previous
+% equality by considering functions $f \colon \real^n \to \real$ and integrating
+% them on open balls $B(x_0, r) = \{ x \in \real^n \mid \norm{x -
+% x_0} < r\}$. Furthermore, the integral is divided by the $n$--dimensional
+% volume of $B(x_0, r)$, which is denoted by $\abs{B(x_0, r)}$.
 
-\begin{theorem}[Lebesgue's differentiation lemma \cite{evans1998pde}]
-	\label{eq:lebesgue_differentiation_lemma} Let $f \colon \real^n \rightarrow
-	\real$ be a locally integrable function.
-	\begin{enumerate}[label={(\arabic*)}, topsep=0pt]
-		\item Then for almost everywhere point $x_0 \in \real^n$,
-		\[
-			\frac{1}{\abs{B(x_0, r)}} \int_{B(x_0,r)} f(x) \dd{x} \to f(x_0) 
-			\quad \text{as } r \to 0
-		\]
-		\item In fact, for almost everywhere point $x_0 \in \real^n$,
-		\[
-			\frac{1}{\abs{B(x_0, r)}} \int_{B(x_0,r)} \abs{f(x) - f(x_0)} \dd{x} \to 0 
-			\quad \text{as } r \to 0
-		\]		
-	\end{enumerate}
-\end{theorem}
+% \begin{theorem}[Lebesgue's differentiation lemma \cite{evans1998pde}]
+% 	\label{eq:lebesgue_differentiation_lemma} Let $f \colon \real^n \rightarrow
+% 	\real$ be a locally integrable function.
+% 	\begin{enumerate}[label={(\arabic*)}, topsep=0pt]
+% 		\item Then for almost everywhere point $x_0 \in \real^n$,
+% 		\[
+% 			\frac{1}{\abs{B(x_0, r)}} \int_{B(x_0,r)} f(x) \dd{x} \to f(x_0) 
+% 			\quad \text{as } r \to 0
+% 		\]
+% 		\item In fact, for almost everywhere point $x_0 \in \real^n$,
+% 		\[
+% 			\frac{1}{\abs{B(x_0, r)}} \int_{B(x_0,r)} \abs{f(x) - f(x_0)} \dd{x} \to 0 
+% 			\quad \text{as } r \to 0
+% 		\]		
+% 	\end{enumerate}
+% \end{theorem}

@@ -82,23 +82,23 @@ Assume $A$ is a strictly diagonally dominant (SDD) matrix, that is to say,
 where $n$ is the dimension of the matrix. Then the Gauss--Seidel algorithm is
 guaranteed to converge and eventually solve the system. In terms of the
 discretization coefficients, condition \eqref{eq:sdd_matrix_1} is written as
-\begin{equation}
+\begin{equation*}
 	\abs{a_P[i][j]} \geq 
 	\abs{a_W[i][j]} +
 	\abs{a_E[i][j]} +
 	\abs{a_S[i][j]} +
 	\abs{a_N[i][j]}
-\end{equation}
+\end{equation*}
 Recall that in section \ref{sec:discretization_general_cde} we linearized the
 linear term as $\dot{\overline{s}}_\phi = S_C^\phi + S_P^\phi \phi_P$ and we
 asked $S_P^\phi$ to be non--positive, \ie, $S_P^\phi \leq 0$. By looking at
 coefficient $a_P$ for small molecule schemes given by
 \eqref{eq:small_molecule_ap}, we notice the following:
-\begin{equation}
+\begin{equation*}
 	a_P = 
 	a_E + a_W + a_N + a_S + \frac{\rho_P^0 V_P}{\Delta t} - S_P^\phi V_P \geq
 	a_E + a_W + a_N + a_S + \frac{\rho_P^0 V_P}{\Delta t}
-\end{equation}
+\end{equation*}
 Therefore the fact that $S_P^\phi \leq 0$, although not being a sufficient
 conditions, helps the matrix $A$ to satisfy the SDD condition. In the case an
 iterative procedure diverges, a direct method to solve the linear system might

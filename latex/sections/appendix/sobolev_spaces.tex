@@ -1,3 +1,96 @@
 
 \section{Sobolev spaces}
 
+\subsection{Weak derivatives}
+
+Let $U \subset \real^n$ be an open set and $f \colon U \rightarrow \real$ a
+function. The support of $U$ is the set
+\[
+    \mathrm{supp}(f) = \{ x \in U \mid f(x) \neq 0 \} \subset U
+\]
+$f$ is said to have compact support if the closure of $\mathrm{supp}(f)$,
+$\overline{\mathrm{supp}(f)} \subset \real^n$ is compact. Let
+$\mathcal{C}_c^\infty(U)$ be the set of infinitely differentiable functions with
+compact support in $U$. A function $\phi \in \mathcal{C}_c^\infty(U)$ is said to
+be a test function. 
+
+Let $u \in \mathcal{C}^1(U)$ and take a test function $\phi \in
+\mathcal{C}_c^\infty(U)$. Integrating by parts the product $u \phi_{x_i}$ yields
+\begin{equation} \label{eq:sobolev_integration_by_parts_1}
+    \int_U u \phi_{x_i} \dd{x} = 
+    \int_{\partial U} u \phi \nu^i \dd{\sigma} - \int_U u_{x_i} \phi \dd{x} = 
+    - \int_U u_{x_i} \phi \dd{x} \quad i = 1, \ldots, n
+\end{equation}
+The integral over $\partial U$ is zero because $\phi$ vanishes near $\partial
+U$. Let $k \in \z$, $k \geq 1$ and assume $u \in \mathcal{C}^k(U)$. Let $\alpha
+= (\alpha_1, \ldots, \alpha_n)$ be a multiindex of order $\abs{\alpha} =
+\alpha_1 + \cdots + \alpha_n = k$. Then
+\[
+    D^\alpha \phi = 
+    \frac{\partial^{\alpha_1}}{\partial x_1^{\alpha_1}} \cdots 
+    \frac{\partial^{\alpha_n}}{\partial x_n^{\alpha_n}} \phi
+\]
+and the integral of $u D^\alpha \phi$ is obtained applying formula
+\eqref{eq:sobolev_integration_by_parts_1} $\abs{\alpha}$ times:
+\begin{equation} \label{eq:sobolev_integration_by_parts_2}
+    \int_U u \, D^\alpha \phi \dd{x} = 
+    (-1)^{\abs{\alpha}} \int_U D^\alpha u \, \phi \dd{x}
+\end{equation}
+
+Formula \eqref{eq:sobolev_integration_by_parts_2} is true when $u \in
+\mathcal{C}^k(U)$, but we wonder if it might still be true if $u$ is not
+$k$--times continuously differentiable. The left--hand side of
+\eqref{eq:sobolev_integration_by_parts_2} makes sense when $u \in
+L_\text{loc}^1(U)$, \ie when $u$ is Lebesgue--integrable on every compact subset
+$K$ of $U$. However, if $u$ is not $k$--times continuously differentiable,
+$D^\alpha u$ has no meaning at all. By replacing $D^\alpha u$ by a function $v
+\in L_\text{loc}^1(U)$, expression \eqref{eq:sobolev_integration_by_parts_2}
+might be true for all test functions $\phi$.
+
+\begin{definition*}
+    Let $u, v \in L_\text{loc}^1(U)$ and let $\alpha$ be a multiindex. We say
+    $v$ is the $\alpha$--th weak partial derivative of $u$, written
+    \[
+        D^\alpha u = v  
+    \]
+    provided
+    \[
+        \int_U u \, D^\alpha \phi \dd{x} = 
+        (-1)^{\abs{\alpha}} \int_U v \phi \dd{x}
+    \]
+    for all test functions $\phi \in \mathcal{C}_c^\infty(U)$.
+\end{definition*}
+
+\begin{prop}[Uniqueness of weak derivatives]
+    A weak $\alpha^\text{th}$--partial derivative of $u$, if exists, is uniquely
+    defined up to a set of measure zero.
+\end{prop}
+\begin{proof}
+    Assume $v, \tilde{v} \in L_\text{loc}^1(U)$ satisfy
+    \[
+        \int_U u D^\alpha \phi =
+        (-1)^{\abs{\alpha}} \int_U v \phi \dd{x} =  
+        (-1)^{\abs{\alpha}} \int_U \tilde{v} \phi \dd{x}
+    \]
+    for all $\phi \in \mathcal{C}_c^\infty(U)$. Then
+    \[
+        \int_U (v - \tilde{v}) \phi \dd{x} = 0  
+    \]
+    for all $\phi \in \mathcal{C}_c^\infty(U)$, whence $v - \tilde{v} = 0$ a.e.
+\end{proof}
+
+\subsection{Definition of Sobolev spaces}
+
+Let $1 \leq p \leq \infty$ and let $k \in \z_{\geq 0}$.
+
+\begin{definition*}
+    The Sobolev space
+    \[
+        W^{k,p}(U)  
+    \]
+    consists of all locally summable functions $u \colon U \rightarrow \real$
+    such that for each multiindex $\alpha$ with $\abs{\alpha} \leq k$, $D^\alpha
+    u$ exists in the weak sense and belongs to $L^p(U)$.
+\end{definition*}
+
+When $p = 2$, we write 

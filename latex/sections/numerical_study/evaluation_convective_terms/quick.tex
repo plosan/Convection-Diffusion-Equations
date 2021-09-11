@@ -105,14 +105,14 @@ polynomial $p(x)$ must interpolate, that is, $p(x_0) = \phi_0$, $p(x_1) =
 \vb{n})_e > 0$ then $x_0 = x_W$, $x_1 = x_P$ and $x_2 = x_E$, whereas $x_0 =
 x_P$, $x_1 = x_E$ and $x_2 = x_{EE}$ in the case of $(\vb{v} \vdot \vb{n})_e <
 0$. Let $p(x)$ be the following polynomial
-\begin{equation}
+\begin{equation*}
 	p(x) = a_0 + a_1 (x - x_0) + a_2 (x - x_0) (x - x_1), \quad a_0, a_1, a_2 \in \real
-\end{equation}
+\end{equation*}
 Since the interpolating polynomial exists and is unique (see
 \cite{quarteroni2010numerical8pinterp}, Theorem 8.1), by imposing the
 interpolating condition, $p(x)$ will be the desired polynomial. The
 interpolating condition is,
-\begin{equation}
+\begin{equation*}
 	\left.
 	\begin{aligned}
 		p(x_0) &= a_0 = \phi_0 \\
@@ -120,9 +120,9 @@ interpolating condition is,
 		p(x_2) &= a_0 + a_1 (x_2 - x_0) + a_2 (x_2 - x_0) (x_2 - x_1) = \phi_2
 	\end{aligned}	
 	\right\}
-\end{equation}
+\end{equation*}
 which yields the following linear system:
-\begin{equation}
+\begin{equation*}
 	\begin{pmatrix}
 		1 & 0 & 0 \\
 		1 & x_1 - x_0 & 0 \\
@@ -134,10 +134,10 @@ which yields the following linear system:
 	\begin{pmatrix}
 		\phi_0 \\ \phi_1 \\ \phi_2
 	\end{pmatrix}
-\end{equation}
+\end{equation*}
 The determinant of the system matrix is non-zero because the abscissae are
 distinct, therefore the solution is given by
-\begin{equation}
+\begin{equation*}
 	\left.
 	\begin{aligned}
 		a_0 &= \phi_0 \\
@@ -145,16 +145,16 @@ distinct, therefore the solution is given by
 		a_2 &= \frac{\phi_2 - \phi_0}{(x_2 - x_1)(x_2 - x_0)} - \frac{\phi_1 - \phi_0}{(x_2 - x_1)(x_1 - x_0)}
 	\end{aligned}	
 	\right\}
-\end{equation}
+\end{equation*}
 and the polynomial is
-\begin{equation} \label{eq:quick_polynomial_1}
+\begin{equation*}
 	p(x) = 
 	\phi_0 - 
 	\frac{(x - x_2) (x - x_0)}{(x_2 - x_1)(x_1 - x_0)} (\phi_1 - \phi_0) + 
 	\frac{(x - x_1)(x - x_0)}{(x_2 - x_1)(x_2 - x_0)} (\phi_2 - \phi_0)
-\end{equation}
+\end{equation*}
 In terms of the $DCU$ notation, we have the following:
-\begin{equation}
+\begin{equation*}
 	p(x) = 
 	\left\{
 	\begin{aligned}		
@@ -168,13 +168,13 @@ In terms of the $DCU$ notation, we have the following:
 		& &\text{if } (\vb{v} \vdot \vb{n})_e < 0
 	\end{aligned}
 	\right.
-\end{equation}
+\end{equation*}
 Assuming a uniform grid, \ie $x_1 - x_0 = x_2 - x_1 = L$ and the face $f$
 located at the midpoint between nodal points, the approximation of $\phi_e$
 given by QUICK scheme is
-\begin{equation}
+\begin{equation*}
 	\phi_e = -\frac{1}{8} \phi_0 + \frac{6}{8} \phi_1 + \frac{3}{8} \phi_2
-\end{equation}
+\end{equation*}
 and depending on the sign of $(\vb{v} \vdot \vb{n})_e$,
 \begin{equation} \label{eq:quick_approximation}
 	\phi_e = 

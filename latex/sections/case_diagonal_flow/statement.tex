@@ -6,9 +6,9 @@ Let $L > 0$ be a constant and consider the square domain $\Omega = (0,L) \times
 generalized convection--diffusion equation
 \eqref{eq:cde_general_convection_diffusion_equation}, with no source term,
 constant density and constant diffusion coefficient, that is to say,
-\begin{equation} \label{eq:diagcase_statement_pde1}
+\begin{equation*}
 	\frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} = \Delta{\phi}
-\end{equation}
+\end{equation*}
 The following Dirichlet boundary conditions are prescribed:
 \begin{itemize}[topsep=0pt]
 	\item $\phi = \phi_\text{low}$ on $C_1 = [0,L) \times \{ 0 \} \cup \{ L \}
@@ -18,8 +18,8 @@ The following Dirichlet boundary conditions are prescribed:
 \end{itemize}
 Notice that $C_1, \ C_2 \subset \real^2$ constitute a partition of the boundary
 of $\Omega$. In order to encode the boundary conditions more easily, we define
-the function $g \colon \Omega \rightarrow \real$ in the following way:
-\begin{equation}
+the function $g \colon \partial\Omega \rightarrow \real$ in the following way:
+\begin{equation*}
 	g(x,y) =
 	\left\{
 	\begin{aligned}
@@ -27,24 +27,16 @@ the function $g \colon \Omega \rightarrow \real$ in the following way:
 		&\phi_\text{high} 	& &\text{if } (x,y) \in C_2 \\
 	\end{aligned}
 	\right.
-\end{equation}
+\end{equation*}
 The velocity field is $\vb{v} = v_0 \cos(\alpha) \vb{i} + v_0 \sin(\alpha)
 \vb{j}$ with $v_0 > 0$ constant and $\alpha = \pi / 4$, whence
-% \begin{align}
-% 	\frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} = 
-% 	\frac{\rho v_0 \cos(\alpha)}{\Gamma} \left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\} = 
-% 	\underbrace{\frac{\cos(\alpha)}{L}}_{\beta} 
-% 	\underbrace{\frac{\rho v_0 L}{\Gamma}}_{\peclet} 
-% 	\left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\} = 
-% 	\beta \, \peclet \left\{ \pdv{\phi}{x} + \pdv{\phi}{y} \right\}
-% \end{align}
-\begin{align}
+\begin{equation*}
 	\frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} = 
 	\frac{\rho v_0 \cos(\alpha)}{\Gamma} \left( \phi_x + \phi_y \right) = 
 	\underbrace{\frac{\cos(\alpha)}{L}}_{\beta} 
 	\underbrace{\frac{\rho v_0 L}{\Gamma}}_{\peclet} \left( \phi_x + \phi_y \right) = 
 	\left( \phi_x + \phi_y \right) \beta \, \peclet 
-\end{align}
+\end{equation*}
 The resulting Cauchy problem is gathered in
 \eqref{eq:diagonal_case_cauchy_problem} and summarized in figure
 \ref{fig:diagonal_case_cauchy_problem}.

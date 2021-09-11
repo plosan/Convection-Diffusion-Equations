@@ -3,9 +3,9 @@
 The exponential difference scheme assumes a distribution for $\phi$ based on the
 steady 2--dimensional generalized convection--diffusion equation with no source
 term, that is to say,
-\begin{equation}
+\begin{equation*}
 	\frac{\dd}{\dd{x}} (\rho u \phi) = \frac{\dd}{\dd{x}} \left( \Gamma \frac{\dd{\phi}}{\dd{x}} \right)
-\end{equation}
+\end{equation*}
 So as to ease the
 study, $\rho u$ and $\Gamma$ are assumed to be constant. Thereby the initial
 value problem obtained is
@@ -28,11 +28,11 @@ to theorem \ref{eq:linear_ode_system}, and is given by
 \end{equation}
 Péclet's number is defined as the ratio between of strengths of convection
 and diffusion \cite{patankar2008numerical},
-\begin{equation}
+\begin{equation*}
 	\peclet = 
 	\frac{\text{convection transport rate}}{\text{diffusion transport rate}} = 
 	\frac{\rho u L}{\Gamma}
-\end{equation}
+\end{equation*}
 where $L$ is a characteristic length of the problem. Taking $d_{PE}$ as characteristic length and evaluating
 \eqref{eq:eds_ivp_solution_1} at $x = x_e$, the approximation of $\phi_e$ given
 by EDS in terms of Péclet's number is written as
@@ -40,19 +40,3 @@ by EDS in terms of Péclet's number is written as
 	\phi_e - \phi_P = 
 	\frac{e^{\peclet_e \frac{d_{Pe}}{d_{PE}}} - 1}{e^{\peclet_e} - 1} (\phi_E - \phi_P)
 \end{equation}
-% The extension of \eqref{eq:eds_e} to the face $f$ is done by taking $d_{PF}$ as
-% characteristic length, that is, if $f = w$, then the characteristic length is
-% $d_{PW}$. Thereby EDS gives the following face values:
-% \begin{align}
-% 	\phi_w &= 
-% 	\left( 1 - \frac{e^{\peclet_w \frac{d_{Ww}}{d_{PW}}} - 1}{e^{\peclet_w} - 1} \right)
-% 	 \phi_W + 
-% 	\frac{e^{\peclet_w \frac{d_{Ww}}{d_{PW}}} - 1}{e^{\peclet_w} - 1} \phi_P \\
-% 	\phi_n - \phi_P &= 
-% 	\frac{e^{\peclet_n \frac{d_{Pn}}{d_{PN}}} - 1}{e^{\peclet_n} - 1} (\phi_N - \phi_P) \\
-% 	\phi_s &= 
-% 	\left( 1 - \frac{e^{\peclet_s \frac{d_{Ss}}{d_{PS}}} - 1}{e^{\peclet_s} - 1} \right)
-% 	\phi_S + 
-% 	\frac{e^{\peclet_s \frac{d_{Ss}}{d_{PS}}} - 1}{e^{\peclet_s} - 1} \phi_P
-% 	\label{eq:eds_s}	
-% \end{align}

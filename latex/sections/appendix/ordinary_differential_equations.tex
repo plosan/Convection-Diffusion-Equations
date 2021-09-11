@@ -1,14 +1,16 @@
 
 \section{Ordinary Differential Equations}
 
-In this section we present a central theorem in basic Ordinary differential
+In this appendix we present a central theorem in basic Ordinary differential
 equations (ODE) theory regarding the existence and uniqueness of solution to
-initial value problems involving ODEs. 
+initial value problems involving ODEs. Later this theorem is particularized to
+the case of linear ODEs. Finally it is shown that any linear ODE of order $n$
+can be rewritten as a linear system of ODEs.
 
 Recall that an ordinary differential equation is an equation
-\begin{equation}
+\begin{equation*}
 	g(t, x(t), x'(t), \ldots, x^{(n)}(t)) = 0
-\end{equation}
+\end{equation*}
 where the unknown $x(t) = (x_1(t), \ldots, x_m(t))^\top$ is a function of $m$
 components and a variable $t \in \real$, $x' = \dfrac{\dd{x}}{\dd{t}}$ and $g(t,
 y_1, \ldots, y_{n+1})$ with $y_1, \ldots, y_{n+1} \in \real^m$ is a function of
@@ -18,32 +20,31 @@ $1 + m(n+1)$ variables.
 
 We begin with the definition of a Lipschitz function:
 
-\begin{definition}
+\begin{definition*}
 	A function $f \colon \Omega \subset \real^n \rightarrow \real^m$ is said to
 	be Lipschitz or Lipschitz continuous if there exists a constant $L$ such
 	that
-	\begin{equation}
+	\begin{equation*}
 		\norm{f(x) - f(y)} \leq L \norm{x - y}
-	\end{equation}
+	\end{equation*}
 	for every $x, y \in \Omega$. The constant $L$ is called the
 	Lipschitz constant of $f$ \cite{salsa2009pde}.
-\end{definition}
+\end{definition*}
 
 Every Lipschitz function on $\Omega$ is also a continuous function in the usual
 sense on $\Omega$. The converse is not true in general, and depends on $\Omega$.
 The Lipschitz continuity is actually a very restrictive condition, since it
 imposes that the function can grow at most as a linear function. 
 
-\begin{definition}
+\begin{definition*}
 	Let $(E, \norm{\cdot}_E)$ and $(F, \norm{\cdot}_F)$ be two finite
 	dimensional normed vector spaces and let $A \colon E \rightarrow F$ be a
 	linear mapping between them. The norm of $A$ is defined to be
-	\begin{equation}
-		\norm{A}
-		\coloneqq
+	\begin{equation*}
+		\norm{A} \coloneqq 
 		\sup{\left\{ \norm{A x}_F \mid x \in E, \ \norm{x}_E \leq 1 \right\}}
-	\end{equation}
-\end{definition}
+	\end{equation*}
+\end{definition*}
 
 \noindent
 It is a well known fact that $\norm{A}$ is finite. In some cases, proving that a
@@ -57,10 +58,10 @@ have the following theorems:
 	that the segment $\overline{xy} = \{ \lambda x + (1 -
 	\lambda) y \mid \lambda \in [0, 1] \}$ is contained in $\Omega$. Then
 	the following inequality holds:
-	\begin{equation}
+	\begin{equation*}
 		\norm{f(x) - f(y)} \leq \sup_{z \in 
 		\overline{xy}} \norm{D f(z)} \norm{x - y}
-	\end{equation}
+	\end{equation*}
 \end{theorem}
 \begin{proof}
 	See \cite{mazon2008calculo}, page 78.
@@ -73,14 +74,14 @@ have the following theorems:
 \end{theorem}
 \begin{proof}
 	The differential of $D f$, given by
-	\begin{equation}
+	\begin{equation*}
 		D f = 
 		\begin{pmatrix}
 			\pdv{f_1}{x_1} & \cdots & \pdv{f_1}{x_n} \\[6pt]
 			\vdots & \ddots & \vdots \\[6pt]
 			\pdv{f_m}{x_1} & \cdots & \pdv{f_m}{x_n} \\
 		\end{pmatrix}
-	\end{equation}
+	\end{equation*}
 	is a linear mapping $D f \colon \real^n \rightarrow \real^m$. Since $f$ is
 	$\mathcal{C}^1(\Omega)$ function, the partial derivatives $\pdv{f_1}{x_1},
 	\ldots, \pdv{f_m}{x_n}$ are continuous functions on $\Omega$. Moreover, the
@@ -89,11 +90,11 @@ have the following theorems:
 	$\norm{D f}$ is a continuous function on $\Omega$. By Weierstrass theorem,
 	$\norm{D f}$ reaches a maximum $M$ on $\Omega$. Applying theorem
 	\ref{teo:corollary_mean_value_theorem} we have 
-	\begin{equation}
+	\begin{equation*}
 		\norm{f(x) - f(y)} \leq \sup_{z \in 
 		\overline{xy}} \norm{D f(z)} \norm{x - y} \leq
 		M \norm{x - y}
-	\end{equation}
+	\end{equation*}
 	for all $x, y \in \Omega$, hence $f$ is Lipschitz on
 	$\overline{\Omega}$.
 \end{proof}
@@ -150,32 +151,29 @@ problems for linear ODEs.
 	Let $I \subset \real$ be an open interval and let $A \in \mathcal{C}(I,
 	\mathcal{M}_{n \times n}(\real))$ and $b \in \mathcal{C}(I, \real^n)$. Then
 	for all $(t_0, x_0) \in I \times \real^n$, the initial value problem
-	\begin{equation}
+	\begin{equation*}
 		\left\{
 			\begin{aligned}
 				&\dot{x} = A(t) x + b(t) & &t \in I \\
 				&\dot{x}(t_0) = x_0
 			\end{aligned}
 		\right.
-	\end{equation}
+	\end{equation*}
 	has a unique solution $\varphi \colon I \rightarrow \real^n$.
 \end{theorem}
-\begin{proof}
-	\cite{pau2020ode}
-\end{proof}
 
 In order for theorem \ref{teo:linear_ode} to be useful for the project, we
 shall show that any $n$--th order linear ODE
-\begin{equation}
+\begin{equation*}
 	x^{(n)} + a_{n-1}(t) \, x^{(n-1)} + \cdots + a_1(t) \, x' + a_0(t) \, x = b(t) 
-\end{equation}
+\end{equation*}
 can be casted into a linear system of ODEs such as \eqref{eq:linear_ode}. We
 define the functions
-\begin{equation}
+\begin{equation*}
 	y_1 = x, \ y_2 = x', \ldots, \ y_{n-1} = x^{(n-2)}, \ y_n = x^{(n-1)}
-\end{equation}
+\end{equation*}
 thus
-\begin{equation}
+\begin{equation*}
 	\left\{
 		\begin{aligned}
 			y_1' &= x' = y_2 \\
@@ -186,7 +184,7 @@ thus
 			&= -a_0(t) \, y_1 - a_1(t) \, y_2 - \cdots - a_{n-1}(t) \, y_n + b(t)
 		\end{aligned}
 	\right.
-\end{equation}
+\end{equation*}
 which in matrix form is rewritten as:
 \begin{equation} \label{eq:linear_ode_system}
 	\begin{pmatrix}

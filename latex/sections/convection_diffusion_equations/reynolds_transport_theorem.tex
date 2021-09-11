@@ -12,9 +12,9 @@ volume $U(t) = [a(t), b(t)]$ that depends upon time. This situation is picture
 in figure \ref{fig:reynolds_transport_theorem_leibniz_rule}. The total ammount
 of magnitude $f$ in the control volume at time $t$, which we will denote by
 $\mathcal{F}(t)$, is given by
-\begin{equation}
+\begin{equation*}
 	\mathcal{F}(t) = \int_{a(t)}^{b(t)} f(x,t) \dd{x}
-\end{equation}
+\end{equation*}
 and its rate of variation 
 \begin{equation} \label{eq:reynolds_transport_theorem_motivation}
 	\frac{\dd}{\dd{t}} \mathcal{F}(t) = 
@@ -59,23 +59,23 @@ the case. Here is where Leibniz integral rule comes into play:
 	functions with continuous derivative. Let $f \colon U \times I \rightarrow
 	\real$, $(x,t) \mapsto f(x,t)$ be a differentiable function such that
 	$\pdv{f}{t}$ is also continuous. Then for all $t \in (t_1, t_2)$,
-	\begin{equation} \label{eq:leibniz_rule}
+	\begin{equation*}
 		\frac{\dd}{\dd{t}} \int_{a(t)}^{b(t)} f(x,t) \dd{x} = 
 		\int_{a(t)}^{b(t)} \pdv{f}{t}(x,t) \dd{x} + f(b(t),t) b'(t) - f(a(t),t) a'(t)
-	\end{equation}
+	\end{equation*}
 \end{theorem}
 \begin{proof}
-	See \cite{kaplan2002advanced}.
+	See \cite{kaplan2002advanced}, Chap. 4, pg. 253--256.
 \end{proof}
 
 \noindent
 Consider the more general case where we have a fluid in $n$--dimensional space
 $\real^n$ and magnitude $f = f(x,t)$ defined on a control volume $\cvt \subset
 \real^n$. The total ammount of $f$ on $\cv{}$ at time $t$ and its variation are given by similar formulas,
-\begin{equation}
+\begin{equation*}
 	\mathcal{F}(t) = \int_\cvt f(x,t) \dd{x}, \quad
 	\frac{\dd}{\dd{t}} \mathcal{F}(t) = \frac{\dd}{\dd{t}} \int_\cvt f(x,t) \dd{x}
-\end{equation}
+\end{equation*}
 however now computing the derivative might be impracticable. In this case we
 have Reynolds Transport Theorem:
 
@@ -85,11 +85,11 @@ have Reynolds Transport Theorem:
 	\subset U$ for all $t \in I = [0, T]$ with $T > 0$. Let $\cs{}(t) = \partial
 	\cv{}(t)$ be the boundary of $\cv{}(t)$ and let $F \in \mathcal{C}^1(U
 	\times I, \real)$ be a scalar field. Then for all $t \in I$,
-	\begin{equation} \label{eq:reynolds_transport_theorem}
+	\begin{equation*}
 		\frac{\dd}{\dd{t}} \int_\cvt F(x, t) \dd{x} = 
 		\int_\cvt \frac{\partial F}{\partial t} (x, t) \dd{x} + 
 		\int_\cst F(x, t) \vb{b} \vdot \vb{n} \dd{S}
-	\end{equation}
+	\end{equation*}
 	where $\vb{b} \colon \cs{}(t) \rightarrow \real^n$ is the local velocity of
 	the control surface.
 \end{theorem}
