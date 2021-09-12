@@ -1,6 +1,57 @@
 
 \subsection{Analytical solution}
 
+Before going into the properties and the analytical solution to certain
+boundary--value problems related to the diagonal flow case, a question that
+arises naturally is the following: why shall we bother about the properties of a
+problem analytically when we can solve it numerically? There exists two reasons:
+\begin{itemize}
+	\item The properties of a certain partial differential equation dictate what
+	computational methods are suitable to solve it. For instance, consider
+	\begin{equation} \label{eq:heat_problem_example}
+		\begin{aligned}
+			\left\{
+				\begin{aligned}
+					u_t - u_{xx} &= 0 & &\text{in } \real \times (0,\infty) \\
+					u &= g & &\text{on } \real \times \{ t = 0 \}
+				\end{aligned}
+			\right.
+		\end{aligned}
+	\end{equation}
+	\begin{equation} \label{eq:wave_problem_example}
+		\begin{aligned}
+			\left\{
+				\begin{aligned}
+					u_{tt} - u_{xx} &= 0 & &\text{in } \real \times \real \\
+					u &= d & &\text{on } \real \times \{ t = 0 \} \\
+					u_t &= h & &\text{on } \real \times \{ t = 0 \}
+				\end{aligned}
+			\right.
+		\end{aligned}
+	\end{equation}
+	where $g, d, h \colon \real \to \real$ are given functions and $u = u(x,t)$
+	is the unknown. Problems \eqref{eq:heat_problem_example} and
+	\eqref{eq:wave_problem_example} are the typical diffusion problem and wave
+	equation problem on the real line. If $g$ is a continuous function, it is
+	widely known that the solution to \eqref{eq:heat_problem_example} is a
+	$\mathcal{C}^\infty(\real \times (0,\infty))$, but in general it is only
+	defined for positive times. Therefore the diffusion equation has a
+	regularizing effect on the initial condition $g$. Now assume $d \in
+	\mathcal{C}^2(\real)$ and $h \in \mathcal{C}^1(\real)$. Then the solution to
+	\eqref{eq:wave_problem_example} is a $\mathcal{C}^2(\real \times \real)$,
+	hence the wave equation does no make the initial conditions smoother, but is
+	defined both for positive and negative times. Intuitively, the enormous
+	differences between the properties of problems
+	\eqref{eq:heat_problem_example} and \eqref{eq:wave_problem_example} should
+	warn that different numerical methods should be used to solve them.
+	
+	\item Boundary--value problems and initial--value problems which are not
+	well--posed might have more than one solution in a certain sense that must
+	be specified. Hence if a problem with no unique solution is solved
+	numerically, it is uncertain what solution is obtained and whether it has
+	physical meaning.
+\end{itemize}
+
 As we have previously seen, Péclet's number is defined as
 \begin{equation*}
 	\peclet = 
@@ -14,7 +65,7 @@ field. Since no more factors intervene on the PDE, this tells us that the
 behaviour of the solution will depend greatly on Peclet's number. 
 
 \input{sections/case_diagonal_flow/analytical_solution/Pe_inf_classical.tex}
-\input{sections/case_diagonal_flow/analytical_solution/Pe_inf_weak.tex}
+% \input{sections/case_diagonal_flow/analytical_solution/Pe_inf_weak.tex}
 \input{sections/case_diagonal_flow/analytical_solution/Pe_fin_classical.tex}
 \input{sections/case_diagonal_flow/analytical_solution/Pe_fin_weak.tex}
 

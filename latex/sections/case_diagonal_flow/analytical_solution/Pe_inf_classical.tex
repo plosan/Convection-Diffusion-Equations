@@ -365,6 +365,27 @@ the segment $\{ x - y = 0 \} \cap \overline{\Omega}$ thus it cannot be a
 differentiable function, implying that function \eqref{eq:diag_inf_pe_solution}
 is not a classical solution. This could be warned from the beginning, since any
 function satisfying the boundary condition of problem
-\eqref{eq:diagonal_case_cauchy_problem_infinite_peclet} is not continuous at
+ is not continuous at
 $(0,0)$.
+
+The fact that a classical solution does not exist in the case of
+$\phi_\text{low} < \phi_\text{high}$ is not exclusive of problem
+\eqref{eq:diagonal_case_cauchy_problem_infinite_peclet}. The method of
+characteristics in some problems yields solutions that are not smooth
+\cite{evans1998pde}. In order to solve this problem, there exists a theory that
+studies a weaker notion of solution to initial value problems involving scalar
+conservation laws
+\begin{equation*}
+	\left\{
+		\begin{aligned}
+			u_t + F(u)_x &= 0 & &\text{in } \real \times (0,\infty) \\
+			u &= g & &\text{on } \real \times \{ t = 0 \}
+		\end{aligned}
+	\right.
+\end{equation*}
+where $F \colon \real \to \real$ and $g \colon \real \to \real$ are given and $u
+\colon \real \times [0,\infty)$ is the unknown function. Nonetheless we will not
+explore this possibility. The interested reader can refer to section 3.4 of
+Lawrence C. Evan's excellent book ``Partial Differential Equations'' \cite{evans1998pde}.
+
 

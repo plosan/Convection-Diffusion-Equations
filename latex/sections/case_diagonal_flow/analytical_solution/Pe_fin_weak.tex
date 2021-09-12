@@ -6,12 +6,13 @@ The theory that studies the existence and uniqueness of weak solutions to Cauchy
 problems involving second--order elliptic equations requires a prior knowledge
 in measure theory and functional analysis. The interested reader can consult
 appendix \ref{ap:measure_theory} for a quick reference in some basic concepts of
-measure theory. We will not introduce functional analysis concepts in order not
-to complicate the exposition needlessly. Rather than focusing on problem
+measure theory and the construction of $L^p$ spaces, as well as Chapter 5 from
+Lawrence C. Evans' book ``Partial Differential Equations'' \cite{evans1998pde}.
+We will not introduce functional analysis concepts in order not to complicate
+the exposition needlessly. Rather than focusing on problem
 \eqref{eq:diagonal_case_cauchy_problem}, we shall study the theory for a general
 second--order elliptic equation and then particularize to our case. The
-reference for this subsection is Lawrence C. Evans' excellent book on Partial
-Differential Equations \cite{evans1998pde}, in particular chapter 6.
+reference for this subsection is Chapter 6 from Lawrence C. Evans' book.
 
 \subsubsection*{General theory for weak solutions}
 
@@ -198,6 +199,10 @@ here so as not to complicate the exposition. The interested reader can refer to
 \end{theorem}
 
 
+To finish with the general theory, we would like to know whether the solution of
+the elliptic PDE $L u = f$ is of class $\mathcal{C}^k(\Omega)$ for some $k \geq
+1$ or $k = \infty$. The following is Theorem 3 from section 6.3 of Evan's book.
+
 \begin{theorem}[Infinite differentiability in the interior] \label{teo:infinite_differentiability_interior}
 	Assume
 	\[
@@ -260,7 +265,7 @@ Now we shall transform the boundary--value problem
 \eqref{eq:second_order_elliptic_problem} is homogeneous, \ie $u = 0$ on
 $\partial U$, whilst in \eqref{eq:diagonal_case_cauchy_problem} this is not
 true. Assume $\phi$ is a weak solution to
-\eqref{eq:diagonal_case_cauchy_problem}, then $\tilde{\phi} = \phi - g$ is a solution to
+\eqref{eq:diagonal_case_cauchy_problem}. Intuitively $\tilde{\phi} = \phi - g$ should be a solution to
 \begin{equation} \label{eq:weak_solution_pde_4}
 	\left\{
 		\begin{aligned}
@@ -269,22 +274,30 @@ true. Assume $\phi$ is a weak solution to
 		\end{aligned}
 	\right.
 \end{equation}
-since $L \tilde{\phi} = L \phi - L g = L \phi$.
-
-\begin{remark*}
-	Notice that weak solutions given by theorem \eqref{teo:weak_solution} are functions 
-\end{remark*}
-
-By theorem \ref{teo:weak_solution}, problem \eqref{eq:weak_solution_pde_4} has a
-weak solution $u \in H_0^1(\Omega)$. Nonetheless, we cannot specify whether
-there is unique solution or not due to dichotomy
-\ref{item:alpha}--\ref{item:beta}, which is known as the Fredholm alternative.
-
-Since $H_0^1(\Omega)$ is the closure of $\mathcal{C}_c^\infty(\Omega)$ in $H^1(\Omega)$, it is either
+since $L \tilde{\phi} = L \phi - L g = L \phi$. Nevertheless, it is not clear in
+what sense the function $\tilde{\phi}$ satisfies the boundary conditions on
+$\partial \Omega$. Since $\tilde{\phi} \in H^1(\Omega) \subset L^2(\Omega)$,
+$\tilde{\phi}$ is defined almost everywhere on $\overline{\Omega}$. The set
+$\partial \Omega$ has 2--dimensional Lebesgue measure zero, so $\tilde{\phi}$
+might not be defined on $\partial \Omega$. For boundaries of class
+$\mathcal{C}^1$, trace operators are a solution for this problem. However
+$\partial \Omega$ is not $\mathcal{C}^1$, hence we cannot apply trace operators.
+Thus we shall settle for point \ref{item:beta}, \ie there exists a weak
+solution $\phi \in H_0^1(\Omega)$, $\phi \not\equiv 0$ of 
+\begin{equation*}
+	\left\{
+		\begin{aligned}
+			L \phi &= 0 & &\text{in } \Omega \\
+			\phi &= 0 	& &\text{on } \partial \Omega
+		\end{aligned}
+	\right.
+\end{equation*}
+although we cannot say whether $\phi$ is unique or not. Since $H_0^1(\Omega)$ is
+the closure of $\mathcal{C}_c^\infty(\Omega)$ in $H^1(\Omega)$, $\phi$ is either
 \begin{itemize}[topsep=0pt]
-	\item a function $u \in \mathcal{C}_c^\infty(\Omega) \subset H^1(\Omega)$ or
-	\item a function $u \in H^1(\Omega)$ which is a limit of a Cauchy sequence
-	$\{ u_k \}_{k \geq 1} \subset \mathcal{C}_c^\infty(\Omega)$.
+	\item a function $\phi \in \mathcal{C}_c^\infty(\Omega) \subset H^1(\Omega)$ or
+	\item a function $\phi \in H^1(\Omega)$ which is a limit of a Cauchy sequence
+	$\{\phi_k \}_{k \geq 1} \subset \mathcal{C}_c^\infty(\Omega)$.
 \end{itemize}
-In both cases $u \in H^1(\Omega)$. By means of theorem
-\ref{teo:infinite_differentiability_interior}, $u \in \mathcal{C}^\infty(\Omega)$.
+In either case $\phi \in H^1(\Omega)$, thus by theorem
+\ref{teo:infinite_differentiability_interior}, $\phi$ is infinitely differentiable in $\Omega$.

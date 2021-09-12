@@ -1,2 +1,34 @@
 
 \section{Introduction}
+
+When we study a fluid under certain hypothesis, its thermophysical properties, namely the density
+$(\rho)$, the velocity field $(\vb{v})$, the temperature $(T)$ and the
+concentration of a pollutant $(Y_k)$, are governed by the following system of conservation laws:
+\begin{gather}
+    \pdv{\rho}{t} + \div(\rho \vb{v}) = 0 \label{eq:cont} \\
+    \pdv{(\rho \vb{v})}{t} + \div(\rho \vb{v} \otimes \vb{v}) = 
+	\div(\mu \grad{\vb{v}}) + 
+    \left\{ \div(\vb{\tau - \mu \grad{\vb{v}}}) - \grad{p} + \rho \vb{g} \right\} \label{eq:vel}\\
+	\pdv{(\rho T)}{t} + \div(\rho \vb{v} T) = 
+	\div(\frac{\lambda}{c_v} \grad{T}) + 
+	\left\{ \frac{\vb{\tau} \circ \grad{\vb{v}} - \div{\dot{\vb{q}}^R} - p \div{\vb{v}}}{c_v}\right\} \\
+	\pdv{(\rho Y_k)}{t} + \div(\rho \vb{v} Y_k) = 
+	\div(\rho D_{km} \grad{Y_k}) + \left\{ \dot{\omega}_k \right\} \label{eq:conc}
+\end{gather}
+Equation \eqref{eq:cont} is the mass--conservation or continuity equation,
+whilst equations \eqref{eq:vel} through \eqref{eq:conc} are known as the
+convection--diffusion equations. In this project we study these equations and
+their numerical resolution for two special problems.
+
+In section \ref{sec:the_convection_diffusion_equations} we rigorously derive the
+continuity and the general convection--diffusion equation. We explain their
+numerical resolution and give a solving algorithm in the case of cartesian grid
+on a rectangular domain in section \ref{sec:numerical_study}. Finally in
+sections \ref{sec:diagonal_flow_case} and \ref{sec:smith_hutton_case} we treat
+two steady state problems: the diagonal flow case and the Smith--Hutton case. We
+study the analytical solutions of both problems for special values of Péclet's
+number, providing existence and uniqueness theorems when possible, and we solve
+them numerically in different situations. 
+
+
+

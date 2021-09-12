@@ -18,7 +18,7 @@ On the boundary of $\Omega$ the following conditions are prescribed:
 	\item $\phi = 1 - \tanh(10)$ on $C_2 = \left( \{ -L \} \times (0,L) \right)
 	\cup \left( [-L,L] \times \{ L \} \right) \cup \left( \{ L \} \times [0,L)
 	\right)$.
-	\item $\dfrac{\partial \phi}{\partial y} = 0$ on $C_3 = (0,L) \times \{ 0
+	\item $\phi_y = 0$ on $C_3 = (0,L) \times \{ 0
 	\}$ (outlet flow).
 \end{itemize}
 Notice that the curves $C_1, C_2, C_3$ give a partition of $\partial \Omega$. To
@@ -39,11 +39,11 @@ summarized in figure \ref{fig:smith_hutton_cauchy_problem}.
 \begin{equation} \label{eq:smith_hutton_cauchy_problem} 
 	\left\{
 	\begin{aligned}
-		&\Delta \phi - \frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} = 0 &
+		\Delta \phi - \frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} &= 0 &
 		&\text{in } \Omega \\
-		&\phi = g & 
+		\phi &= g & 
 		&\text{on } C_1 \cup C_2 \\
-		&\frac{\partial \phi}{\partial y} = 0 & 
+		\phi_y &= 0 & 
 		&\text{on } C_3
 	\end{aligned}
 	\right.

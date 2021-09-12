@@ -42,7 +42,7 @@ Equivalently, the streamlines are the curves with normal vector $\grad{\psi}$ at
 every point. In order to find the streamlines, we can specify an initial
 condition and then pose the corresponding initial value problem. Consider the
 mapping $f \colon \real^2 \longrightarrow \real^2$ defined by
-\begin{equation*}
+\begin{equation} \label{eq:smith_hutton_velocity_mapping}
 	f(x,y) = 
 	\begin{pmatrix}
 		u(x,y) \\ v(x,y)
@@ -50,7 +50,7 @@ mapping $f \colon \real^2 \longrightarrow \real^2$ defined by
 	\begin{pmatrix}
 		2 y (1 - x^2) \\ - 2 x (1 - y^2)
 	\end{pmatrix}
-\end{equation*}
+\end{equation}
 Then the initial value problem for a streamline with initial condition $(x_0,y_0) \in \overline{\Omega}$ is
 \begin{equation} \label{eq:vel_smith_hutton_ivp}
 	\left\{

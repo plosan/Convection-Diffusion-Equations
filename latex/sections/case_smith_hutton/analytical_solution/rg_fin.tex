@@ -1,3 +1,24 @@
 \subsubsection{Solution for \texorpdfstring{$0 \leq \rho / \Gamma <
 \infty$}{finite rho/Gamma quotient}}
 
+Recall that for $0 \leq \rho / \Gamma < \infty$, problem
+\eqref{eq:smith_hutton_cauchy_problem} is 
+\begin{equation*}
+	\left\{
+	\begin{aligned}
+		\Delta \phi - \frac{\rho}{\Gamma} \vb{v} \vdot \grad{\phi} &= 0 &
+		&\text{in } \Omega \\
+		\phi &= g & 
+		&\text{on } C_1 \cup C_2 \\
+		\phi_y &= 0 & 
+		&\text{on } C_3
+	\end{aligned}
+	\right.
+\end{equation*}
+As in section \ref{sec:diagonal_Pe_fin_weak}, the PDE is second--order linear
+elliptic equation, although in this case coefficients for $\phi_x$ and $\phi_y$
+are not constant. On the boundary $\partial \Omega$ we have both Dirichlet and
+Neumann boundary conditions. For this problem we cannot state any existence or
+uniqueness result for classical or weak solutions, since we have both Dirichlet
+and Neumann's boundary conditions on $\partial \Omega$, which implies we cannot
+apply the theory already presented in section \ref{sec:diagonal_Pe_fin_weak}.

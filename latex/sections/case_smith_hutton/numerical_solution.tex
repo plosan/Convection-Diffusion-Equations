@@ -3,7 +3,13 @@
 
 In this section we present the numerical solution to problem
 \eqref{eq:smith_hutton_cauchy_problem} for several values of the quotient $\rho
-/ \Gamma$. The characteristic length taken is $L = 1 \ \meter$. The density is
+/ \Gamma$. So as to solve the problem numerically, the same \CC code has been
+used as in the diagonal flow case only changing the boundary conditions and the
+velocity field. It can be consulted
+\href{https://github.com/plosan/convection_diffusion_equations}{here}.
+The plots shown in this section have been produced with gnuplot 5.4. 
+
+The characteristic length taken is $L = 1 \ \meter$. The density is
 kept constant at $\rho = 1000 \ \kilo\gram / \meter^3$ and the diffusion
 coefficient $\Gamma$ is varied. A uniform mesh has been used to discretize the
 domain, with $N_x = 201$ nodes in the $x$--axis and $N_y = 101$ nodes in the
