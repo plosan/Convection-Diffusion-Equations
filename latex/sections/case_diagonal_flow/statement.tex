@@ -18,13 +18,14 @@ The following Dirichlet boundary conditions are prescribed:
 \end{itemize}
 Notice that $C_1, \ C_2 \subset \real^2$ constitute a partition of the boundary
 of $\Omega$. In order to encode the boundary conditions more easily, we define
-the function $g \colon \partial\Omega \rightarrow \real$ in the following way:
+the function $g \colon \overline{\Omega} \rightarrow \real$ in the following way:
 \begin{equation*}
 	g(x,y) =
 	\left\{
 	\begin{aligned}
 		&\phi_\text{low} 	& &\text{if } (x,y) \in C_1 \\
 		&\phi_\text{high} 	& &\text{if } (x,y) \in C_2 \\
+		&0					& &\text{if } (x,y) \in \Omega
 	\end{aligned}
 	\right.
 \end{equation*}
@@ -71,7 +72,7 @@ The resulting Cauchy problem is gathered in
 		\path[-latex] (rbc) edge[bend left] node [left] {} (rb);
 		% Top boundary condition
 		\node[inner sep=0pt] at ({0.5*\L},\L) (tb) {};
-		\node[] at ({0.5*\L+1},{\L+1}) (tbc) {$\phi = \phi_\text{high}$};
+		\node[] at ({0.5*\L+1},{\L+0.5}) (tbc) {$\phi = \phi_\text{high}$};
 		\path[-latex] (tbc) edge[bend right] node [left] {} (tb);
 		% Left boundary condition
 		\node[inner sep=0pt] at (0,{0.5*\L}) (lb) {};
@@ -79,7 +80,7 @@ The resulting Cauchy problem is gathered in
 		\path[-latex] (lbc) edge[bend left] node [left] {} (lb);
 		% Bottom boundary condition
 		\node[inner sep=0pt] at ({0.5*\L},0) (bb) {};
-		\node[] at ({0.5*\L-1},-1) (bbc) {$\phi = \phi_\text{low}$};
+		\node[] at ({0.5*\L-1},-0.5) (bbc) {$\phi = \phi_\text{low}$};
 		\path[-latex] (bbc) edge[bend right] node [left] {} (bb);
 		% PDE
 		\node[] at ({0.5*\L},{0.5*\L}) 

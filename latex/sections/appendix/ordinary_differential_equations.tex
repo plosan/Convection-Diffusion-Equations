@@ -18,8 +18,33 @@ $1 + m(n+1)$ variables.
 
 \subsection{General theory}
 
-We begin with the definition of a Lipschitz function:
+To start, we shall present the general initial value problem for first order
+equations and a result which gives a formula to solve it. Let $U \subset \real
+\times \real^n$ be an open set and $f \colon U \rightarrow \real^n$ a function.
+Given $(t_0, x_0) \in U$ consider the initial value problem
+\begin{equation} \label{eq:general_ode_ivp}
+	\left\{
+		\begin{aligned}
+			\dot{x} &= f(t,x) \\
+			x(t_0) &= x_0
+		\end{aligned}
+	\right.
+\end{equation}
+\noindent
+The following proposition due to \cite{pau2020ode}, gives a formula to solve
+problem \eqref{eq:general_ode_ivp}:
+\begin{prop} \label{eq:ode_general_formula}
+	Let $U \subset \real \times \real^n$ be an open set, $f \colon U \rightarrow
+	\real^n$ a continuous function. Let $I \subset \real$ be an open interval
+	and $x_0 \in \real^n$ such that $(t_0, x_0) \in U$. A function $x \colon I
+	\rightarrow \real^n$ is a solution to \eqref{eq:general_ode_ivp} if and only
+	if it is continuous and satisfies
+	\begin{equation*}
+		x(t) = x_0 + \int_{t_0}^t f(s,x(s)) \dd{s}, \quad t \in I
+	\end{equation*}
+\end{prop}
 
+Now we can begin with the existence and uniqueness theorem. 
 \begin{definition*}
 	A function $f \colon \Omega \subset \real^n \rightarrow \real^m$ is said to
 	be Lipschitz or Lipschitz continuous if there exists a constant $L$ such
@@ -73,7 +98,7 @@ have the following theorems:
 	$f$ is Lipschitz in $\Omega$.
 \end{theorem}
 \begin{proof}
-	The differential of $D f$, given by
+	The differential of $f$, given by
 	\begin{equation*}
 		D f = 
 		\begin{pmatrix}

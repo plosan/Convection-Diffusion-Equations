@@ -198,7 +198,7 @@ here so as not to complicate the exposition. The interested reader can refer to
 \end{theorem}
 
 
-\begin{theorem}[Infinite differentiability in the interior]
+\begin{theorem}[Infinite differentiability in the interior] \label{teo:infinite_differentiability_interior}
 	Assume
 	\[
 		a^{ij}, \, b^i, \, c \in \mathcal{C}^\infty(U) \quad 
@@ -244,7 +244,7 @@ therefore the operator $L$ encoding \eqref{eq:weak_solution_pde_1} is simply
 	-\phi_{xx} - \phi_{yy} + (\phi_x + \phi_y) \beta \, \peclet 
 \end{equation}
 where $x_1 \equiv x, \, x_2 \equiv y$. Moreover, since the functions in
-\eqref{eq:weak_solution_pde_2} are constant, these belong to $L^\infty(\Omega)$
+\eqref{eq:weak_solution_pde_2} are constant, these belong to $L^\infty(\Omega) \cap \mathcal{C}^\infty(\Omega)$
 and the divergence form and non--divergence form of
 \eqref{eq:weak_solution_pde_3} are the same. It is obvious that $L$ is
 symmetric, as $a^{12} = a^{21} = 0$, and it is uniformly elliptic with $\theta = 1$ as a result of
@@ -276,6 +276,15 @@ since $L \tilde{\phi} = L \phi - L g = L \phi$.
 \end{remark*}
 
 By theorem \ref{teo:weak_solution}, problem \eqref{eq:weak_solution_pde_4} has a
-weak solution. Nonetheless, we cannot specify whether there is unique solution
-or not due to dichotomy \ref{item:alpha}--\ref{item:beta}, which is known as the
-Fredholm alternative.
+weak solution $u \in H_0^1(\Omega)$. Nonetheless, we cannot specify whether
+there is unique solution or not due to dichotomy
+\ref{item:alpha}--\ref{item:beta}, which is known as the Fredholm alternative.
+
+Since $H_0^1(\Omega)$ is the closure of $\mathcal{C}_c^\infty(\Omega)$ in $H^1(\Omega)$, it is either
+\begin{itemize}[topsep=0pt]
+	\item a function $u \in \mathcal{C}_c^\infty(\Omega) \subset H^1(\Omega)$ or
+	\item a function $u \in H^1(\Omega)$ which is a limit of a Cauchy sequence
+	$\{ u_k \}_{k \geq 1} \subset \mathcal{C}_c^\infty(\Omega)$.
+\end{itemize}
+In both cases $u \in H^1(\Omega)$. By means of theorem
+\ref{teo:infinite_differentiability_interior}, $u \in \mathcal{C}^\infty(\Omega)$.

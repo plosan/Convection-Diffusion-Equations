@@ -1,10 +1,10 @@
 \subsubsection{Classical solution for \texorpdfstring{$\rho / \Gamma =
 \infty$}{infinite rho/Gamma quotient}}
 
-As in the diagonal case, when $\rho / \Gamma = \infty$ we have $\peclet =
-\infty$. Dividing the PDE by Péclet's number results in the following transport
-problem:
-\begin{equation} \label{eq:smith_hutton_cauchy_problem_infinite_peclet} 
+We assume $L = 1 \ \meter$. As in the diagonal case, when $\rho / \Gamma =
+\infty$ we have $\peclet = \infty$. Dividing the PDE by Péclet's number results
+in the following transport problem:
+\begin{equation} \label{eq:smith_hutton_cauchy_problem_infinite_peclet_0} 
 	\left\{
 	\begin{aligned}
 		u(x,y) \phi_x + v(x,y) \phi_y &= 0 	& &\text{in } \Omega \\
@@ -13,12 +13,149 @@ problem:
 	\end{aligned}
 	\right.
 \end{equation}
-We shall follow the method of characteristics again in order to give a solution
-of problem \eqref{eq:smith_hutton_cauchy_problem_infinite_peclet}. However, we
-will be less rigorous and we will not check the boundary conditions nor the
-uniqueness. Let $I \subset \real$ be an open interval and let $h \colon I
-\subset \real \to \real^2$, $s \mapsto h(s) = (x(s), y(s))$ be a mapping
-satisfying the following:
+However, problem \eqref{eq:smith_hutton_cauchy_problem_infinite_peclet_0} is
+overdetermined due to Neumann's boundary condition on $C_3$, thus we shall consider problem
+\begin{equation} \label{eq:smith_hutton_cauchy_problem_infinite_peclet} 
+	\left\{
+	\begin{aligned}
+		u(x,y) \phi_x + v(x,y) \phi_y &= 0 	& &\text{in } \Omega \\
+		\phi &= g 							& &\text{on } C_1 \cup C_2
+	\end{aligned}
+	\right.
+\end{equation}
+
+In order to give a solution to
+\eqref{eq:smith_hutton_cauchy_problem_infinite_peclet} we will follow the method
+of characteristics again. Take $(x_0, y_0) \in \overline{\Omega}$ and consider a
+$\mathcal{C}^1$ mapping $\alpha(s) = (x(s), y(s))$ such that
+\begin{equation} \label{eq:smith_hutton_characteristics}
+	\left\{
+		\begin{aligned}
+			x' &= u(\alpha(s)) = 2 y (1 - x^2) 		& &x(0) = x_0 \\
+			y' &= v(\alpha(s)) = - 2 x (1 - y^2) 	& &y(0) = y_0 \\
+		\end{aligned}
+	\right.
+\end{equation}
+Consider the composition $h = \phi \circ \alpha$, which is well defined as long
+as $\alpha(s) \in \Omega$. Then
+\begin{multline*}
+	\frac{\dd}{\dd{s}} h(s) = 
+	\frac{\dd}{\dd{s}} \phi(x(s), y(s)) = 
+	\phi_x(x(s), y(s)) x'(s) + \phi_y(x(s), y(s)) y'(s) \\ =
+	\phi_x(x(s), y(s)) u(x(s), y(s)) + 
+	\phi_y(x(s), y(s)) v(x(s), y(s)) = 0
+\end{multline*}
+thus $\phi$ is constant on the curve given by $\alpha$. Problems
+\eqref{eq:vel_smith_hutton_ivp} and \eqref{eq:smith_hutton_characteristics} are
+the same, hence the characteristics and streamlines are the same curves.
+Applying proposition \eqref{prop:existence_uniqueness_streamlines}, the
+characteristic passing through $(x_0, y_0) \in \overline{\Omega}$ exists and is
+unique. As a result, two characteristic curves cannot intersect each other. In
+order to distinguish characteristics, we shall denote them by
+$\alpha(s;x_0,y_0)$. 
+
+So as to know the interval $I \subset \real$ where the solution
+$\alpha(s;x_0,y_0)$ is defined, we have the following proposition which relies
+on theorem \ref{teo:picard_lindelof}.
+
+\begin{prop} \label{prop:characteristics_extension}
+	The characteristic curve $\alpha(s;x_0,y_0)$ can be extended as
+	long as $\alpha(s;x_0,y_0) \in \overline{\Omega}$.
+\end{prop}
+\begin{proof}
+	Let $T > 0$ be a constant to be determined and consider the sets $U = [-2T,
+	2T] \times B((0,0), 5)$ and $V(x_0,y_0) = [0,T] \times
+	\overline{B((x_0,y_0), 3)}$. Observe that $V(x_0,y_0) \subsetneq U$ for all
+	$(x_0,y_0) \in \overline{\Omega}$. Since $f \in \mathcal{C}(\real^3)$, we
+	have $\norm{f} \in \mathcal{C}(\real^3)$, which implies $\norm{f} \in
+	\mathcal{C}(\overline{U})$. Moreover $\overline{U}$ is compact so $\norm{f}$
+	reaches a maximum on it that satisfies
+	\[
+	\sup_{(t,x,y) \in V(x_0,y_0)} \norm{f} \leq
+	\sup_{(t,x,y) \in \overline{U}} \norm{f} = 
+	\max_{(t,x,y) \in \overline{U}} \norm{f} = M	
+	\]
+	and serves as upper bound for all $V(x_0,y_0)$. Now take $T = \frac{3}{M}$.
+	By applying the Picard--Lindelöf theorem, we find that the solution exists
+	for $t \in \tilde{I} = [-\frac{3}{M}, \frac{3}{M}]$ and stays in
+	$\overline{B((x_0,y_0), 3)}$. Note that the maximum of the distances between
+	two points in $\overline{\Omega}$ is $\sqrt{5}$, thus $\overline{\Omega}
+	\subsetneq \overline{B((x_0,y_0), 3)}$ for any $(x_0,y_0) \in
+	\overline{\Omega}$. Now we ask whether the characteristic has exited
+	$\overline{\Omega}$ or not. If the characteristic has exited
+	$\overline{\Omega}$ then we stop extending it. Otherwise let $(\tilde{x}_0,
+	\tilde{y}_0) = \alpha(3/M; x_0, y_0)$ and consider the initial value problem
+	\[
+		\left\{
+			\begin{aligned}
+				x' &= u(\alpha(s)) = 2 y (1 - x^2) 		& &x(0) = \tilde{x}_0 \\
+				y' &= v(\alpha(s)) = - 2 x (1 - y^2) 	& &y(0) = \tilde{y}_0 \\
+			\end{aligned}
+		\right.
+	\]
+	Using the same argument above, we can extend the characteristic as desired.
+	The several curves that form the characteristic are $\mathcal{C}^1$ curves
+	and agree (both $\alpha$ and $\alpha'$) at the point where they meet, hence
+	the characteristic is a $\mathcal{C}^1$ curve and its parametrization is
+	defined on an interval $I \subset \real$.
+\end{proof}
+
+\noindent
+Finally the following proposition characterizes all the characteristic curves
+depending on $(x_0, y_0) \in \Omega$.
+
+\begin{prop}
+	Consider the initial value problem \eqref{eq:smith_hutton_characteristics}, then:
+	\begin{enumerateprop}
+		\item If $(x_0, y_0) \in \{ (0,0), \, (-1,1), \, (1,1) \}$, then
+		$\alpha$ is a constant mapping.
+		\item If $x_0 = -1$ and $y_0 \in [0, 1)$, then the image of $\alpha$ is
+		the curve $\{ - 1 \} \times [0, 1)$ and $y$ is a
+		strictly increasing function.
+		\item If $x_0 = 1$ and  $y_0 \in [0,1)$, then the image of $\alpha$ is
+		the curve $\{ 1 \} \times [0, 1)$ and $y$ is a strictly
+		decreasing function.
+		\item If $x_0 \in (-1,1)$ and $y_0 = 1$, then the image of $\alpha$ is
+		the curve $(-1,1) \times \{ 1 \}$ and $x$ is a strictly increasing function.
+		\item If $(x_0,y_0) \in \Omega$, the characteristic can be extended so
+		that the left end touches $(-1,0) \times \{ 0 \}$ and the right end touches $(0,1) \times \{ 0 \}$.
+	\end{enumerateprop}
+\end{prop}
+\begin{proof}
+	We will use extensively the following formula given by proposition \ref{eq:ode_general_formula}
+	\begin{equation*}
+		\alpha(s) = \alpha(0) + \int_0^s \alpha'(r) \dd{r}, \quad s \in I
+	\end{equation*}
+	or equivalently
+	\begin{equation*}
+		\left\{
+			\begin{aligned}
+				x(s) &= x(0) + \int_0^s x'(r) \dd{r} = 
+				x(0) + \int_0^s u(\alpha(r)) \dd{r} \\
+				y(s) &= y(0) + \int_0^s y'(r) \dd{r} = 
+				x(0) + \int_0^s v(\alpha(r)) \dd{r}
+			\end{aligned}
+			\quad \text{for } s \in I \\
+		\right.
+	\end{equation*}
+	where $I \subset \real$ is the interval given by proposition
+	\ref{prop:characteristics_extension}. We prove each point separately:
+	\begin{enumerateprop}
+		\item At every point we have $u = v = 0$, therefore the unique solution
+		to \eqref{eq:smith_hutton_characteristics} is $\alpha(s) = (x_0, y_0)$
+		for all $s \in I$.
+		\item We have $u = 0$ and $v > 0$ for each $y_0 \in [0,1)$ and $x_0 =
+		-1$. Therefore $x(s) = -1$ 
+	\end{enumerateprop}
+\end{proof}
+
+
+We shall follow the method of characteristics again in
+order to give a solution of problem
+\eqref{eq:smith_hutton_cauchy_problem_infinite_peclet}. However, we will be less
+rigorous and we will not check the boundary conditions nor the uniqueness. Let
+$I \subset \real$ be an open interval and let $h \colon I \subset \real \to
+\real^2$, $s \mapsto h(s) = (x(s), y(s))$ be a mapping satisfying the following:
 \begin{equation} \label{eq:smith_hutton_cauchy_problem_infinite_peclet_characteristics_1} 
 	\left\{
 	\begin{aligned}
