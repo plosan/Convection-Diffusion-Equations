@@ -1,8 +1,10 @@
 # Convection-Diffusion Equations
 
-The convection--diffusion equations is a set of conservation laws, constituted by the continuity equation <!-- $$ \frac{\partial \rho}{\partial t} + \nabla \cdot (\rho \mathbf{v}) = 0 $$ --> 
+The convection--diffusion equations is a set of conservation laws, constituted by the continuity equation 
 
-<div align="center"><img style="background: white;" src="svg\EbEpVE1iWW.svg"></div> and the general convection-diffusion equation <!-- $$ \rho \frac{\partial \phi}{\partial t} + \rho \mathbf{v} \cdot \nabla \phi = \nabla \cdot \left( \Gamma_\phi \nabla \phi \right) + \dot{s}_\phi $$ --> 
+<div align="center"><img style="background: white;" src="svg\EbEpVE1iWW.svg"></div> 
+
+and the general convection-diffusion equation
 
 <div align="center"><img style="background: white;" src="svg\bdqtaCekKX.svg"></div>
 
