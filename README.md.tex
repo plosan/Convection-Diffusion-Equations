@@ -22,3 +22,97 @@ instance the velocity field $\mathbf{v}$), the equation is $$\frac{\partial(\rho
 \nabla \cdot \left( \Gamma_\phi \nabla \phi \right) + \dot{s}_\phi$$ where
 $\otimes$ denotes the exterior product of two vectors.
 
+Notice that the GCDE for a scalar magnitude $\phi$ is ''combination'' of the linear transport equation 
+
+$$
+\frac{\partial \phi}{\partial t} + \mathbf{v} \cdot \nabla \phi = \dot{s}_\phi
+$$
+
+and the diffusion/heat equation
+
+$$
+\frac{\partial \phi}{\partial t} = \Delta \phi + \dot{s}_\phi
+$$
+
+Therefore it is expected that the solution to a boundary-value problem involving the GCDE, when it exists, shares properties with the solution to a linear transport problem and a diffusion problem.
+
+## Project outline
+
+The project focuses on solving the CDEs numerically following a finite volume approach. The problems considered always take place in rectangular domains, hence a cartesian mesh is suitable in order to solve them. The report is structured in the following way:
+
+1. Introduction: brief summary of the project.
+2. Convection-diffusion equations: rigorous derivation of the CDEs.
+3. Numerical study of the convection-diffusion equations: discretization of the CDEs in a rectangular domain discretized by means of a cartesian mesh. The algorithm to solve a general transient problem is also given.
+4. Diagonal flow case: numerical solution to a CDEs stationary state problem, taking place in a square domain with a flow in the diagonal diretion.
+5. Smith-Hutton case: numerical solution to a CDEs stationary state problem, taking place in a rectangular domain with a ''circular'' flow.
+6. Appendices: quick reference for some facts in Measure Theory, Ordinary Differential Equations and Numerical resolution of linear systems.
+
+A C++ code was developed in order to solve these problems numerically. 
+
+Hereinafter, $\rho$, $\Gamma$ are known constants, $\dot{s}_\phi = 0$ and $\mathbf{v}$ does not depend upon time. Under these hypothesis, the CDEs are
+
+$$
+\nabla \cdot \mathbf{v} = 0
+$$
+
+$$
+\frac{\rho}{\Gamma} \mathbf{v} \cdot \nabla \phi = \Delta \phi
+$$
+
+## Diagonal flow case
+
+Let $\phi_\text{low} < \phi_\text{high}$ be two given constants, and let $L > 0$ be a fixed length giving the square domain $\Omega = (0,L) \times (0,L)$. The velocity field is given by $\mathbf{v} = \frac{v_0}{\sqrt{2}} \mathbf{i} + \frac{v_0}{\sqrt{2}} \mathbf{j}$, with $v_0 > 0$ a known constant. The the CDE is
+
+$$
+\frac{\rho}{\Gamma} \mathbf{v} \cdot \nabla \phi = \frac{1}{\sqrt{2} L} \frac{\rho v_0 L}{\Gamma} \left( \frac{\partial \phi}{\partial x} + \frac{\partial \phi}{\partial y} \right) = \beta \, \mathrm{Pe} \left( \frac{\partial \phi}{\partial x} + \frac{\partial \phi}{\partial y} \right) = \Delta \phi
+$$
+
+where $\mathrm{Pe}$ is Péclet's number. Let $C_1 = [0,L) \times {0} \cup {L} \times [0,L)$ and $C_2 = {0} \times (0,L] \cup (0,L] \times {L}$ be two curves in $\partial \Omega$ and consider the function
+
+$$
+g(x,y) = 
+\left\{
+    \begin{aligned}
+        &\phi_\text{low} & &\text{if } (x,y) \in C_1 \\
+        &\phi_\text{high} & &\text{if } (x,y) \in C_2 \\
+        &0 & &\text{otherwise}
+    \end{aligned}
+\right.
+$$
+
+The diagonal flow case problem is the following boundary-value problem:
+
+$$
+\left\{
+    \begin{aligned} 
+        \Delta \phi - \left( \frac{\partial \phi}{\partial x} + \frac{\partial \phi}{\partial y} \right) \beta \, \mathrm{Pe} &= 0 & &\text{in } \Omega \\
+        \phi &= g & &\text{on } \partial \Omega
+    \end{aligned}
+\right.
+$$
+
+### Analytical study
+
+The boundary-value problem is studied for two values of $\mathrm{Pe}$:
+
+- For $\mathrm{Pe} = \infty$, the previous boundary-value problem becomes a transport problem. The analytical solution is found via the method of characteristics. However, it is not a solution in the classical sense. The weak solution is not studied.
+- For $\mathrm{Pe} \in [0,\infty)$, a second-order elliptic PDE is obtained. By means of energy methods in Sobolev spaces (explained in Chapter 6 of Lawrence C. Evan's excellent book ''Partial Differential Equations''), the existence of weak solution is proved, although it cannot be said whether it is unique or not. This solution turns out to be a $\mathcal{C}^\infty$ function in $\Omega$.
+
+### Numerical study
+
+For several values of Péclet's number in the range $[10^{-9}, 10^9]$, the numerical solution is computed using the aforementioned C++ code. 
+
+![Alt text](readme_images/diagonal_case_1.PNG?raw=true "Title")
+
+![Alt text](readme_images/diagonal_case_2.PNG?raw=true "Title")
+
+## Smith-Hutton case
+
+
+
+
+
+
+
+
+
