@@ -53,8 +53,8 @@ The project focuses on solving the CDEs numerically following a finite volume ap
 1. Introduction: brief summary of the project.
 2. Convection-diffusion equations: rigorous derivation of the CDEs.
 3. Numerical study of the convection-diffusion equations: discretization of the CDEs in a rectangular domain discretized by means of a cartesian mesh. The algorithm to solve a general transient problem is also given.
-4. Diagonal flow case: numerical solution to a CDEs stationary state problem, taking place in a square domain with a flow in the diagonal diretion.
-5. Smith-Hutton case: numerical solution to a CDEs stationary state problem, taking place in a rectangular domain with a ''circular'' flow.
+4. Diagonal flow case: numerical solution to a CDEs steady state problem, taking place in a square domain with a flow in the diagonal diretion.
+5. Smith-Hutton case: numerical solution to a CDEs steady state problem, taking place in a rectangular domain with a ''circular'' flow.
 6. Appendices: quick reference for some facts in Measure Theory, Ordinary Differential Equations and Numerical resolution of linear systems.
 
 A C++ code was developed in order to solve these problems numerically. 
@@ -127,6 +127,67 @@ For several values of Péclet's number in the range <!-- $[10^{-9}, 10^9]$ --> <
 ![Alt text](readme_images/diagonal_case_2.PNG?raw=true "Title")
 
 ## Smith-Hutton case
+
+Let <!-- $L > 0$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=L%20%3E%200"> be a fixed length and the domain <!-- $\Omega = (-L,L) \times (0,L)$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=%5COmega%20%3D%20(-L%2CL)%20%5Ctimes%20(0%2CL)">. Take the velocity field given by
+
+<!-- $$
+\mathbf{v} = 2 y (1 - x^2) \mathbf{i} - 2 x (1 - y^2) \mathbf{j}
+$$ --> 
+
+<div align="center"><img style="background: white;" src="https://render.githubusercontent.com/render/math?math=%5Cmathbf%7Bv%7D%20%3D%202%20y%20(1%20-%20x%5E2)%20%5Cmathbf%7Bi%7D%20-%202%20x%20(1%20-%20y%5E2)%20%5Cmathbf%7Bj%7D"></div>
+
+defined in <!-- $\overline{\Omega}$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=%5Coverline%7B%5COmega%7D">. Consider the curves <!-- $C_1 = [−L, 0] \times \{0\}$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=C_1%20%3D%20%5B%E2%88%92L%2C%200%5D%20%5Ctimes%20%5C%7B0%5C%7D">, <!-- $C_2 = (\{−L\} \times (0,L)) \cup ([−L,L] \times \{L\}) \cup (\{L\} \times [0,L))$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=C_2%20%3D%20(%5C%7B%E2%88%92L%5C%7D%20%5Ctimes%20(0%2CL))%20%5Ccup%20(%5B%E2%88%92L%2CL%5D%20%5Ctimes%20%5C%7BL%5C%7D)%20%5Ccup%20(%5C%7BL%5C%7D%20%5Ctimes%20%5B0%2CL))"> and <!-- $C_3 = (0,L) × \{0\}$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=C_3%20%3D%20(0%2CL)%20%C3%97%20%5C%7B0%5C%7D">, which give a partition of <!-- $\partial \Omega$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=%5Cpartial%20%5COmega">. Now let <!-- $g \colon C_1 \cup C_2 \to \mathbb{R}$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=g%20%5Ccolon%20C_1%20%5Ccup%20C_2%20%5Cto%20%5Cmathbb%7BR%7D"> be the function given by
+
+<!-- $$
+g(x,y) = 
+\left\{
+    \begin{aligned}
+        &1 + \tanh{(10(2x+1))} & &\text{if } (x,y) \in C_1 \\
+        &1 - \tanh{(10)} & &\text{if } (x,y) \in C_2
+    \end{aligned}
+\right.
+$$ --> 
+
+<div align="center"><img style="background: white;" src="https://render.githubusercontent.com/render/math?math=g(x%2Cy)%20%3D%20%0A%5Cleft%5C%7B%0A%20%20%20%20%5Cbegin%7Baligned%7D%0A%20%20%20%20%20%20%20%20%261%20%2B%20%5Ctanh%7B(10(2x%2B1))%7D%20%26%20%26%5Ctext%7Bif%20%7D%20(x%2Cy)%20%5Cin%20C_1%20%5C%5C%0A%20%20%20%20%20%20%20%20%261%20-%20%5Ctanh%7B(10)%7D%20%26%20%26%5Ctext%7Bif%20%7D%20(x%2Cy)%20%5Cin%20C_2%0A%20%20%20%20%5Cend%7Baligned%7D%0A%5Cright."></div>
+
+The boundary-value problem for the steady state Smith-Hutton problem is
+
+<!-- $$
+\left\{
+    \begin{aligned}
+        \Delta \phi - \frac{\rho}{\Gamma} \mathbf{v} \cdot \nabla \phi &= 0 & &\text{in } \Omega \\
+        \phi &= g & &\text{on } C_1 \cup C_2 \\
+        \frac{\partial \phi}{\partial y} &= 0 & &\text{on } C_3
+    \end{aligned}
+\right.
+$$ --> 
+
+<div align="center"><img style="background: white;" src="https://render.githubusercontent.com/render/math?math=%5Cleft%5C%7B%0A%20%20%20%20%5Cbegin%7Baligned%7D%0A%20%20%20%20%20%20%20%20%5CDelta%20%5Cphi%20-%20%5Cfrac%7B%5Crho%7D%7B%5CGamma%7D%20%5Cmathbf%7Bv%7D%20%5Ccdot%20%5Cnabla%20%5Cphi%20%26%3D%200%20%26%20%26%5Ctext%7Bin%20%7D%20%5COmega%20%5C%5C%0A%20%20%20%20%20%20%20%20%5Cphi%20%26%3D%20g%20%26%20%26%5Ctext%7Bon%20%7D%20C_1%20%5Ccup%20C_2%20%5C%5C%0A%20%20%20%20%20%20%20%20%5Cfrac%7B%5Cpartial%20%5Cphi%7D%7B%5Cpartial%20y%7D%20%26%3D%200%20%26%20%26%5Ctext%7Bon%20%7D%20C_3%0A%20%20%20%20%5Cend%7Baligned%7D%0A%5Cright."></div>
+
+Hereinafter, we shall assume <!-- $L = 1 \ \mathrm{m}$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=L%20%3D%201%20%5C%20%5Cmathrm%7Bm%7D">.
+
+### Velocity field
+
+Smith-Hutton's problem velocity field studied, in particular, the existence and uniqueness of streamlines is proved. In addition, these lines are computed numerically for some initial conditions, yielding the following plot:
+
+![Alt text](readme_images/smith_hutton_velocity_field.PNG?raw=true "Title")
+
+### Analytical solution
+
+Since the value <!-- $\rho / \Gamma$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=%5Crho%20%2F%20%5CGamma"> appears in the PDE, it seems reasonable to assume that the solution will depend on this constant:
+
+- For <!-- $\rho / \Gamma = \infty$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=%5Crho%20%2F%20%5CGamma%20%3D%20%5Cinfty">, the boundary-value problem turns into a transport-like problem. The characteristics of this problem are the streamlines found in the previous section. Due to the nature of these curves, the analytical solution is harder to find. The expression for this solution is given in terms of another function, although it is not proved whether it is unique. Nonetheless, it is demonstrated that if two classical solutions to the transport-like problem exist, then they must be equal. 
+- For <!-- $\rho / \Gamma \in [0,\infty)$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=%5Crho%20%2F%20%5CGamma%20%5Cin%20%5B0%2C%5Cinfty)">, a second-order elliptic PDE is obtained. The theory studied for the diagonal-flow case cannot be applied here (at least in a straightforward fashion), since on <!-- $C_3$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=C_3"> a Neumann boundary condition is prescribed (instead of a Dirichlet boundary condition).
+
+### Numerical solution
+
+For several values in <!-- $\rho / \Gamma$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=%5Crho%20%2F%20%5CGamma"> in the range <!-- $[10^{-9}, 10^9]$ --> <img style="transform: translateY(0.1em); background: white;" src="https://render.githubusercontent.com/render/math?math=%5B10%5E%7B-9%7D%2C%2010%5E9%5D">, the numerical solution to the Smith-Hutton case is computed using the C++ code developed. Below some examples are shown:
+
+![Alt text](readme_images/smith_huttton_+1.PNG?raw=true "Title")
+
+![Alt text](readme_images/smith_huttton_+9.PNG?raw=true "Title")
+
+![Alt text](readme_images/smith_huttton_-9.PNG?raw=true "Title")
 
 
 
